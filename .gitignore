@@ -1,0 +1,26 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Build outputs and dependencies
+**/bin/
+**/obj/
+**/node_modules/
+
+# Editor and operating-system files
+.DS_Store
+.idea/
+.vscode/
+.vs/
+*.suo
+*.user
+
+# Large distributable archives and installers (keep source files instead)
+*.zip
+*.rar
+*.7z
+*.exe
+
+# Large local media
+*.mp4

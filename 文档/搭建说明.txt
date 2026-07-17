@@ -1,0 +1,11 @@
+
+
+MES系统基于.NET Core3.1开发，使用SQL Server数据库，
+
+支持Docker，Linux部署。前端基于Vue3，Element Plus框架，前端UNIAPP 
+
+开发环境：VS2019 + SQL2016 + HBuilderX
+
+默认登录账号密码：admin   123456
+
+

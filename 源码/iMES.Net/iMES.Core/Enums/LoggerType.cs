@@ -49,6 +49,8 @@ namespace iMES.Core.Enums
         ParEmpty,
         NoToken,
         ReplaceToeken,
-        KafkaException
+        KafkaException,
+        // 保持追加，避免改变既有日志类型的枚举值。
+        Export
     }
 }

@@ -944,7 +944,7 @@ namespace iMES.Core.BaseProvider
             PropertyInfo mainKeyProperty = type.GetKeyProperty();
             //验证明细
             Type detailType = null;
-            if (saveModel.DetailData != null || saveModel.DelKeys != null)
+            if (saveModel.HasDetailChanges())
             {
                 saveModel.DetailData = saveModel.DetailData == null
                     ? new List<Dictionary<string, object>>()

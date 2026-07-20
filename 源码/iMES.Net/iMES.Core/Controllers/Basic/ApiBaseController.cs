@@ -122,6 +122,7 @@ namespace iMES.Core.Controllers.Basic
         public virtual ActionResult Export([FromBody] PageDataOptions loadData)
         {
             var result = InvokeService("Export", new object[] { loadData }) as WebResponseContent;
+            Logger.Info(Enums.LoggerType.Export, loadData.Serialize(), result?.Status == true ? "Ok" : result?.Message);
             return File(
                    System.IO.File.ReadAllBytes(result.Data.ToString().MapPath()),
                    System.Net.Mime.MediaTypeNames.Application.Octet,

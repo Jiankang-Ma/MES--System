@@ -109,10 +109,19 @@ namespace iMES.Entity.DomainModels
        ///单位用量
        /// </summary>
        [Display(Name ="单位用量")]
+       [Column(TypeName="decimal(18,4)")]
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public decimal QuantityPer { get; set; }
+
+       /// <summary>
+       ///消耗工序
+       /// </summary>
+       [Display(Name ="消耗工序")]
        [Column(TypeName="int")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
-       public int QuantityPer { get; set; }
+       public int? Process_Id { get; set; }
 
        /// <summary>
        ///备注

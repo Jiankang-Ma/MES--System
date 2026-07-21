@@ -108,9 +108,9 @@ namespace iMES.Entity.DomainModels
        ///库存数量
        /// </summary>
        [Display(Name ="库存数量")]
-       [Column(TypeName="int")]
+       [Column(TypeName="decimal(18,4)")]
        [Editable(true)]
-       public int? InventoryQty { get; set; }
+       public decimal? InventoryQty { get; set; }
 
        /// <summary>
        ///成品图

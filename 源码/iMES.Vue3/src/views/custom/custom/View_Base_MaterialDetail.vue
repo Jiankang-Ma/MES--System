@@ -28,9 +28,10 @@
                 url: "/View_Base_MaterialDetail/",
                 sortName: "CreateDate"
             });
-            const editFormFields = ref({"ParentProduct_Id":"","ChildProduct_Id":"","QuantityPer":"","Remark":""});
+            const editFormFields = ref({"ParentProduct_Id":"","ChildProduct_Id":"","Process_Id":"","QuantityPer":"","Remark":""});
             const editFormOptions = ref([[{"dataKey":"productList","data":[],"title":"父项产品","required":true,"field":"ParentProduct_Id","type":"select"}],
                               [{"dataKey":"productList","data":[],"title":"子项产品","required":true,"field":"ChildProduct_Id","type":"select"}],
+                              [{"dataKey":"process","data":[],"title":"消耗工序","required":true,"field":"Process_Id","type":"select"}],
                               [{"title":"单位用量","required":true,"field":"QuantityPer","type":"number"}],
                               [{"title":"备注","field":"Remark","type":"textarea"}]]);
             const searchFormFields = ref({"PProductCode":"","PProductName":"","PProductStandard":"","CProductCode":"","CProductName":"","CProductStandard":"","QuantityPer":[null,null],"Remark":"","CreateDate":""});
@@ -46,7 +47,8 @@
                        {field:'CProductName',title:'子项产品名称',type:'string',sort:true,width:180,align:'left'},
                        {field:'CProductStandard',title:'子项产品规格',type:'string',width:180,align:'left'},
                        {field:'CUnit_Id',title:'子项单位',type:'int',bind:{ key:'unitList',data:[]},width:110,align:'left'},
-                       {field:'QuantityPer',title:'单位用量',type:'int',sort:true,width:110,require:true,align:'left'},
+                       {field:'Process_Id',title:'消耗工序',type:'int',bind:{ key:'process',data:[]},width:140,require:true,align:'left'},
+                       {field:'QuantityPer',title:'单位用量',type:'decimal',sort:true,width:110,require:true,align:'left'},
                        {field:'Remark',title:'备注',type:'string',width:220,align:'left'},
                        {field:'CreateDate',title:'创建时间',type:'datetime',sort:true,width:110,align:'left',sort:true},
                        {field:'CreateID',title:'CreateID',type:'int',width:80,hidden:true,align:'left'},

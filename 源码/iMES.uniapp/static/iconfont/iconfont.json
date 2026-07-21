@@ -1,0 +1,16 @@
+{
+  "id": "3365327",
+  "name": "耀文APP",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "4485684",
+      "name": "主页",
+      "font_class": "zhuye",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}

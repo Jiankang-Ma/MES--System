@@ -99,18 +99,18 @@ namespace iMES.Entity.DomainModels
        ///当前库存数量
        /// </summary>
        [Display(Name ="当前库存数量")]
-       [Column(TypeName="int")]
+       [Column(TypeName="decimal(18,4)")]
        [Editable(true)]
-       public int? InventoryQty { get; set; }
+       public decimal? InventoryQty { get; set; }
 
        /// <summary>
        ///出库数量
        /// </summary>
        [Display(Name ="出库数量")]
-       [Column(TypeName="int")]
+       [Column(TypeName="decimal(18,4)")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
-       public int OutStoreQty { get; set; }
+       public decimal OutStoreQty { get; set; }
 
        /// <summary>
        ///创建时间

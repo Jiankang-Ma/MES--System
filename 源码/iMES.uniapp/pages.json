@@ -1,0 +1,603 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages{
+		{
+			"path": "pages/regLogin/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white"
+			}
+		},{
+			"path": "pages/mine/about/about",
+			"style": {
+				"navigationBarTitleText": "关于iMES",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#00aaff"
+			}
+		}, {
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/index/imes",
+			"style": {
+				"navigationBarTitleText": "iMES工厂管家",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/webview/webview",
+			"style": {
+				"navigationBarTitleText": "工单详情",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/board/index",
+			"style": {
+				"navigationBarTitleText": "看板",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+
+		}, {
+			"path": "pages/imes/user/user",
+			"style": {
+				"navigationBarTitleText": "用户列表",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/imes/product/product",
+			"style": {
+				"navigationBarTitleText": "产品列表",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/imes/workorder/workorder",
+			"style": {
+				"navigationBarTitleText": "工单",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/imes/workorder/woDetail",
+			"style": {
+				"navigationBarTitleText": "工单明细",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}, {
+							"path": "pages/production/Production_SalesOrder/Production_SalesOrder",
+							"style": {
+								"navigationBarTitleText": "销售订单"
+							}
+						}, {
+							"path": "pages/production/Production_SalesOrderList/Production_SalesOrderList",
+							"style": {
+								"navigationBarTitleText": "销售订单-产品明细"
+							}
+						}, {
+							"path": "pages/report/View_OutputStatistics/View_OutputStatistics",
+							"style": {
+								"navigationBarTitleText": "产量统计"
+							}
+						}, {
+							"path": "pages/report/View_DefectItemDistribute/View_DefectItemDistribute",
+							"style": {
+								"navigationBarTitleText": "不良品项分布"
+							}
+						}, {
+							"path": "pages/report/View_DefectItemSummary/View_DefectItemSummary",
+							"style": {
+								"navigationBarTitleText": "不良品项汇总"
+							}
+						}, {
+							"path": "pages/warehouse/View_StockBalance/View_StockBalance",
+							"style": {
+								"navigationBarTitleText": "库存余额"
+							}
+						}]
+					}
+				}
+			}
+
+		}, {
+			"path": "pages/imes/workorder/productDetail",
+			"style": {
+				"navigationBarTitleText": "工单管理",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+
+		}, {
+			"path": "pages/imes/workorderlist/workorderlist",
+			"style": {
+				"navigationBarTitleText": "任务",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white"
+
+			}
+
+		}, {
+			"path": "pages/imes/workorderlist/wolistDetail",
+			"style": {
+				"navigationBarTitleText": "任务明细",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+
+		}, {
+			"path": "pages/imes/workorderlist/productDetail",
+			"style": {
+				"navigationBarTitleText": "报工列表",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+
+		}, {
+			"path": "pages/imes/reportworkorder/reportworkorder",
+			"style": {
+				"navigationBarTitleText": "报工",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white"
+
+			}
+
+		}, {
+			"path": "pages/imes/reportworkorder/reportwoDetail",
+			"style": {
+				"navigationBarTitleText": "报工明细",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+
+		}, {
+			"path": "pages/imes/reportworkorder/productDetail",
+			"style": {
+				"navigationBarTitleText": "报工列表",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+
+		}, {
+			"path": "pages/report/View_DefectItemDistribute/View_DefectItemDistribute",
+			"style": {
+				"navigationBarTitleText": "不良品项分布",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+
+		},
+		{
+			"path": "pages/report/View_DefectItemSummary/View_DefectItemSummary",
+			"style": {
+				"navigationBarTitleText": "不良品项汇总",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+
+		},
+		{
+			"path": "pages/warehouse/View_StockBalance/View_StockBalance",
+			"style": {
+				"navigationBarTitleText": "库存余额",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+
+		},
+		{
+			"path": "pages/report/View_OutputStatistics/View_OutputStatistics",
+			"style": {
+				"navigationBarTitleText": "产量统计",
+				"navigationBarBackgroundColor": "#11AAED",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+
+		}, 
+		{
+			"path": "pages/regLogin/modifyPwd",
+			"style": {
+				"navigationBarTitleText": "修改密码",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/imes/salesOrder/SalesOrder",
+			"style": {
+				"navigationBarTitleText": "销售订单",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/imes/productPlan/ProductPlan",
+			"style": {
+				"navigationBarTitleText": "生产计划",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/imes/assembleWorkOrder/AssembleWorkOrder",
+			"style": {
+				"navigationBarTitleText": "装配工单",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/imes/outWareHouseBill/OutWareHouseBill",
+			"style": {
+				"navigationBarTitleText": "出库单",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/imes/wareHouseBill/WareHouseBill",
+			"style": {
+				"navigationBarTitleText": "入库单",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/imes/salesOrder/Detail/Detail",
+			"style": {
+				"navigationBarTitleText": "销售订单明细",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/imes/assembleWorkOrder/Detail/Detail",
+			"style": {
+				"navigationBarTitleText": "销售订单明细",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/imes/outWareHouseBill/Detail/Detail",
+			"style": {
+				"navigationBarTitleText": "出库单明细",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/imes/wareHouseBill/Detail/Detail",
+			"style": {
+				"navigationBarTitleText": "出库单明细",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/imes/productPlan/Detail/Detail",
+			"style": {
+				"navigationBarTitleText": "生产计划明细",
+				"navigationBarBackgroundColor": "#11AAED",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue600",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"fontSize": "20px",
+							"color": "#FFFFFF",
+							"float": "right"
+						}]
+					}
+				}
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#8a8a8a",
+		"selectedColor": "#11AAED",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"fontSize": "13",
+		"list": [{
+				"pagePath": "pages/imes/workorder/workorder",
+				"iconPath": "static/tabbar/workorder.png",
+				"selectedIconPath": "static/tabbar/workorderA.png",
+				"text": "工单"
+			},
+			{
+				"pagePath": "pages/imes/workorderlist/workorderlist",
+				"iconPath": "static/tabbar/task.png",
+				"selectedIconPath": "static/tabbar/taskA.png",
+				"text": "任务"
+			},
+
+			{
+				"pagePath": "pages/index/imes",
+				"iconPath": "static/tabbar/imes.png",
+				"selectedIconPath": "static/tabbar/imesA.png",
+				"text": "iMES"
+			},
+			{
+				"pagePath": "pages/imes/reportworkorder/reportworkorder",
+				"iconPath": "static/tabbar/report.png",
+				"selectedIconPath": "static/tabbar/reportA.png",
+				"text": "报工"
+			},
+			{
+				"pagePath": "pages/mine/mine",
+				"iconPath": "static/tabbar/board.png",
+				"selectedIconPath": "static/tabbar/boardA.png",
+				"text": "我的"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "iMES工厂管家",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#F8F8F8"
+	},
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^view-(.*)": "@/components/view-$1/view-$1.vue",
+			"^imes-(.*)": "@/components/imes-$1/imes-$1.vue",
+			"^fy-(.*)": "@/components/fy-$1/fy-$1.vue"
+			// ,
+			// "^grid-(.*)": "@/pages/menu/grid-$1.vue"
+
+		}
+	}
+}

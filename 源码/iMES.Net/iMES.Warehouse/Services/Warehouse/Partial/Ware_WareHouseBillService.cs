@@ -76,7 +76,7 @@ namespace iMES.Warehouse.Services
                 for (int i = 0; i < productList.Count; i++)
                 {
                     Base_Product product = _productRepository.FindAsIQueryable(x => x.Product_Id == productList[i].Product_Id).FirstOrDefault();
-                    product.InventoryQty = (product.InventoryQty == null ? 0 : product.InventoryQty) + productList[i].InStoreQty.GetInt();
+                    product.InventoryQty = (product.InventoryQty ?? 0m) + productList[i].InStoreQty;
                     _productRepository.Update(product, true);
                 }
                 return webResponse.OK();

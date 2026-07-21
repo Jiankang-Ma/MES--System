@@ -39,6 +39,33 @@ namespace iMES.Custom.Services
             //base.Init(dbRepository);
         }
         WebResponseContent webResponse = new WebResponseContent();
+
+        private WebResponseContent ValidateBom(View_Base_MaterialDetail bom, int? currentId = null)
+        {
+            if (bom.ParentProduct_Id == bom.ChildProduct_Id)
+            {
+                return webResponse.Error("父项产品和子项产品不能相同");
+            }
+            if (bom.QuantityPer <= 0)
+            {
+                return webResponse.Error("单位用量必须大于0");
+            }
+            if (!bom.Process_Id.HasValue || bom.Process_Id <= 0)
+            {
+                return webResponse.Error("请选择消耗工序");
+            }
+            bool duplicate = _repository.FindAsIQueryable(x =>
+                    x.ParentProduct_Id == bom.ParentProduct_Id &&
+                    x.ChildProduct_Id == bom.ChildProduct_Id &&
+                    x.Process_Id == bom.Process_Id &&
+                    (!currentId.HasValue || x.MaterialDetail_Id != currentId.Value))
+                .Any();
+            if (duplicate)
+            {
+                return webResponse.Error("同一父项、子项和工序只能维护一条BOM");
+            }
+            return webResponse.OK();
+        }
         /// <summary>
         /// 编辑操作
         /// </summary>
@@ -50,10 +77,9 @@ namespace iMES.Custom.Services
             //直接操作原表SellOrder的编辑功能
             //saveModel为视图编辑字段信息，如果当前视图提交的saveModel字段与原表SellOrder不一致，
             //可以直接修改视图提交saveModel里面的字段信息
-            if (saveModel.MainData["ParentProduct_Id"].ToString() == saveModel.MainData["ChildProduct_Id"].ToString())
-            {
-                return webResponse.Error("父项产品和子项产品不能相同");
-            }
+            var bom = saveModel.MainData.DicToEntity<View_Base_MaterialDetail>();
+            var result = ValidateBom(bom);
+            if (!result.Status) return result;
             return Base_MaterialDetailService.Instance.Add(saveModel);
         }
         /// <summary>
@@ -67,10 +93,9 @@ namespace iMES.Custom.Services
             //直接操作原表SellOrder的编辑功能
             //saveModel为视图编辑字段信息，如果当前视图提交的saveModel字段与原表SellOrder不一致，
             //可以直接修改视图提交saveModel里面的字段信息
-            if (saveModel.MainData["ParentProduct_Id"].ToString() == saveModel.MainData["ChildProduct_Id"].ToString())
-            {
-                return webResponse.Error("父项产品和子项产品不能相同");
-            }
+            var bom = saveModel.MainData.DicToEntity<View_Base_MaterialDetail>();
+            var result = ValidateBom(bom, bom.MaterialDetail_Id);
+            if (!result.Status) return result;
             return Base_MaterialDetailService.Instance.Update(saveModel);
         }
         /// <summary>
@@ -106,10 +131,8 @@ namespace iMES.Custom.Services
             {
                 for (int i = 0; i < list.Count; i++)
                 {
-                    if (list[i].ParentProduct_Id == list[i].ChildProduct_Id)
-                    {
-                        return webResponse.Error("父项产品和子项产品不能相同");
-                    }
+                    var result = ValidateBom(list[i], list[i].MaterialDetail_Id == 0 ? (int?)null : list[i].MaterialDetail_Id);
+                    if (!result.Status) return result;
                 }
                 return webResponse.OK();
             };

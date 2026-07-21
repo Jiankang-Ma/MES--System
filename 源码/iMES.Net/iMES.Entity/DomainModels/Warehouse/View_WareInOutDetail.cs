@@ -51,16 +51,16 @@ namespace iMES.Entity.DomainModels
        ///单据数量
        /// </summary>
        [Display(Name ="单据数量")]
-       [Column(TypeName="int")]
+       [Column(TypeName="decimal(18,4)")]
        [Required(AllowEmptyStrings=false)]
-       public int FormQty { get; set; }
+       public decimal FormQty { get; set; }
 
        /// <summary>
        ///库存变更数量
        /// </summary>
        [Display(Name ="库存变更数量")]
-       [Column(TypeName="int")]
-       public int? ChangeQty { get; set; }
+       [Column(TypeName="decimal(18,4)")]
+       public decimal? ChangeQty { get; set; }
 
        /// <summary>
        ///库存收发时间
@@ -149,8 +149,8 @@ namespace iMES.Entity.DomainModels
        ///当前库存数量
        /// </summary>
        [Display(Name ="当前库存数量")]
-       [Column(TypeName="int")]
-       public int? InventoryQty { get; set; }
+       [Column(TypeName="decimal(18,4)")]
+       public decimal? InventoryQty { get; set; }
 
        /// <summary>
        ///主键ID

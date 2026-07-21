@@ -46,8 +46,8 @@ namespace iMES.Entity.DomainModels
        ///库存数量
        /// </summary>
        [Display(Name ="库存数量")]
-       [Column(TypeName="int")]
-       public int? InventoryQty { get; set; }
+       [Column(TypeName="decimal(18,4)")]
+       public decimal? InventoryQty { get; set; }
 
        /// <summary>
        ///单位

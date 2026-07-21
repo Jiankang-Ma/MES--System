@@ -1,0 +1,20 @@
+{
+	"categories": [
+	],
+	"series": [
+		{
+			"name": "工序计划数",
+			"data": [
+			],
+			"type": "line",
+			"style": "curve",
+			"addPoint": true,
+			"color": "#ff9900",
+			"unit":""
+		}
+	],
+	"yAxis":[
+		{"calibration":true,"position":"left","min":0,"max":3000,"title":"","titleFontSize":12,"tofix":0}
+	],
+	"targetAdd":"9%"
+}

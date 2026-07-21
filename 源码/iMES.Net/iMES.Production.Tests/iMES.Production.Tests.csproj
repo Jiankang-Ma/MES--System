@@ -25,6 +25,8 @@
     <ProjectReference Include="..\iMES.Production\iMES.Production.csproj" />
     <ProjectReference Include="..\iMES.Entity\iMES.Entity.csproj" />
     <ProjectReference Include="..\iMES.Core\iMES.Core.csproj" />
+    <ProjectReference Include="..\iMES.System\iMES.System.csproj" />
+    <ProjectReference Include="..\iMES.Custom\iMES.Custom.csproj" />
   </ItemGroup>
 
 </Project>

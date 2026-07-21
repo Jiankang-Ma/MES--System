@@ -10,6 +10,20 @@
 
 数据权限/数据隔离不在本轮范围。说明书明确的权限范围为目录、菜单、按钮和角色权限；新增、修改、删除、导出属于审计日志范围。
 
+## 原始交付、Docker 基础建库与本轮新增实现边界
+
+本项目原始数据库基线为 `iMES20221014.sql`。为 Docker 本地部署转换得到的基础建库文件是 `数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/iMES20221014.docker.sql`；按原始项目部署时，仅以该基础脚本建库，不应因本报告而额外执行业务升级脚本。
+
+本轮工作流测试中，Git 提交 `dc05ce8（feat: add quality workflows and reporting coverage）` 新增了下列业务实现及其配套迁移。它们不是原始交付物，也不是 Docker 转换本身的组成部分；测试报告中的“修复后通过”是指在这些新增实现合入后的复测结果，不能反向证明原始项目已具备对应功能。
+
+| 增量文件 | 性质与对应测试结论 | 使用边界 |
+| --- | --- | --- |
+| `20260720-wf07-bom.sql` | 为 WF-07/WF-21 补充 BOM 工序字段、小数数量精度和相关视图；同时配套新增按工序 BOM 自动扣料、库存不足拒绝等服务逻辑。该项属于对原有基础 BOM 的业务能力补齐，不是单纯 Docker 修复。专项 4/4、通用回归和销售到库存回归已通过。 | 仅当采用本轮新增的 BOM 自动扣料代码时，才作为既有数据库的一次性迁移使用。原始项目基线部署不执行。 |
+| `20260720-quality-inspection.sql` | 为 WF-26～WF-29A 新建检测项、模板/明细、检验单/结果明细五张表，并配套新增实体和 `api/Quality` 接口。原始交付物当时没有质量模块；该项属于新增功能实现，不是原系统缺陷的小范围修补。质量专项、通用回归和销售到库存回归已通过。 | 仅当采用本轮新增的质量检验代码时执行一次；脚本使用 `CREATE TABLE`，已存在对应表时不得重复执行。原始项目基线部署不执行。 |
+| `fix-home-statistics-unicode.sql` | Docker/Linux SQL Server 的中文字符串与 JSON 序列化兼容性修复，不属于 WF 业务功能新增。其 `HomeView_StatisticsNumber` 和 `SerializeJSON` 修复内容已并入当前 `iMES20221014.docker.sql`。 | 新建库无需单独执行；仅供早期已建库、且尚未包含该修复的数据库补丁使用。 |
+
+因此，本报告中的 WF-07、WF-21、WF-26～WF-29A 需要分开理解：原始交付的初测结果为“不通过/无法创建实例”；本轮新增代码和相应数据库迁移后，复测结果为“通过”。
+
 ## 自动化脚本与覆盖关系
 
 | 自动化脚本 | 覆盖范围 | 最新有效证据 |
@@ -47,12 +61,12 @@
 | DOC-GAP-08 / WF-27 来料检验 | 来料检验单创建成功，自动带出对应 incoming 模板的两项检测项；合格结果保存 | 原交付物不存在来料检验单和模板带项实现，不能创建实例 | 新增通用检验单及检验结果明细；按产品+`incoming` 模板生成明细，拒绝同一来源单重复建单、检验日期早于来源日期或结果未填全 | 专项通过、清理通过；通用回归 4/4 通过；销售到库存回归通过 |
 | DOC-GAP-09 / WF-28 过程检验 | 过程检验单关联工单 ID、工序 ID；自动带出 `process` 模板项并保存合格结果 | 原交付物没有过程检验实体、接口或任务关联 | 过程检验要求工单和工序关联，模板项必须完整填写后方可提交；结果逐项按上下限计算 | 专项通过、清理通过；通用回归 4/4 通过；销售到库存回归通过 |
 | DOC-GAP-09 / WF-29A 出货检验单维护 | 出货检验单、两项结果和最终不合格结论均可保存并查询 | 原交付物没有出货检验单、检测结果或查询实现 | 按 `shipping` 模板创建检验单；任一项超出上下限时拒绝“合格”结论，并保存最终 `failed` | 专项通过、清理通过；通用回归 4/4 通过；销售到库存回归通过 |
-| 设备领域 / WF-30A、WF-31A、WF-31B：设备、点检、维修单 | - | 未找到设备、点检项目、点检计划、点检工单和维修单领域模型 | - | 说明书明确基础模块，当前交付差异保留 |
-| DOC-GAP-10 / WF-32 排班计划和排班日历 | - | 未找到班组、班次、排班计划、节假日和日历模型 | - | 说明书承诺功能，当前交付差异保留 |
+| 设备领域 / WF-30A、WF-31A、WF-31B：设备、点检、维修单 | - | **复核确认原结论属实**：后端 `Entity/Controller/Service`、Vue3/uni-app 页面及路由、`iMES.Net.zip`、`EXE打包脚本.rar` 均无设备、点检项目/计划/工单或维修单模块；运行中的 iMES SQL Server 仅命中质量检验表，相关菜单为 0。`aj_report_devices` 属于独立报表库，不是 iMES 设备领域模型，不能据此创建实例 | - | 本轮按要求未修改源码、未新增 mjs 测试；因无可调用实体/API/表，无法执行维护或回归实例测试。说明书明确的基础模块差异保留 |
+| DOC-GAP-10 / WF-32 排班计划和排班日历 | - | **复核确认原结论属实**：后端 `Entity/Controller/Service`、Vue3/uni-app 页面及路由、`iMES.Net.zip`、`EXE打包脚本.rar` 均无班组、班次、排班计划、节假日或生产日历模块；运行中的 iMES SQL Server 相关表、字段、菜单均为 0。唯一的 `WorkOrderSchedule` 页面仅跳转外部看板，`ProductionSchedule` 仅为工单工序进度，不是排班日历 | - | 本轮按要求未修改源码、未新增 mjs 测试；因无可调用实体/API/表，无法执行排班维护或回归实例测试。说明书承诺功能差异保留 |
 | DOC-GAP-11 / WF-33 绩效工资到工资报表 | - | 虽有部分配置/查询模型，但未找到可创建并核对完整工资计算结果的实例链路 | - | 说明书承诺功能，当前交付差异保留 |
 | WF-34 生产报表：两道工序报工 → 查询报表 | 返回两条对应工序的生产报表记录 | - | - | 通过 |
 | WF-36 自定义扩展字段：产品扩展字段 → 后续业务链路 | 产品扩展字段保存成功，并可进入销售订单到工单链路 | - | - | 通过 |
-| DOC-GAP-12 / WF-39 业务 Excel 模板导出 | - | 仅有通用导出；未找到业务模板上传、默认模板选择和数据填充导出 | - | 说明书承诺功能，当前交付差异保留 |
+| DOC-GAP-12 / WF-39 业务 Excel 模板导出 | - | **复核确认原结论属实**：通用 `Export`、下载“导入列标题模板”和 Excel 导入均存在，但没有业务 `.xlsx` 模板上传、默认模板选择、业务单据关联或按模板填充单据头/明细的导出链路。`Base_PrintTemplate` 虽存在，却只保存 `TemplateContent` 并打开 `Print-Designer`，是打印模板而非 Excel 文件模板；运行中数据库也没有 Excel 模板表/菜单 | - | 本轮按要求未修改源码、未新增 mjs 测试；WF-39 的前置条件“上传并设为默认的 Excel 模板”无法建立，故不能执行模板导出及回归实例测试。说明书承诺功能差异保留 |
 | 字典明细服务循环依赖：字典主表 → 明细分页 → 修改/删除 → 级联删除 | 修复后字典主从新增、分页、修改、重复校验、删除和级联清理通过 | `Sys_DictionaryListService` 自注入导致 HTTP 500 | 删除未使用的自引用服务依赖 | 通用基础回归 4/4 通过；50 并发、200 次只读请求 200/200 成功 |
 | 收发明细自动化查询：入库/出库 → 明细断言 | 入库、出库、余额和明细断言通过 | 测试脚本按不存在的 `Product_Id` 查询，得到 `NaN` | 改按实际可用的 `ProductCode` 查询 | 通过 |
 | AUTH-01 菜单、按钮权限与审计：临时角色/用户 → 授权 → 越权调用 → 权限变更 → 新增/修改/导出/删除 | 未登录菜单请求返回 401；仅授予 `Search` 时菜单只返回 `Search`、查询可用；未授权新增、删除、权限提升和菜单维护均被拒绝；授权追加后立即生效；`Add/Edit/Export/Del` 各记录 1 条日志 | 已授权导出 HTTP 200，但无 `Export` 审计日志 | 通用 API `Export` 入口写入 `LoggerType.Export` 审计；日志类型追加 `Export` | 12/12 通过；临时角色、用户、通知和日志均已清理 |
@@ -75,7 +89,11 @@
 
 **修复后通过的**
 
-新增末工序判定：仅产品工艺路线中顺序最后的工序、且 `ApproveStatus=2` 的报工，按良品数创建 `Ware_WareHouseBill` 和明细；不良数不进入正常成品库存，纯不良不创建零数量单据。每条报工的入库单号固定为 `OUTPUT-RWO-{报工ID}`，重复执行会被拒绝，且与报工、工单和工序写入可追溯备注。普通工序与未确认报工不产出，避免多工序时把同一成品重复入库。
+实际修改文件为 `源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_ReportWorkOrderService.cs`：新增私有方法 `GetFinalProcessId(int productId)` 确定产品工艺路线的末工序，新增私有方法 `CreateProductionOutput(Production_ReportWorkOrder reportWorkOrder)` 创建自动产出入库单；并在 `Add(SaveModel saveDataModel)` 的 `AddOnExecuted` 中，将原先仅执行 `CreateMaterialConsumption(reportWorkOrder)` 的后置处理串接为“自动扣料成功后 → `CreateProductionOutput(reportWorkOrder)`”。本项复用既有 `Ware_WareHouseBill`、`Ware_WareHouseBillList` 和库存服务，未新增数据库表或迁移脚本。
+
+`CreateProductionOutput` 仅在产品工艺路线中顺序最后的工序、且 `ApproveStatus=2` 时，按良品数创建 `Ware_WareHouseBill` 及明细；不良数不进入正常成品库存，纯不良不创建零数量单据。每条报工的入库单号固定为 `OUTPUT-RWO-{报工ID}`，同单号先查重并拒绝重复执行，备注写入报工、工单和工序以便追溯。普通工序与未确认报工不产出，避免多工序时把同一成品重复入库。
+
+验证脚本为 `tests/测试文件/run-wf-22-auto-output.mjs`，其结果文件为 `wf-22-auto-output-20260720080222.json`。
 
 当前数据模型没有“工序 → 半成品产品”的映射或配置，因此不能臆造中间工序应入哪个半成品；本次以说明书允许的“成品”路径完成末工序自动产出。如后续需要中间工序自动入半成品，应先补充该映射和对应库存规则。
 
@@ -121,7 +139,9 @@
 
 **修复后通过的**
 
-在 `Production_ReportWorkOrderService.Add` 的实体日期校验之前，将合理范围内的 Unix 毫秒 `ReportTime` 转为本地 `DateTime`。该处理只作用于报工时间；PC 既有日期字符串不变。使用移动端原始时间戳的复测通过。
+历史记录确认该项修改了原有报工服务文件 `源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_ReportWorkOrderService.cs`，而非仅新增测试：新增私有方法 `NormalizeMobileReportTime(SaveModel saveDataModel)`，从 `MainData["ReportTime"]` 读取值；仅当其为 `946684800000`～`4102444800000` 范围内的 Unix 毫秒值时，使用 `DateTimeOffset.FromUnixTimeMilliseconds(...).LocalDateTime` 转为本地 `DateTime`。同时在既有 `Add(SaveModel saveDataModel)` 的第一行调用该方法，确保转换发生在通用实体日期校验之前。非毫秒时间戳及 PC 原有日期字符串不变。
+
+移动端 uni-app 报工页的 `Date.now()` 原始载荷未修改；本项未修改数据库、未新增表或迁移脚本。验证脚本为 `tests/测试文件/run-wf-17-mobile-report.mjs`，结果文件为 `wf-17-mobile-report-20260720072937.json`，使用原始毫秒时间戳提交后可保存并同步到 PC。
 
 **最后的回归测试结果**
 

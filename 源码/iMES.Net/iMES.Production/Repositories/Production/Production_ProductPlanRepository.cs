@@ -12,7 +12,7 @@ namespace iMES.Production.Repositories
 {
     public partial class Production_ProductPlanRepository : RepositoryBase<Production_ProductPlan> , IProduction_ProductPlanRepository
     {
-    public Production_ProductPlanRepository(SysDbContext dbContext)
+    public Production_ProductPlanRepository(BaseDbContext dbContext)
     : base(dbContext)
     {
 

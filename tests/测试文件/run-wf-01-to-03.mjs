@@ -12,9 +12,9 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const scriptDir = resolve(fileURLToPath(new URL('.', import.meta.url)));
-const root = resolve(scriptDir, '..');
+const root = resolve(scriptDir, '..', '..');
 const apiRoot = join(root, '源码', 'iMES.Net', 'iMES.WebApi');
-const resultsDir = join(scriptDir, 'results');
+const resultsDir = join(root, 'tests', 'results');
 const marker = `AUTOTEST_WF_${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}_${process.pid}`;
 const apiBaseUrl = process.env.MES_API_URL || 'http://localhost:9991';
 const report = { startedAt: new Date().toISOString(), marker, tests: [], cleanup: null };

@@ -37,8 +37,9 @@ function run(command, args) {
   catch (error) { fail(`${command} failed: ${String(error.stderr || error.stdout || error.message).replaceAll(sqlPassword || '', '***')}`); }
 }
 function sql(query) {
+  const normalizedQuery = query.replace(/\s+/g, ' ').trim();
   return run('docker', ['compose', 'exec', '-T', 'sqlserver-x64', '/bin/sh', '-lc',
-    `/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -d iMES -C -b -h -1 -W -s "|" -Q ${JSON.stringify(query)}`]);
+    `/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -d iMES -C -b -h -1 -W -s "|" -Q ${JSON.stringify(normalizedQuery)}`]);
 }
 function sqlLines(query) {
   return sql(query).split(/\r?\n/).map((line) => line.trim()).filter(Boolean)

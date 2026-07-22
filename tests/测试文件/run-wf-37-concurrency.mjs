@@ -7,10 +7,10 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const dir = resolve(fileURLToPath(new URL('.', import.meta.url)));
-const root = resolve(dir, '..');
+const root = resolve(dir, '..', '..');
 const apiRoot = join(root, '源码', 'iMES.Net', 'iMES.WebApi');
 const marker = `AUTOTEST_WF37_${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}_${process.pid}`;
-const resultsDir = join(dir, 'results');
+const resultsDir = join(root, 'tests', 'results');
 function parseDotEnv(path) {
   if (!existsSync(path)) return {};
   return Object.fromEntries(readFileSync(path, 'utf8').split(/\r?\n/).map((line) => line.trim())

@@ -210,7 +210,7 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 修复基线 | `dev`，commit `b608912610133fcb71e9675475ec3dd57b3650df` |
+| 最新复测基线 | `dev`，commit `db33de66a4eab928ae9cf5635ad66f54a9cf6566`（已包含本次最小修复） |
 | 修复分支 | `modify-retest/custom-regression` |
 | 业务改动文件 | `源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessService.cs` |
 | UT-CUSTOM-01 修复 | `Base_ProcessService.Update` 的重复名称提示由“`不良品项名称已存在`”改为“`工序名称已存在`” |
@@ -227,12 +227,12 @@
 | 针对性真实 API 回归 | `tests/测试文件/run-custom-copy-message-evidence.mjs`；重复名称返回“`工序名称已存在`”，重复编号返回“`工序编号已存在`”，两次均为 HTTP `200`、`status: false` |
 | 运行代码一致性 | 运行业务文件与修复分支文件 SHA-256 均为 `252774612927bdbc97dc05b889b60d459644820d4dcfae1e6d2d01a3acb7470a`，`identical: true` |
 | 针对性测试数据清理 | `success: true`，剩余临时工序数量 `0`；结果见 `tests/results/custom-process-copy-message-regression.json` |
-| 通用 MES 回归 | `tests/测试文件/run-mes-regression.mjs`；**3 通过，1 失败**。通知 CRUD、字典主从 CRUD、分页读取压测均通过，200/200 次读取成功 |
-| 通用回归剩余问题 | 全量实体/数据库结构检查发现本地数据库 `Base_MaterialDetail`、`View_Base_MaterialDetail` 缺少 `Process_Id`。该问题属于既有 dev 实体与本地 2022 数据库版本差异，与本次两条工序文案修复无关；未修改数据库或跳过断言。证据见 `tests/results/mes-regression-2026-07-22T06-17-33-115Z.json` |
+| 通用 MES 回归 | `tests/测试文件/run-mes-regression.mjs`；数据库升级后 **4 通过，0 失败**。全量实体/数据库结构、通知 CRUD、字典主从 CRUD、分页读取压测均通过，200/200 次读取成功；结果见 `tests/results/mes-regression-2026-07-22T07-05-39-425Z.json` |
+| 数据库升级与复测 | 按最新 `dev` 提供的 `数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/20260720-wf07-bom.sql` 升级本地测试数据库，补齐 `Base_MaterialDetail`、`View_Base_MaterialDetail` 的 `Process_Id` 后重新执行通用回归，原结构校验失败已通过 |
 
 ### 第二阶段结论
 
-UT-CUSTOM-01、UT-CUSTOM-02 已按最小范围修复。原有两条失败单元测试转为通过，成员 5 全部 30 条单元测试通过，真实 API 返回与预期一致且测试数据已清理。通用 MES 回归的三个功能/压力项目通过；剩余一项为独立的数据库版本差异，已如实记录，未将其误报为本次修复通过或擅自扩大修复范围。
+UT-CUSTOM-01、UT-CUSTOM-02 已按最小范围修复。原有两条失败单元测试转为通过，成员 5 全部 30 条单元测试通过，真实 API 返回与预期一致且测试数据已清理。按照最新 `dev` 提供的数据库升级脚本更新本地测试库后，通用 MES 回归 4/4 全部通过，读压测 200/200 次成功。本次业务代码仍仅修改两条提示文案，没有扩大修改范围。
 
 ## iMES.WebApi 单元测试：成员 1（沈远卓）
 

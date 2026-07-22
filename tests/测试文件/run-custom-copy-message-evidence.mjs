@@ -18,7 +18,7 @@ const first = { code: `${marker}_A`, name: `${marker}_NAME_A` };
 const second = { code: `${marker}_B`, name: `${marker}_NAME_B` };
 const report = {
   executedAt: new Date().toISOString(),
-  baselineCommit: 'b608912610133fcb71e9675475ec3dd57b3650df',
+  baselineCommit: 'db33de66a4eab928ae9cf5635ad66f54a9cf6566',
   marker,
   endpoint: '/api/Base_Process/Update',
   responses: {},

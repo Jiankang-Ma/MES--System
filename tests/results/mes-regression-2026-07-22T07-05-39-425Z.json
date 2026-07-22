@@ -1,0 +1,105 @@
+{
+  "startedAt": "2026-07-22T07:05:39.425Z",
+  "apiBaseUrl": "http://localhost:9991",
+  "marker": "AUTOTEST_20260722070539_145556",
+  "tests": [
+    {
+      "name": "全量实体表、列、主键与主从孤儿数据校验",
+      "status": "passed",
+      "durationMs": 22829
+    },
+    {
+      "name": "Base_Notice 单表 CRUD 与边界值",
+      "status": "passed",
+      "durationMs": 1001
+    },
+    {
+      "name": "Sys_Dictionary 主从 CRUD、重复值与删除清理",
+      "status": "passed",
+      "durationMs": 1325
+    },
+    {
+      "name": "Base_Notice 分页查询读压测（50 并发 x 4）",
+      "status": "passed",
+      "durationMs": 150
+    }
+  ],
+  "metrics": {
+    "entityTables": 45,
+    "relationshipChecks": [
+      {
+        "master": "Base_Process",
+        "detail": "Base_ProcessList",
+        "foreignKey": "Process_Id",
+        "orphanCount": 0
+      },
+      {
+        "master": "Base_ProcessLine",
+        "detail": "Base_ProcessLineList",
+        "foreignKey": "ProcessLine_Id",
+        "orphanCount": 0
+      },
+      {
+        "master": "Sys_Role",
+        "detail": "Sys_RoleAuth",
+        "foreignKey": "Role_Id",
+        "orphanCount": 0
+      },
+      {
+        "master": "Production_AssembleWorkOrder",
+        "detail": "Production_AssembleWorkOrderList",
+        "foreignKey": "AssembleWorkOrder_Id",
+        "orphanCount": 0
+      },
+      {
+        "master": "Production_ProductPlan",
+        "detail": "Production_ProductPlanList",
+        "foreignKey": "ProductPlan_Id",
+        "orphanCount": 0
+      },
+      {
+        "master": "Production_ReportWorkOrder",
+        "detail": "Production_ReportWorkOrderList",
+        "foreignKey": "ReportWorkOrder_Id",
+        "orphanCount": 0
+      },
+      {
+        "master": "Production_SalesOrder",
+        "detail": "Production_SalesOrderList",
+        "foreignKey": "SalesOrder_Id",
+        "orphanCount": 0
+      },
+      {
+        "master": "Production_WorkOrder",
+        "detail": "Production_WorkOrderList",
+        "foreignKey": "WorkOrder_Id",
+        "orphanCount": 0
+      },
+      {
+        "master": "Ware_OutWareHouseBill",
+        "detail": "Ware_OutWareHouseBillList",
+        "foreignKey": "OutWareHouseBill_Id",
+        "orphanCount": 0
+      },
+      {
+        "master": "Ware_WareHouseBill",
+        "detail": "Ware_WareHouseBillList",
+        "foreignKey": "WareHouseBill_Id",
+        "orphanCount": 0
+      }
+    ],
+    "readLoad": {
+      "concurrency": 50,
+      "totalRequests": 200,
+      "successes": 200,
+      "p50Ms": 29,
+      "p95Ms": 60,
+      "maxMs": 70
+    }
+  },
+  "finishedAt": "2026-07-22T07:06:06.086Z",
+  "summary": {
+    "passed": 4,
+    "failed": 0
+  }
+}

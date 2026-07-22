@@ -67,10 +67,22 @@ namespace iMES.Warehouse.Services
                 {
                     return webResponse.Error("入库单编号已存在");
                 }
+                var details = list as List<Ware_WareHouseBillList>;
+                if (details == null || details.Count == 0)
+                {
+                    return webResponse.Error("入库单至少需要一条产品明细");
+                }
+                foreach (var detail in details)
+                {
+                    if (detail.InStoreQty <= 0)
+                    {
+                        return webResponse.Error("入库数量必须大于0");
+                    }
+                }
                 return webResponse.OK();
             };
             // 在保存数据库后的操作，此时已进行数据提交，但未提交事务，如果返回false，则会回滚提交
-    /*        AddOnExecuted = (Ware_WareHouseBill wareHouseBill, object list) =>
+            AddOnExecuted = (Ware_WareHouseBill wareHouseBill, object list) =>
             {
                 List<Ware_WareHouseBillList> productList = list as List<Ware_WareHouseBillList>;
                 for (int i = 0; i < productList.Count; i++)
@@ -80,7 +92,7 @@ namespace iMES.Warehouse.Services
                     _productRepository.Update(product, true);
                 }
                 return webResponse.OK();
-            };*/
+            };
             return base.Add(saveDataModel);
         }
         public override object GetDetailPage(PageDataOptions pageData)
@@ -110,38 +122,17 @@ namespace iMES.Warehouse.Services
             }
             return detailGrid;
         }
-        /// <summary>
-        /// 自动生成工序编号
-        /// </summary>
-        /// <returns></returns>
         public string GetWareHouseBillCode()
         {
             DateTime dateNow = (DateTime)DateTime.Now.ToString("yyyy-MM-dd").GetDateTime();
-            //查询当天最新的订单号
-            string defectItemCode = repository.FindAsIQueryable(x => x.CreateDate > dateNow)
-                .OrderByDescending(x => x.WareHouseBillCode)
-                .Select(s => s.WareHouseBillCode)
-                .FirstOrDefault();
-            Base_NumberRule numberRule = _numberRuleRepository.FindAsIQueryable(x => x.FormCode == "InStoreForm")
-                .OrderByDescending(x => x.CreateDate)
-                .FirstOrDefault();
-            if (numberRule != null)
-            {
-                string rule = numberRule.Prefix + DateTime.Now.ToString(numberRule.SubmitTime.Replace("hh", "HH"));
-                if (string.IsNullOrEmpty(defectItemCode))
-                {
-                    rule += "1".PadLeft(numberRule.SerialNumber, '0');
-                }
-                else
-                {
-                    rule += (defectItemCode.Substring(defectItemCode.Length - numberRule.SerialNumber).GetInt() + 1).ToString("0".PadLeft(numberRule.SerialNumber, '0'));
-                }
-                return rule;
-            }
-            else //如果自定义序号配置项不存在，则使用日期生成
-            {
-                return DateTime.Now.ToString("yyyyMMddHHmmssffff");
-            }
+            return WarehouseCodeGenerator.GenerateBillCode(
+                () => repository.FindAsIQueryable(x => x.CreateDate > dateNow)
+                    .OrderByDescending(x => x.WareHouseBillCode)
+                    .Select(s => s.WareHouseBillCode)
+                    .FirstOrDefault(),
+                _numberRuleRepository,
+                "InStoreForm"
+            );
         }
     }
 }

@@ -18,7 +18,7 @@ const first = { code: `${marker}_A`, name: `${marker}_NAME_A` };
 const second = { code: `${marker}_B`, name: `${marker}_NAME_B` };
 const report = {
   executedAt: new Date().toISOString(),
-  baselineCommit: 'dc05ce8c81bfdba0984b26bd22c55cef7d52d5d2',
+  baselineCommit: 'b608912610133fcb71e9675475ec3dd57b3650df',
   marker,
   endpoint: '/api/Base_Process/Update',
   responses: {},
@@ -169,7 +169,7 @@ async function main() {
   report.responses.duplicateName = duplicateName;
   assert(duplicateName.httpStatus === 200 && responseStatus(duplicateName) === false,
     `重复名称未被拒绝: ${JSON.stringify(duplicateName.body)}`);
-  assert(responseMessage(duplicateName) === '不良品项名称已存在',
+  assert(responseMessage(duplicateName) === '工序名称已存在',
     `重复名称实际返回: ${responseMessage(duplicateName)}`);
 
   const duplicateCode = await apiPost('/api/Base_Process/Update', token, save({
@@ -181,7 +181,7 @@ async function main() {
   report.responses.duplicateCode = duplicateCode;
   assert(duplicateCode.httpStatus === 200 && responseStatus(duplicateCode) === false,
     `重复编号未被拒绝: ${JSON.stringify(duplicateCode.body)}`);
-  assert(responseMessage(duplicateCode) === '不良品项编号已存在',
+  assert(responseMessage(duplicateCode) === '工序编号已存在',
     `重复编号实际返回: ${responseMessage(duplicateCode)}`);
 }
 
@@ -198,7 +198,7 @@ try {
   }
   const resultsDir = join(baselineRoot, 'tests', 'results');
   mkdirSync(resultsDir, { recursive: true });
-  const outputPath = join(resultsDir, 'custom-process-copy-message-evidence.json');
+  const outputPath = join(resultsDir, 'custom-process-copy-message-regression.json');
   writeFileSync(outputPath, JSON.stringify(report, null, 2), 'utf8');
   console.log(JSON.stringify(report, null, 2));
   console.log(`\nEvidence written to: ${outputPath}`);
@@ -208,5 +208,5 @@ if (failure) {
   console.error(`\nFAILED: ${failure.message}`);
   process.exitCode = 1;
 } else {
-  console.log('\nPASS: 已捕获两条真实 API 返回，且测试数据已清理。');
+  console.log('\nPASS: 已验证两条修复后的真实 API 返回，且测试数据已清理。');
 }

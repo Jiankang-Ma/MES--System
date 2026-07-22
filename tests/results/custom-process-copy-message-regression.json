@@ -1,0 +1,35 @@
+{
+  "executedAt": "2026-07-22T06:16:52.014Z",
+  "baselineCommit": "b608912610133fcb71e9675475ec3dd57b3650df",
+  "marker": "UT_CUSTOM_EVIDENCE_20260722061652_145992",
+  "endpoint": "/api/Base_Process/Update",
+  "responses": {
+    "duplicateName": {
+      "httpStatus": 200,
+      "body": {
+        "status": false,
+        "code": null,
+        "message": "工序名称已存在",
+        "data": null
+      }
+    },
+    "duplicateCode": {
+      "httpStatus": 200,
+      "body": {
+        "status": false,
+        "code": null,
+        "message": "工序编号已存在",
+        "data": null
+      }
+    }
+  },
+  "cleanup": {
+    "success": true,
+    "remaining": 0
+  },
+  "sourceEvidence": {
+    "runtimeHash": "252774612927bdbc97dc05b889b60d459644820d4dcfae1e6d2d01a3acb7470a",
+    "baselineHash": "252774612927bdbc97dc05b889b60d459644820d4dcfae1e6d2d01a3acb7470a",
+    "identical": true
+  }
+}

@@ -114,38 +114,17 @@ namespace iMES.Warehouse.Services
             }
             return detailGrid;
         }
-        /// <summary>
-        /// 自动生成工序编号
-        /// </summary>
-        /// <returns></returns>
         public string GetOutWareHouseBillCode()
         {
             DateTime dateNow = (DateTime)DateTime.Now.ToString("yyyy-MM-dd").GetDateTime();
-            //查询当天最新的订单号
-            string defectItemCode = repository.FindAsIQueryable(x => x.CreateDate > dateNow)
-                .OrderByDescending(x => x.OutWareHouseBillCode)
-                .Select(s => s.OutWareHouseBillCode)
-                .FirstOrDefault();
-            Base_NumberRule numberRule = _numberRuleRepository.FindAsIQueryable(x => x.FormCode == "OutStoreForm")
-                .OrderByDescending(x => x.CreateDate)
-                .FirstOrDefault();
-            if (numberRule != null)
-            {
-                string rule = numberRule.Prefix + DateTime.Now.ToString(numberRule.SubmitTime.Replace("hh", "HH"));
-                if (string.IsNullOrEmpty(defectItemCode))
-                {
-                    rule += "1".PadLeft(numberRule.SerialNumber, '0');
-                }
-                else
-                {
-                    rule += (defectItemCode.Substring(defectItemCode.Length - numberRule.SerialNumber).GetInt() + 1).ToString("0".PadLeft(numberRule.SerialNumber, '0'));
-                }
-                return rule;
-            }
-            else //如果自定义序号配置项不存在，则使用日期生成
-            {
-                return DateTime.Now.ToString("yyyyMMddHHmmssffff");
-            }
+            return WarehouseCodeGenerator.GenerateBillCode(
+                () => repository.FindAsIQueryable(x => x.CreateDate > dateNow)
+                    .OrderByDescending(x => x.OutWareHouseBillCode)
+                    .Select(s => s.OutWareHouseBillCode)
+                    .FirstOrDefault(),
+                _numberRuleRepository,
+                "OutStoreForm"
+            );
         }
     }
 }

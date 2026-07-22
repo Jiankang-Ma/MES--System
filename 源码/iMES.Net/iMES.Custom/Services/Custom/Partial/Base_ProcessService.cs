@@ -154,11 +154,11 @@ namespace iMES.Custom.Services
             {
                 if (repository.Exists(x => x.ProcessName == process.ProcessName && x.Process_Id != process.Process_Id))
                 {
-                    return webResponse.Error("不良品项名称已存在");
+                    return webResponse.Error("工序名称已存在");
                 }
                 if (repository.Exists(x => x.ProcessCode == process.ProcessCode && x.Process_Id != process.Process_Id))
                 {
-                    return webResponse.Error("不良品项编号已存在");
+                    return webResponse.Error("工序编号已存在");
                 }
                 return webResponse.OK();
             };

@@ -202,6 +202,34 @@
 
 `iMES.Custom.Tests` 可通过 Docker 重复执行。30 个用例中 28 个通过，2 个已确认文案缺陷以真实失败保留，没有跳过或将错误行为改写为“测试通过”。本阶段未修改业务代码，真实接口返回与单元测试结果一致，取证数据已清理。
 
+### 第二阶段最小修复（2026-07-22）
+
+| 项目 | 内容 |
+| --- | --- |
+| 修复基线 | `dev`，commit `b608912610133fcb71e9675475ec3dd57b3650df` |
+| 修复分支 | `modify-retest/custom-regression` |
+| 业务改动文件 | `源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessService.cs` |
+| UT-CUSTOM-01 修复 | `Base_ProcessService.Update` 的重复名称提示由“`不良品项名称已存在`”改为“`工序名称已存在`” |
+| UT-CUSTOM-02 修复 | `Base_ProcessService.Update` 的重复编号提示由“`不良品项编号已存在`”改为“`工序编号已存在`” |
+| 改动边界 | 仅替换两条返回文案；名称/编号重复判断、排除当前记录 ID 的条件、数据库访问和其他业务逻辑均未改变 |
+
+回归脚本 `tests/测试文件/run-custom-copy-message-evidence.mjs` 同步将预期文案改为修复后的工序提示，并将修复后证据写入新的结果文件，保留第一阶段修复前证据不被覆盖。
+
+### 第二阶段复测与回归
+
+| 项目 | 执行方式与结果 |
+| --- | --- |
+| 成员 5 单元测试 | `docker build --progress=plain -t imes-custom-tests:local -f "源码/iMES.Net/iMES.Custom.Tests/Dockerfile" "源码/iMES.Net"`；**30 通过，0 失败** |
+| 针对性真实 API 回归 | `tests/测试文件/run-custom-copy-message-evidence.mjs`；重复名称返回“`工序名称已存在`”，重复编号返回“`工序编号已存在`”，两次均为 HTTP `200`、`status: false` |
+| 运行代码一致性 | 运行业务文件与修复分支文件 SHA-256 均为 `252774612927bdbc97dc05b889b60d459644820d4dcfae1e6d2d01a3acb7470a`，`identical: true` |
+| 针对性测试数据清理 | `success: true`，剩余临时工序数量 `0`；结果见 `tests/results/custom-process-copy-message-regression.json` |
+| 通用 MES 回归 | `tests/测试文件/run-mes-regression.mjs`；**3 通过，1 失败**。通知 CRUD、字典主从 CRUD、分页读取压测均通过，200/200 次读取成功 |
+| 通用回归剩余问题 | 全量实体/数据库结构检查发现本地数据库 `Base_MaterialDetail`、`View_Base_MaterialDetail` 缺少 `Process_Id`。该问题属于既有 dev 实体与本地 2022 数据库版本差异，与本次两条工序文案修复无关；未修改数据库或跳过断言。证据见 `tests/results/mes-regression-2026-07-22T06-17-33-115Z.json` |
+
+### 第二阶段结论
+
+UT-CUSTOM-01、UT-CUSTOM-02 已按最小范围修复。原有两条失败单元测试转为通过，成员 5 全部 30 条单元测试通过，真实 API 返回与预期一致且测试数据已清理。通用 MES 回归的三个功能/压力项目通过；剩余一项为独立的数据库版本差异，已如实记录，未将其误报为本次修复通过或擅自扩大修复范围。
+
 ## iMES.WebApi 单元测试：成员 1（沈远卓）
 
 ## 本次范围

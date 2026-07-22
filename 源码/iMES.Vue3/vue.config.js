@@ -3,6 +3,7 @@
 module.exports = {
   productionSourceMap: false,
   lintOnSave: false,
+  transpileDependencies: [/element-plus/, /@ctrl\/tinycolor/, /vue-router/, /vue-draggable-next/],
   publicPath: './',
   devServer: {
     port: 9990,

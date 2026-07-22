@@ -1,0 +1,12 @@
+FROM imes-core-tests:local AS test
+
+WORKDIR /src
+
+# 网络不可用时，复用已经成功发布的 API 程序集和 Core 测试镜像中的 xUnit/NuGet 缓存。
+COPY --from=mesdocker-api:latest /app /app
+COPY ["iMES.WebApi.Tests/iMES.WebApi.Tests.csproj", "iMES.WebApi.Tests/"]
+RUN dotnet restore "iMES.WebApi.Tests/iMES.WebApi.Tests.csproj" -p:UsePublishedWebApi=true --ignore-failed-sources
+
+COPY ["iMES.WebApi.Tests/", "iMES.WebApi.Tests/"]
+WORKDIR "/src/iMES.WebApi.Tests"
+RUN dotnet test "iMES.WebApi.Tests.csproj" --no-restore -p:UsePublishedWebApi=true --logger "console;verbosity=minimal"

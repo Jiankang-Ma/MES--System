@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iMES.System", "iMES.System\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iMES.WebApi", "iMES.WebApi\iMES.WebApi.csproj", "{4DB3C91B-93FE-4937-8B58-DDD3F57D4607}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iMES.WebApi.Tests", "iMES.WebApi.Tests\iMES.WebApi.Tests.csproj", "{A6A1DF32-816A-4F72-9718-0E11B74312C9}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2AED3350-7641-4873-BD4D-1AC3C910EC25}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -64,6 +66,10 @@ Global
 		{4DB3C91B-93FE-4937-8B58-DDD3F57D4607}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DB3C91B-93FE-4937-8B58-DDD3F57D4607}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DB3C91B-93FE-4937-8B58-DDD3F57D4607}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6A1DF32-816A-4F72-9718-0E11B74312C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6A1DF32-816A-4F72-9718-0E11B74312C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6A1DF32-816A-4F72-9718-0E11B74312C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6A1DF32-816A-4F72-9718-0E11B74312C9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A4D23BE9-E16C-4E77-83AF-2B847A5409B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A4D23BE9-E16C-4E77-83AF-2B847A5409B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4D23BE9-E16C-4E77-83AF-2B847A5409B8}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using iMES.Core.EFDbContext;
+using iMES.Core.Filters;
 using iMES.Core.Utilities;
 using iMES.Entity.DomainModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace iMES.WebApi.Controllers.Quality
 {
+    [JWTAuthorize, ApiController]
     [Route("api/Quality")]
     public class QualityController : ControllerBase
     {

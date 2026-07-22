@@ -24,3 +24,6 @@
 
 # Large local media
 *.mp4
+
+# Redis runtime files
+dump.rdb

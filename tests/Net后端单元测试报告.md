@@ -124,18 +124,18 @@
 
 ### 本次范围
 
-仓储领域入库单（`Ware_WareHouseBill`）和出库单（`Ware_OutWareHouseBill`）的实体输入校验、编号与数量规则、库存不足分支，以及实体模型和数据库字段类型一致性核对。单元测试不连接 SQL Server、Redis 或 API；本阶段未修改业务代码。
+仓储领域入库单（`Ware_WareHouseBill`）和出库单（`Ware_OutWareHouseBill`）的实体输入校验、编号与数量规则、库存不足分支、编号生成器抽取，以及实体模型和数据库字段类型一致性修复。单元测试不连接 SQL Server、Redis 或 API。
 
 ### 执行信息
 
 | 项目 | 结果 |
 | --- | --- |
-| 执行日期 | 2026-07-21 |
-| 基线 commit SHA | `dc05ce8c81bfdba0984b26bd22c55cef7d52d5d2` |
+| 执行日期 | 2026-07-22 |
+| 基线 commit SHA | `db33de66a4eab928ae9cf5635ad66f54a9cf6566` |
 | 测试工程 | `源码/iMES.Net/iMES.Warehouse.Tests` |
 | 执行方式 | `docker build -t imes-warehouse-tests:local -f 源码/iMES.Net/iMES.Warehouse.Tests/Dockerfile 源码/iMES.Net` |
-| 测试框架 | xUnit + Microsoft.NET.Test.Sdk + Coverlet collector |
-| 结果 | **53 通过，0 失败** |
+| 测试框架 | xUnit + Microsoft.NET.Test.Sdk + Moq 4.14.5 + Coverlet collector |
+| 结果 | **60 通过，0 失败** |
 | 运行时 | Docker `.NET Core 3.1 SDK`；不连接 SQL Server、Redis 或 API |
 
 ### 已通过的测试点
@@ -146,24 +146,25 @@
 | 入库业务规则 | 默认单号非空且为 18 位时间戳；空/Null 明细拒绝；有效明细通过；零和负入库数量拒绝 | 通过 |
 | `Ware_OutWareHouseBill` / 明细 | 新增和更新输入契约；单据类型、产品名称、产品编码、产品规格、备注的必填与长度边界 | 通过 |
 | 出库业务规则 | 默认单号；空/Null 明细、零/负数量拒绝；库存充足/恰好足够通过，库存不足/产品不存在/多产品单项不足拒绝 | 通过 |
-| 编号与模型契约 | 重复编号模拟检测；`InStoreQty`/`OutStoreQty` 的 C# `decimal` 类型声明核对 | 通过 |
+| 编号与模型契约 | 重复编号模拟检测；`InStoreQty`/`OutStoreQty`/`InventoryQty` 的 C# `decimal` 类型与数据库 `decimal(18,4)` 一致 | 通过 |
+| `WarehouseCodeGenerator` | 无规则回退时间戳、无历史从1开始、历史递增、进位（0009→0010）、不同位数（4位/6位）、出入库业务编码映射 | 通过 |
 
-### 本次发现的问题（待第二阶段修复）
+### 本次发现并修复的问题
 
-53 个用例均通过，但源码和数据库结构核对发现以下 5 项待修复问题；本阶段按约定仅保留测试和证据，未修改业务代码。
+共修复 **6 项缺陷**，所有修复已通过单元测试或网页端验证。
 
-| 编号 | 复现场景/问题 | 当前影响 |
-| --- | --- | --- |
-| WH-BUG-01 | `Ware_WareHouseBillService.Add()` 未校验明细，可能创建无明细入库单 | 入库单完整性风险 |
-| WH-BUG-02 | `Ware_WareHouseBillService.Add()` 未校验入库数量，可能允许零或负数 | 库存数量正确性风险 |
-| WH-BUG-03 | 入库后的库存更新逻辑在 `AddOnExecuted` 中被注释，创建入库单后产品库存不增加 | 入库与库存余额不一致 |
-| WH-BUG-04 | `GetWareHouseBillCode()` 与 `GetOutWareHouseBillCode()` 代码重复，仅查询条件不同 | 可维护性问题，待评审是否合并公共逻辑 |
-| WH-BUG-05 | 建表 SQL 的 `InStoreQty`/`OutStoreQty` 为 `int`，C# 实体为 `decimal`；EF 查询可能抛出 `Int32` 到 `Decimal` 的转换异常 | 出入库明细页面运行时异常风险，需数据库字段迁移 |
+| 编号 | 复现场景 | 修复 | 复测 |
+| --- | --- | --- | --- |
+| WH-BUG-01 | `Ware_WareHouseBillService.Add()` 缺少明细校验，允许创建空明细的入库单 | `AddOnExecuting` 增加空/Null 明细校验 | 通过 |
+| WH-BUG-02 | `Ware_WareHouseBillService.Add()` 缺少数量校验，允许入库数量为零或负数 | 遍历明细校验 `InStoreQty <= 0` | 通过 |
+| WH-BUG-03 | 入库后库存更新逻辑被注释掉（`AddOnExecuted`），入库单创建后产品库存不会增加 | 恢复循环更新 `product.InventoryQty += InStoreQty` | 通过 |
+| WH-BUG-04 | `GetWareHouseBillCode()` 和 `GetOutWareHouseBillCode()` 代码重复，仅查询条件不同 | 抽取 `WarehouseCodeGenerator.GenerateBillCode()` 公共方法，测试覆盖所有路径 | 通过 |
+| WH-BUG-05 | 建表 SQL 中 `Ware_WareHouseBillList.InStoreQty`/`Ware_OutWareHouseBillList.OutStoreQty` 定义为 `[int]`，C# 实体模型为 `decimal`。打开出入库单明细页面时触发类型转换异常 | `ALTER TABLE Ware_WareHouseBillList ALTER COLUMN InStoreQty decimal(18,4)`；`ALTER TABLE Ware_OutWareHouseBillList ALTER COLUMN OutStoreQty decimal(18,4)` | 通过 |
+| WH-BUG-06 | `Base_Product.InventoryQty`、`Ware_WareHouseBillList.InventoryQty`、`Ware_OutWareHouseBillList.InventoryQty` 定义为 `[int]`，C# 实体模型为 `decimal`。出入库单页面加载产品信息时触发类型转换异常 | `ALTER TABLE Base_Product ALTER COLUMN InventoryQty decimal(18,4)`；`ALTER TABLE Ware_WareHouseBillList ALTER COLUMN InventoryQty decimal(18,4)`；`ALTER TABLE Ware_OutWareHouseBillList ALTER COLUMN InventoryQty decimal(18,4)` | 通过 |
 
 ### 交接结论
 
-`iMES.Warehouse.Tests` 与 Dockerfile 已合入。成员原始 `tests/单元测试报告.md` 未采用，以上内容为统一报告汇总；按要求未合入 `源码/iMES.Net/NuGet.Config`，也未合入使用个人绝对路径的辅助脚本。5 个缺陷待第二阶段在先有失败测试约束下修复、复测并跑仓储/API 回归。
-
+`iMES.Warehouse.Tests` 与 Dockerfile 已合入。6 项缺陷（WH-BUG-01~06）已在源代码和数据库中修复，60 个测试全部通过。数据库字段迁移脚本已在线执行，出入库单明细页面可正常打开。
 ## iMES.Custom单元测试：成员 5（陈俊烨）
 
 ### 本次范围

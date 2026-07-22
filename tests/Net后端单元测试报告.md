@@ -74,28 +74,28 @@
 
 `iMES.System.Tests` 和对应 Dockerfile 已合入解决方案，测试工程已写入 `源码/iMES.Net/iMES.sln`。本轮只提交测试工程与测试源文件；成员的独立结果文档未单独保留，其结论已汇总至本节。
 
-## iMES.Production 单元测试：成员 3 （池一锴）
+## iMES.Production 单元测试：成员 3（池一锴）
 
 ### 本次范围
 
-生产计划、销售订单转工单、生产计划转工单、工艺路线拆分任务、工单状态流转、报工时间与数量规则、分批报工和生产报表聚合等首批规则测试。测试工程使用 EF InMemory、反射和 Mock，不连接 SQL Server、Redis 或 HTTP API。
+生产计划、销售订单转工单、生产计划转工单、工艺路线拆分任务、工单状态流转、报工时间与数量规则、分批报工和生产报表聚合等规则测试。测试工程使用 EF InMemory、反射和 Mock，不连接 SQL Server、Redis 或 HTTP API。
 
-### 执行信息
+### 复测执行信息
 
 | 项目 | 结果 |
 | --- | --- |
-| 执行日期 | 2026-07-21 |
-| 基线 commit SHA | `dc05ce8c81bfdba0984b26bd22c55cef7d52d5d2` |
+| 复测日期 | 2026-07-22 |
+| 复测基线 commit SHA | `b608912610133fcb71e9675475ec3dd57b3650df` |
+| 复测分支 | `modify-retest/Production-regression` |
 | 测试工程 | `源码/iMES.Net/iMES.Production.Tests` |
-| 成员分支执行方式 | `dotnet test 源码/iMES.Net/iMES.Production.Tests/iMES.Production.Tests.csproj --no-restore` |
+| 复测命令 | `dotnet test 源码/iMES.Net/iMES.Production.Tests/iMES.Production.Tests.csproj --no-restore` |
 | 测试框架 | xUnit + Microsoft.NET.Test.Sdk + EF Core InMemory + Moq |
-| 成员分支结果 | **31 通过，0 失败**（成员分支曾将 `Production_ProductPlanRepository` 构造参数改为 `BaseDbContext`） |
-| 合入 `dev` 后状态 | **待复测**：按组长决定恢复生产代码为原 `SysDbContext` 依赖，测试夹具需先调整 |
-| 运行时 | 成员环境为 Windows + .NET SDK 6.0.410；测试项目目标框架为 `net6.0` |
+| 复测结果 | **31 通过，0 失败** |
+| 运行时 | Windows + .NET SDK 6.0.410；测试项目目标框架为 `net6.0` |
 
-### 已覆盖的测试点
+### 复测覆盖测试点
 
-| 模块 | 测试点 | 成员分支结果 |
+| 模块 | 测试点 | 复测结果 |
 | --- | --- | --- |
 | `Production_ProductPlanRepository` | 生产计划新增后写入并读取 InMemory 数据库 | 通过 |
 | `Production_ReportWorkOrderService` | 移动端 Unix 毫秒报工时间标准化、支持范围边界、确认生效报工数量校验、未确认状态分支 | 通过 |
@@ -106,15 +106,19 @@
 | WF-15 / WF-16 | 正常报工进度、良品率、多工序汇总、分批累计和超计划限制 | 通过 |
 | WF-34 | 良品/不良/实际数量一致性，多工单汇总，零产量及全不良边界 | 通过 |
 
-### 本次发现的问题与复测前置
+### 本次修复
 
-成员分支为使 `Production_ProductPlanRepositoryTests.cs` 的 `TestDbContext : BaseDbContext` 能传入仓储，将原生产文件 `源码/iMES.Net/iMES.Production/Repositories/Production/Production_ProductPlanRepository.cs` 的构造参数由 `SysDbContext` 改为 `BaseDbContext`。该修改仅为测试夹具可实例化服务，并非已确认的生产 Bug 修复；当前 `dev` 已按决定放弃该生产代码改动，继续保留原有 `SysDbContext` 依赖。
+| 编号 | 问题 | 修改内容 | 复测 |
+| --- | --- | --- | --- |
+| UT-PROD-FIX-01 | `Production_ProductPlanRepositoryTests` 的 `TestDbContext : BaseDbContext` 无法传入构造参数为 `SysDbContext` 的仓储，导致测试无法编译 | 测试夹具改为 `TestSysDbContext : SysDbContext`；传入已配置的 `DbContextOptions<BaseDbContext>`，并在已配置 InMemory options 时跳过父类 `OnConfiguring` | 通过 |
 
-因此，本节“31 通过”是成员分支的原始执行证据，不能直接作为当前 `dev` 的复测结果。复测前需要对**测试文件** `源码/iMES.Net/iMES.Production.Tests/Production_ProductPlanRepositoryTests.cs` 做小改动：将测试上下文调整为可替代的 `SysDbContext` 测试子类或等价测试夹具，使其使用 InMemory 而不修改 `Production_ProductPlanRepository.cs`。完成该测试夹具调整后，再执行 31 条测试并更新本节的 `dev` 复测结果。
+| 改动文件 | 改动内容 |
+| --- | --- |
+| `源码/iMES.Net/iMES.Production.Tests/Production_ProductPlanRepositoryTests.cs` | 调整测试上下文及字段类型以匹配仓储的 `SysDbContext` 依赖；未修改生产代码。 |
 
-### 交接结论
+### 复测结论
 
-`iMES.Production.Tests` 及其解决方案登记已合入；成员原始 `tests/单元测试报告.md` 和 `tests/unit-results/20260721-cyk-生产领域.md` 未保留。生产仓储源文件未合入成员为测试而做的依赖类型修改，避免改变既有生产 DI 依赖；待测试夹具调整完成后统一复测。
+`Production_ProductPlanRepository.cs` 保持原有 `SysDbContext` 依赖不变。本次仅修复测试夹具，31 条生产领域单元测试全部通过，无需修改生产业务代码。
 
 ## iMES.Warehouse 单元测试：成员 4（楼博涵）
 

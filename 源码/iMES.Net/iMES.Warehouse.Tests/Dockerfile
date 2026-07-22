@@ -2,7 +2,6 @@ FROM mcr.microsoft.com/dotnet/sdk:3.1 AS test
 
 WORKDIR /src
 
-COPY ["NuGet.Config", "."]
 COPY ["iMES.Warehouse.Tests/iMES.Warehouse.Tests.csproj", "iMES.Warehouse.Tests/"]
 COPY ["iMES.Warehouse/iMES.Warehouse.csproj", "iMES.Warehouse/"]
 COPY ["iMES.Core/iMES.Core.csproj", "iMES.Core/"]

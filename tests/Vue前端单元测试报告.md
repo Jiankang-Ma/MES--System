@@ -80,3 +80,78 @@
 ## 交接结论
 
 前端三个目标模块的前期单元测试已经完成，共 63 个用例，45 个通过、18 个失败、0 个跳过。树的基础转换、常规日期范围、正常格式校验和常规用户列缓存恢复已建立测试基线；18 个失败项已记录在“本次发现的问题”中。本轮未修改业务源码，“修改”和“复测”两列留空，供后续修复阶段继续填写。
+
+---
+
+## 上传、表单设计器及业务扩展测试：Pizzicato（cjy）
+
+## 本次范围
+
+测试范围限定为 `源码/iMES.Vue3` 中组长指定的上传、表单设计器与业务扩展逻辑。测试均为 **unit tests**，通过 Mock 隔离 HTTP、Store、浏览器下载、窗口打开和组件引用，不连接 SQL Server、Redis 或真实 HTTP API，也不依赖已部署的前后端服务。
+
+| 模块 | 源码路径 | 测试重点 |
+| --- | --- | --- |
+| 通用上传 | `src/components/basic/MesUpload.vue` | 文件名、格式/数量/大小校验、单选/多选、自动上传、上传钩子、服务端路径、下载、移除钩子 |
+| Excel 导入 | `src/components/basic/UploadExcel.vue` | Excel 类型校验、导入前钩子、成功/失败/异常状态、模板下载、鉴权请求、JSON 错误响应 |
+| 表单设计器 | `src/components/basic/MesFormDraggable/MesFormDraggable.vue` | 栅格宽度、行分组、上传/字典/编辑器配置转换、表格配置、复制/删除/清空、保存事件 |
+| 仓储扩展 | `src/extension/warehouse` | 入库/出库单打印选择规则、产品选择、行联动、自动编号提示、库存与收发明细固定列 |
+| 基础资料扩展 | `src/extension/custom` | 用户/产品/工序/绩效/不良品扩展表映射、编辑只读规则、编号规则预览 |
+| 系统扩展 | `src/extension/system` | 字典 SQL 的 key/value 契约、角色父级配置和缓存刷新、表单收集列与查询条件、数组值展开 |
+| 报表扩展 | `src/extension/report` | 日期格式、固定查询布局、序号、表格高度以及不良品、产量、工资字段合计 |
+
+本轮只建立测试基线并记录失败现象，不修改上述业务源码。失败用例保持真实失败，没有改成跳过或反向断言。
+
+## 执行信息
+
+| 项目 | 结果 |
+| --- | --- |
+| 执行日期 | 2026-07-24 |
+| 当前分支 | `tests/Vue-cjy` |
+| 基线 commit SHA | `29389e3df1d6c58dba9433609352ff8306667796` |
+| 测试工程 | `源码/iMES.Vue3` |
+| 测试目录 | `源码/iMES.Vue3/tests/unit` |
+| 构建命令 | `docker build --progress=plain -t imes-vue-cjy-tests:local -f "源码/iMES.Vue3/tests/unit/Dockerfile" "源码/iMES.Vue3"` |
+| 执行命令 | `docker run --rm imes-vue-cjy-tests:local` |
+| 测试框架 | Vue CLI Unit Mocha 4.5.18 + Mocha 6.2.3 + Chai 4.3.6 |
+| 运行时 | Docker `node:14-bullseye` |
+| 结果 | **99 个用例：94 通过，5 失败，0 跳过** |
+
+Webpack 编译成功。Browserslist 数据过期提示不影响本次测试结果。仓库原有 `tests/unit/example.spec.js` 引用了不存在的 `@/components/HelloWorld.vue`，会阻断所有正式用例编译，已删除该无效 Vue CLI 示例文件。
+
+## 已通过的测试点
+
+| 模块 | 测试点 | 结果 |
+| --- | --- | --- |
+| 基础资料扩展 | 五类扩展表路由映射、表名只读、编辑标识锁定、编号片段重置与预览 | 9/9 通过 |
+| 表单设计器 | 全宽栅格、上传/编辑器/字典配置转换、普通组件过滤、常规同行分组、深拷贝、删除/清空、排序、表格配置和保存事件 | 12/14 通过 |
+| 通用上传 | 文件名、描述、格式/数量/大小校验、重名处理、单选替换、变更/上传钩子、自动上传、下载、成功/业务失败/异常状态 | 24/26 通过 |
+| 报表扩展 | 不良品、产量、工资、员工绩效和生产报表布局、日期及合计配置、查询/保存透传契约 | 11/11 通过 |
+| 系统扩展 | 字典配置及 SQL 校验、角色父级和缓存、表单收集列、导出/查询条件与动态数据展开 | 13/13 通过 |
+| Excel 导入 | 四种扩展名、选择拦截、配置校验、导入前钩子、成功/失败/异常状态、二进制模板下载 | 14/15 通过 |
+| 仓储扩展 | 入库/出库打印规则、产品选择、查询/点击联动、编号提示、库存和收发明细固定列 | 11/11 通过 |
+
+正式测试文件：
+
+- `源码/iMES.Vue3/tests/unit/MesUpload.spec.js`
+- `源码/iMES.Vue3/tests/unit/UploadExcel.spec.js`
+- `源码/iMES.Vue3/tests/unit/MesFormDraggable.spec.js`
+- `源码/iMES.Vue3/tests/unit/WarehouseExtensions.spec.js`
+- `源码/iMES.Vue3/tests/unit/CustomExtensions.spec.js`
+- `源码/iMES.Vue3/tests/unit/SystemExtensions.spec.js`
+- `源码/iMES.Vue3/tests/unit/ReportExtensions.spec.js`
+- `源码/iMES.Vue3/tests/unit/helpers.js`
+- `源码/iMES.Vue3/tests/unit/Dockerfile`
+
+## 本次发现的问题
+
+| 编号 | 复现场景 | 修改 | 复测 |
+| --- | --- | --- | --- |
+| FE-FORM-01 | `MesFormDraggable.getFormOptions()` 处理 `width: 50` 的组件时，使用未赋值的 `_option.width` 计算 `colSize`，实际得到 `NaN`，预期为 6 列 |  |  |
+| FE-FORM-02 | `currentComponents` 为“50% 文本框 → table → 50% 日期”时，`filterCurrentComponents()` 的长度与 `getLineFormOptions()` 读取的原数组下标不一致，日期字段未进入生成的表单行 |  |  |
+| FE-UPLOAD-01 | `MesUpload.removeBefore()` 返回 `false` 时，本地文件已在调用钩子前执行 `splice`，钩子无法阻止删除 |  |  |
+| FE-UPLOAD-02 | `MesUpload.getImgSrc()` 处理以 `/` 开头的服务端路径时，直接把传入对象的 `file.path` 从 `/Upload/a.png` 改为 `Upload/a.png`；渲染图片地址产生了额外数据副作用 |  |  |
+| FE-EXCEL-01 | `UploadExcel.dowloadTemplate()` 收到 `application/json` 错误响应时调用 `$_vue.message.error()`；`message` 实际为字符串，抛出 `TypeError`，无法向用户展示“未找到下载文件” |  |  |
+
+## 交接结论
+
+组长指定的上传导入、表单设计器、仓储、基础资料、系统和报表业务规则单元测试已经完成，共 99 个用例，94 个通过、5 个失败、0 个跳过。五条失败均可由现有源码稳定复现，已保留失败测试并记录最小复现场景。本轮只新增测试基建和报告、删除无效的默认示例测试，未修改任何业务源码；“修改”和“复测”两列留空，等待组长确认后再进入修复阶段。

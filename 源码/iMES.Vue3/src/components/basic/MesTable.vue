@@ -631,7 +631,7 @@ export default defineComponent({
       this.paginations.rows = this.pagination.size;
     }
     this.enableEdit = this.columns.some((x) => {
-      return x.hasOwnProperty('edit');
+      return Object.prototype.hasOwnProperty.call(x, 'edit');
     });
     let keyColumn = this.columns.find((x) => {
       return x.isKey;
@@ -660,6 +660,7 @@ export default defineComponent({
   methods: {
     rowDrop() {
       const tbody = document.querySelector(".el-table__body-wrapper tbody");
+      if (!tbody) return;
       Sortable.create(tbody,{
                 disabled: this.paginations.sort != "Sequence", // 是否开启拖拽
                 ghostClass: 'sortable-ghost', //拖拽样式
@@ -1242,10 +1243,12 @@ export default defineComponent({
 
       this.columns.forEach((col) => {
         if (!col.hidden) {
-          if (data.summary.hasOwnProperty(col.field)) {
+          if (Object.prototype.hasOwnProperty.call(data.summary, col.field)) {
             let sum = data.summary[col.field];
-            if (sum) {
+            if (sum && !isNaN(sum * 1.0)) {
               sum = (sum * 1.0).toFixed(2).replace('.00', '') * 1.0;
+            } else {
+              sum = '';
             }
             this.summaryData.push(sum);
           } else {

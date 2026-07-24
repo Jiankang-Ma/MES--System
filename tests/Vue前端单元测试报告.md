@@ -1,5 +1,22 @@
 # Vue前端单元测试报告
 
+## 2026-07-24 测试目录规范化回归
+
+Vue 单测已从仓库根目录 `tests/前端自动化测试用例` 迁移到所属前端工程
+`源码/iMES.Vue3/tests/unit`；旧的 `example.spec.js` 与仅适用于 Windows 的
+`run-tests.ps1` 已移除。`源码/iMES.Vue3/package.json` 的 `npm run test:unit`
+现在是 macOS、Windows、Linux 共用的唯一测试入口。
+
+| 检查项 | 结果 |
+| --- | --- |
+| 执行命令 | `cd 源码/iMES.Vue3 && npm run test:unit` |
+| 用例发现 | 8 个正式 `*.spec.js` 文件均被 Vue CLI 发现并编译执行 |
+| 执行结果 | **151 条：131 通过、20 失败、0 跳过** |
+| 结果对照 | 20 个失败项均可映射到下文已登记的公共工具/列缓存与仓储前端缺陷；本次未新增失败类型。 |
+| 结论 | 测试入口、别名解析、Mock 与运行环境均正常；本次仅调整测试组织，未修改业务源码或掩盖既有失败项。 |
+
+运行期间的 Browserslist 过期提示、Vue 运行时模板提示和 jsdom 导航提示不影响测试发现与断言执行；20 个失败项仍按下文缺陷表跟踪。
+
 ## 前端公共工具与用户列缓存测试： 丁伯源
 
 ## 本次范围
@@ -22,8 +39,8 @@
 | 当前分支 | `test/system-permission` |
 | 当前 commit SHA | `dfab3d1` |
 | 测试工程 | `源码/iMES.Vue3` |
-| 测试目录 | `tests/前端自动化测试用例` |
-| 执行方式 | `tests/前端自动化测试用例/run-tests.ps1` |
+| 测试目录 | `源码/iMES.Vue3/tests/unit` |
+| 执行方式 | 在 `源码/iMES.Vue3` 执行 `npm run test:unit` |
 | 测试框架 | Vue CLI Unit Mocha 4.5.18 + Mocha 6.2.3 + Chai 4.3.6 |
 | 结果 | **63 个用例：45 通过，18 失败，0 跳过** |
 | 运行时 | Node.js 24.14.0；使用 `NODE_OPTIONS=--openssl-legacy-provider` 兼容旧版 Webpack |
@@ -47,12 +64,11 @@
 
 正式测试文件：
 
-- `tests/前端自动化测试用例/common.spec.js`
-- `tests/前端自动化测试用例/dateFormatUtil.spec.js`
-- `tests/前端自动化测试用例/ViewGridCustomColumn.spec.js`
-- `tests/前端自动化测试用例/environment.spec.js`
-- `tests/前端自动化测试用例/helpers/localStorageMock.js`
-- `tests/前端自动化测试用例/run-tests.ps1`
+- `源码/iMES.Vue3/tests/unit/common.spec.js`
+- `源码/iMES.Vue3/tests/unit/dateFormatUtil.spec.js`
+- `源码/iMES.Vue3/tests/unit/ViewGridCustomColumn.spec.js`
+- `源码/iMES.Vue3/tests/unit/environment.spec.js`
+- `源码/iMES.Vue3/tests/unit/helpers/localStorageMock.js`
 
 ## 本次发现的问题
 
@@ -106,8 +122,8 @@
 | 当前分支 | `dev` |
 | 当前 commit SHA | `29389e3` |
 | 测试工程 | `源码/iMES.Vue3` |
-| 测试目录 | `tests/前端自动化测试用例` |
-| 执行方式 | `tests/前端自动化测试用例/run-tests.ps1` |
+| 测试目录 | `源码/iMES.Vue3/tests/unit` |
+| 执行方式 | 在 `源码/iMES.Vue3` 执行 `npm run test:unit` |
 | 测试框架 | Vue CLI Unit Mocha + Chai 4.3.6 |
 | 结果 | **88 个用例：86 通过，2 失败，0 跳过** |
 | 运行时 | Node.js 24.14.0；使用 `NODE_OPTIONS=--openssl-legacy-provider` 兼容旧版 Webpack |
@@ -149,13 +165,12 @@
 
 正式测试文件：
 
-- `tests/前端自动化测试用例/methods.spec.js`
-- `tests/前端自动化测试用例/detailMethods.spec.js`
-- `tests/前端自动化测试用例/MesTable.spec.js`
-- `tests/前端自动化测试用例/MesForm.spec.js`
-- `tests/前端自动化测试用例/environment.spec.js`
-- `tests/前端自动化测试用例/helpers/localStorageMock.js`
-- `tests/前端自动化测试用例/run-tests.ps1`
+- `源码/iMES.Vue3/tests/unit/methods.spec.js`
+- `源码/iMES.Vue3/tests/unit/detailMethods.spec.js`
+- `源码/iMES.Vue3/tests/unit/MesTable.spec.js`
+- `源码/iMES.Vue3/tests/unit/MesForm.spec.js`
+- `源码/iMES.Vue3/tests/unit/environment.spec.js`
+- `源码/iMES.Vue3/tests/unit/helpers/localStorageMock.js`
 
 ## 本次发现的问题
 

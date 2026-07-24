@@ -1,0 +1,295 @@
+{
+  "version": 1,
+  "parameters": "--deprecated --include-transitive",
+  "sources": [
+    "https://api.nuget.org/v3/index.json"
+  ],
+  "projects": [
+    {
+      "path": "/Users/jmsfile/Desktop/MES--System-main/源码/iMES.Net/iMES.WebApi/iMES.WebApi.csproj",
+      "frameworks": [
+        {
+          "framework": "netcoreapp3.1",
+          "transitivePackages": [
+            {
+              "id": "EPPlus.Core",
+              "resolvedVersion": "1.5.4",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ],
+              "alternativePackage": {
+                "id": "EPPlus",
+                "versionRange": ">= 0.0.0"
+              }
+            },
+            {
+              "id": "Microsoft.AspNetCore.Authentication.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Authentication.Core",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Authorization",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Authorization.Policy",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Hosting.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Hosting.Server.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Http",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Http.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Http.Extensions",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Http.Features",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Mvc.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Mvc.Core",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Mvc.Formatters.Json",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.ResponseCaching.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Routing",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.Routing.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.AspNetCore.WebUtilities",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.Data.SqlClient",
+              "resolvedVersion": "1.0.19269.1",
+              "deprecationReasons": [
+                "CriticalBugs"
+              ]
+            },
+            {
+              "id": "Microsoft.Extensions.ApiDescription.Server",
+              "resolvedVersion": "3.0.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.Extensions.FileProviders.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.Extensions.Hosting.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.Extensions.ObjectPool",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.Identity.Client",
+              "resolvedVersion": "3.0.8",
+              "deprecationReasons": [
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.IdentityModel.JsonWebTokens",
+              "resolvedVersion": "5.6.0",
+              "deprecationReasons": [
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.IdentityModel.Logging",
+              "resolvedVersion": "5.6.0",
+              "deprecationReasons": [
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.IdentityModel.Protocols",
+              "resolvedVersion": "5.5.0",
+              "deprecationReasons": [
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.IdentityModel.Protocols.OpenIdConnect",
+              "resolvedVersion": "5.5.0",
+              "deprecationReasons": [
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.IdentityModel.Tokens",
+              "resolvedVersion": "5.6.0",
+              "deprecationReasons": [
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Microsoft.Net.Http.Headers",
+              "resolvedVersion": "2.2.0",
+              "deprecationReasons": [
+                "Other",
+                "Legacy"
+              ]
+            },
+            {
+              "id": "Pomelo.EntityFrameworkCore.MySql",
+              "resolvedVersion": "3.1.0",
+              "deprecationReasons": [
+                "Legacy"
+              ]
+            },
+            {
+              "id": "StackExchange.Redis.StrongName",
+              "resolvedVersion": "1.1.608",
+              "deprecationReasons": [
+                "Legacy"
+              ],
+              "alternativePackage": {
+                "id": "StackExchange.Redis",
+                "versionRange": ">= 0.0.0"
+              }
+            },
+            {
+              "id": "System.Collections.Immutable",
+              "resolvedVersion": "1.7.0",
+              "deprecationReasons": [
+                "Legacy"
+              ]
+            },
+            {
+              "id": "System.IdentityModel.Tokens.Jwt",
+              "resolvedVersion": "5.6.0",
+              "deprecationReasons": [
+                "Legacy"
+              ]
+            },
+            {
+              "id": "System.Text.Json",
+              "resolvedVersion": "4.7.0",
+              "deprecationReasons": [
+                "Legacy"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

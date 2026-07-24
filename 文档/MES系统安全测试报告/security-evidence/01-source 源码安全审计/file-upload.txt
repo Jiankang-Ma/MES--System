@@ -1,0 +1,175 @@
+$ rg -n Upload|Import|IFormFile|FileStream|ServeUnknownFileTypes|RequestPath|MapPath|Download|DownLoad 源码/iMES.Net 源码/iMES.Vue3/src -g *.cs -g *.vue -g *.js
+exit_code=0
+
+源码/iMES.Vue3/src/components/editor/MesWangEditor.vue:92:    editor.config.customUploadImg = function (resultFiles, insertImgFn) {
+源码/iMES.Vue3/src/components/editor/MesWangEditor.vue:101:          // _this.getUploadImg(item, insertImgFn);
+源码/iMES.Vue3/src/views/system/Sys_Menu.vue:293:      { text: "导入", value: "Import" },
+源码/iMES.Vue3/src/views/system/Sys_Menu.vue:295:      { text: "上传", value: "Upload" },
+源码/iMES.Net/iMES.Builder/Utility/ProjectPath.cs:17:            return GetProjectDirectoryInfo(new DirectoryInfo("".MapPath()), 1);
+源码/iMES.Net/iMES.Builder/Utility/ProjectPath.cs:34:                fileNames = new DirectoryInfo("".MapPath()).GetFiles().Where(x => x.Name.EndsWith(".dll")
+源码/iMES.Net/iMES.Builder/Utility/ProjectPath.cs:57:                projectName = new DirectoryInfo("".MapPath()).GetFiles().Where(x => x.Name.LastIndexOf(lastIndexOfName + ".dll") != -1).FirstOrDefault().Name;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:867:            string srcPath = new DirectoryInfo(vuePath.MapPath()).Parent.FullName;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1732:            string mapPath = ProjectPath.GetProjectDirectoryInfo()?.FullName; //new DirectoryInfo(("~/").MapPath()).Parent.FullName;
+源码/iMES.Net/iMES.WebApi/Startup.cs:200:                ServeUnknownFileTypes = true
+源码/iMES.Net/iMES.WebApi/Startup.cs:206:            string _uploadPath = (env.ContentRootPath + "/Upload").ReplacePath();
+源码/iMES.Net/iMES.WebApi/Startup.cs:216:                Path.Combine(Directory.GetCurrentDirectory(), @"Upload")),
+源码/iMES.Net/iMES.WebApi/Startup.cs:218:                RequestPath = "/Upload",
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProductService.cs:241:        public override WebResponseContent Import(List<IFormFile> files)
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProductService.cs:244:            ImportOnExecuting = (List<Base_Product> list) =>
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProductService.cs:263:            ImportOnExecuted = (List<Base_Product> list) =>
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProductService.cs:267:            return base.Import(files);
+源码/iMES.Vue3/src/components/basic/MesUpload.vue:26:            v-show="!autoUpload || (autoUpload && files.length < maxFile)"
+源码/iMES.Vue3/src/components/basic/MesUpload.vue:34:              v-if="!autoUpload"
+源码/iMES.Vue3/src/components/basic/MesUpload.vue:48:          v-if="!autoUpload && !img"
+源码/iMES.Vue3/src/components/basic/MesUpload.vue:123:    autoUpload: {
+源码/iMES.Vue3/src/components/basic/MesUpload.vue:256:      if (this.autoUpload) {
+源码/iMES.Vue3/src/components/basic/MesUpload.vue:331:      if (this.autoUpload && result) {
+源码/iMES.Vue3/src/components/basic/MesUpload.vue:376:        .post(this.url, forms, this.autoUpload ? "正在上传文件" : "")
+源码/iMES.Vue3/src/components/basic/MesUpload.vue:479:    beforeUpload() {},
+源码/iMES.Vue3/src/components/basic/UploadExcel.vue:10:        :before-upload="beforeUpload"
+源码/iMES.Vue3/src/components/basic/UploadExcel.vue:115:    beforeUpload(file) {
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_DefectItemService.cs:211:        public override WebResponseContent Import(List<IFormFile> files)
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_DefectItemService.cs:214:            ImportOnExecuting = (List<Base_DefectItem> list) =>
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_DefectItemService.cs:233:            ImportOnExecuted = (List<Base_DefectItem> list) =>
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_DefectItemService.cs:237:            return base.Import(files);
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessLineService.cs:133:        public override WebResponseContent Import(List<IFormFile> files)
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessLineService.cs:136:            ImportOnExecuting = (List<Base_ProcessLine> list) =>
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessLineService.cs:155:            ImportOnExecuted = (List<Base_ProcessLine> list) =>
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessLineService.cs:159:            return base.Import(files);
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/View_Base_MaterialDetailService.cs:103:        public override WebResponseContent Import(List<IFormFile> files)
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/View_Base_MaterialDetailService.cs:105:            ImportOnExecuting = (List<View_Base_MaterialDetail> list) =>
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/View_Base_MaterialDetailService.cs:116:            return Base_MaterialDetailService.Instance.Import(files);
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/MesFormPreview.vue:127:import downloadForm from "./DownloadForm";
+源码/iMES.Vue3/src/components/basic/ViewGrid/methods.js:954:    //导入(上传excel),弹出导入组件UploadExcel.vue
+源码/iMES.Vue3/src/components/basic/ViewGrid/methods.js:1132:          d.url = this.http.ipAddress + 'api' + this.table.url + 'Upload';
+源码/iMES.Vue3/src/components/basic/ViewGrid/methods.js:1518:    //:["Search","Add","Delete","Update","Import","Export","Upload","Audit"]
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessService.cs:212:        public override WebResponseContent Import(List<IFormFile> files)
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessService.cs:215:            ImportOnExecuting = (List<Base_Process> list) =>
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessService.cs:234:            ImportOnExecuted = (List<Base_Process> list) =>
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessService.cs:238:            return base.Import(files);
+源码/iMES.Vue3/src/components/basic/ViewGrid/ViewGrid.vue:134:      <UploadExcel
+源码/iMES.Vue3/src/components/basic/ViewGrid/ViewGrid.vue:140:      ></UploadExcel>
+源码/iMES.Vue3/src/components/basic/ViewGrid/ViewGrid.vue:470:  DOWNLOAD: 'DownLoadFile', //导出文件
+源码/iMES.Vue3/src/components/basic/ViewGrid/ViewGrid.vue:471:  DOWNLOADTEMPLATE: 'DownLoadTemplate', //下载导入模板
+源码/iMES.Vue3/src/components/basic/ViewGrid/ViewGrid.vue:472:  IMPORT: 'Import', //导入(导入表的Excel功能)
+源码/iMES.Vue3/src/components/basic/ViewGrid/ViewGrid.vue:473:  UPLOAD: 'Upload' //上传文件
+源码/iMES.Vue3/src/components/basic/ViewGrid/ViewGrid.vue:495:    UploadExcel: defineAsyncComponent(() =>
+源码/iMES.Vue3/src/components/basic/ViewGrid/ViewGrid.vue:496:      import('@/components/basic/UploadExcel.vue')
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/MesFormDraggable.vue:236:                      :autoUpload="item.autoUpload"
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/MesFormDraggable.vue:318:            v-model="currentItem.autoUpload"
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/MesFormDraggable.vue:520:import MesUpload from "./../MesUpload";
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/MesFormDraggable.vue:526:import downloadForm from "./DownloadForm";
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/MesFormDraggable.vue:538:    "mes-upload": MesUpload,
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/MesFormDraggable.vue:635:        _option.autoUpload = item.autoUpload;
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/MesFormDraggable.vue:704:        //   _option.autoUpload = item.autoUpload;
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/formTemplate.js:176:        "autoUpload": false,
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/formTemplate.js:190:        "autoUpload": true,
+源码/iMES.Vue3/src/components/basic/MesForm.vue:241:              :autoUpload="item.autoUpload"
+源码/iMES.Vue3/src/components/basic/MesForm.vue:433:      import('@/components/basic/MesUpload.vue')
+源码/iMES.Vue3/src/components/basic/MesForm.vue:530:          initUpload(item, init);
+源码/iMES.Vue3/src/components/basic/MesForm.vue:620:    const initUpload = (item, init) => {
+源码/iMES.Vue3/src/components/basic/MesForm.vue:627:        if (!item.hasOwnProperty('autoUpload')) {
+源码/iMES.Vue3/src/components/basic/MesForm.vue:628:          item.autoUpload = true;
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/options.js:90:        autoUpload: false,
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/options.js:100:        autoUpload: false,
+源码/iMES.Vue3/src/components/basic/MesFormDraggable/options.js:113:        autoUpload: false,
+源码/iMES.Net/iMES.WebApi/wwwroot/Print-Designer/dist/designer.js:7709:                    uploadUrl: N("imageUploadUrl"),
+源码/iMES.Net/iMES.Core/Services/Logger.cs:28:        private static string _loggerPath = AppSetting.DownLoadPath + "Logger\\Queue\\";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:361:        public virtual WebResponseContent Upload(List<Microsoft.AspNetCore.Http.IFormFile> files)
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:370:            string filePath = $"Upload/Tables/{typeof(T).GetEntityTableName()}/{DateTime.Now.ToString("yyyMMddHHmmsss") + new Random().Next(1000, 9999)}/";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:371:            string fullPath = filePath.MapPath(true);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:385:                    using (var stream = new FileStream(fullPath + fileName, FileMode.Create))
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:407:        public virtual WebResponseContent DownLoadTemplate()
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:411:            string dicPath = $"Download/{DateTime.Now.ToString("yyyMMdd")}/Template/".MapPath();
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:414:            //DownLoadTemplateColumns 2020.05.07增加扩展指定导出模板的列
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:415:            EPPlusHelper.ExportTemplate<T>(DownLoadTemplateColumns, GetIgnoreTemplate(), dicPath, fileName);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:424:        public virtual WebResponseContent Import(List<Microsoft.AspNetCore.Http.IFormFile> files)
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:428:            Microsoft.AspNetCore.Http.IFormFile formFile = files[0];
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:429:            string dicPath = $"Upload/{DateTime.Now.ToString("yyyMMdd")}/{typeof(T).Name}/".MapPath();
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:433:            using (var stream = new FileStream(dicPath, FileMode.Create))
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:440:                Response = EPPlusHelper.ReadToDataTable<T>(dicPath, DownLoadTemplateColumns, GetIgnoreTemplate(), readValue: ImportOnReadCellValue);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:449:            if (ImportOnExecuting != null)
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:451:                Response = ImportOnExecuting.Invoke(list);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:457:                ImportOnExecuted?.Invoke(list);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:461:            if (ImportOnExecuted != null)
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:463:                Response = ImportOnExecuted.Invoke(list);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:481:            string savePath = $"Download/ExcelExport/{folder}/".MapPath();
+源码/iMES.Net/iMES.Core/BaseProvider/ServerMapPath/PathProvider.cs:7:namespace iMES.Core.BaseProvider.ServerMapPath
+源码/iMES.Net/iMES.Core/BaseProvider/ServerMapPath/PathProvider.cs:11:        string MapPath(string path);
+源码/iMES.Net/iMES.Core/BaseProvider/ServerMapPath/PathProvider.cs:12:        string MapPath(string path, bool rootPath);
+源码/iMES.Net/iMES.Core/BaseProvider/ServerMapPath/PathProvider.cs:29:        public string MapPath(string path)
+源码/iMES.Net/iMES.Core/BaseProvider/ServerMapPath/PathProvider.cs:31:            return MapPath(path, false);
+源码/iMES.Net/iMES.Core/BaseProvider/ServerMapPath/PathProvider.cs:39:        public string MapPath(string path, bool rootPath)
+源码/iMES.Net/iMES.Core/BaseProvider/IService.cs:27:        WebResponseContent Upload(List<IFormFile> files);
+源码/iMES.Net/iMES.Core/BaseProvider/IService.cs:29:        WebResponseContent DownLoadTemplate();
+源码/iMES.Net/iMES.Core/BaseProvider/IService.cs:31:        WebResponseContent Import(List<IFormFile> files);
+源码/iMES.Net/iMES.Core/EFDbContext/BaseDbContext.cs:65:                string mapPath = ($"Log/").MapPath();
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_DictionaryListController.cs:52:        [HttpPost, Route("Import")]
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_DictionaryListController.cs:53:        [ApiActionPermission("Sys_Dictionary", Core.Enums.ActionPermissionOptions.Import)]
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_DictionaryListController.cs:55:        public override ActionResult Import(List<IFormFile> fileInput)
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_DictionaryListController.cs:57:            return base.Import(fileInput);
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_DictionaryListController.cs:64:        [HttpGet, Route("DownLoadTemplate")]
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_DictionaryListController.cs:65:        [ApiActionPermission("Sys_Dictionary", Core.Enums.ActionPermissionOptions.Import)]
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_DictionaryListController.cs:67:        public override ActionResult DownLoadTemplate()
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_DictionaryListController.cs:69:            return base.DownLoadTemplate();
+源码/iMES.Net/iMES.Core/Controllers/Basic/WebBaseController.cs:29:        [ActionPermission(Enums.ActionPermissionOptions.Upload)]
+源码/iMES.Net/iMES.Core/Controllers/Basic/WebBaseController.cs:30:        public override async Task<ActionResult> Upload(List<IFormFile> fileInput)
+源码/iMES.Net/iMES.Core/Controllers/Basic/WebBaseController.cs:32:            return await base.Upload(fileInput);
+源码/iMES.Net/iMES.Core/Controllers/Basic/WebBaseController.cs:53:        public override ActionResult DownLoadFile(string fileName)
+源码/iMES.Net/iMES.Core/Controllers/Basic/WebBaseController.cs:55:            return  base.DownLoadFile(fileName);
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:42:            //if (System.IO.File.Exists(($"Views\\PageExtension\\{projectName }\\{TableName}Extension.cshtml").MapPath()))
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:67:        public virtual async Task<ActionResult> Upload(List<IFormFile> fileInput)
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:69:            object result = await Task.FromResult(InvokeService("Upload", new object[] { fileInput }));
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:80:        public virtual async Task<ActionResult> Import(List<IFormFile> fileInput)
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:82:            object result = await Task.FromResult(InvokeService("Import", new object[] { fileInput }));
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:94:        public virtual ActionResult DownLoadFile(string path)
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:105:                    path = path.MapPath();
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:124:        public async virtual Task<ActionResult> DownLoadTemplate()
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:126:            ResponseContent = await Task.FromResult(InvokeService("DownLoadTemplate", new object[] { })) as WebResponseContent;
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:76:        [HttpPost, Route("Upload")]
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:77:        [ApiActionPermission(Enums.ActionPermissionOptions.Upload)]
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:79:        public virtual IActionResult Upload(IEnumerable<IFormFile> fileInput)
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:81:            return Json(InvokeService("Upload", new object[] { fileInput }));
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:87:        [HttpGet, Route("DownLoadTemplate")]
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:88:        [ApiActionPermission(Enums.ActionPermissionOptions.Import)]
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:90:        public virtual ActionResult DownLoadTemplate()
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:92:            _baseWebResponseContent = InvokeService("DownLoadTemplate", new object[] { }) as WebResponseContent;
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:106:        [HttpPost, Route("Import")]
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:107:        [ApiActionPermission(Enums.ActionPermissionOptions.Import)]
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:109:        public virtual ActionResult Import(List<IFormFile> fileInput)
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:111:            return Json(InvokeService("Import", new object[] { fileInput }));
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:126:                   System.IO.File.ReadAllBytes(result.Data.ToString().MapPath()),
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:138:        [HttpGet, Route("DownLoadFile")]
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:140:        public virtual IActionResult DownLoadFile()
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:149:            //        : path.MapPath();
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:770:            tmpPath = tmpPath ?? FileHelper.GetCurrentDownLoadPath();
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:869:                using (var writer = conn.BeginBinaryImport(copySql))
+源码/iMES.Net/iMES.Core/Utilities/NPOIHelper.cs:177://                using (FileStream fs = new FileStream(strFileName, FileMode.Create, FileAccess.Write))
+源码/iMES.Net/iMES.Core/Utilities/NPOIHelper.cs:192://        public static DataTable ImportExcel(string strFileName)
+源码/iMES.Net/iMES.Core/Utilities/NPOIHelper.cs:196://            using (FileStream file = new FileStream(strFileName, FileMode.Open, FileAccess.Read))
+源码/iMES.Net/iMES.Entity/DomainModels/Core/Sys_TableInfo.cs:42:        public string UploadField { get; set; }
+源码/iMES.Net/iMES.Entity/DomainModels/Core/Sys_TableInfo.cs:44:        public int? UploadMaxCount { get; set; }
+源码/iMES.Net/iMES.Core/Utilities/FileHelper.cs:77:        public static string GetCurrentDownLoadPath()
+源码/iMES.Net/iMES.Core/Utilities/FileHelper.cs:79:            return ("Download\\").MapPath();
+源码/iMES.Net/iMES.Core/Utilities/FileHelper.cs:90:            return ReadFile((fullpath + "\\" + filename + suffix).MapPath());
+源码/iMES.Net/iMES.Core/Utilities/FileHelper.cs:95:            string temp = fullName.MapPath().ReplacePath();
+源码/iMES.Net/iMES.Core/Utilities/FileHelper.cs:143:            using (FileStream stream = File.Open(path + fileName, FileMode.OpenOrCreate, FileAccess.Write))
+源码/iMES.Net/iMES.Core/Utilities/FileHelper.cs:233:                FileStream FS = CreateFile.Create();
+源码/iMES.Net/iMES.Core/Utilities/EPPlusHelper.cs:555:            path = path ?? $"Download/ExcelExport/{ DateTime.Now.ToString("yyyyyMMdd")}/";
+源码/iMES.Net/iMES.Core/Utilities/EPPlusHelper.cs:556:            string fullPath = path.MapPath();
+源码/iMES.Net/iMES.Core/Configuration/AppSetting.cs:60:        public static string DownLoadPath { get { return CurrentPath + "\\Download\\"; } }
+源码/iMES.Net/iMES.Core/Enums/ActionPermissionOptions.cs:15:        Upload,//上传文件
+源码/iMES.Net/iMES.Core/Enums/ActionPermissionOptions.cs:16:        Import //导入表数据Excel
+源码/iMES.Net/iMES.Core/Extensions/StaticFileExtensions.cs:20:                RequestPath = new PathString("/Content")
+源码/iMES.Net/iMES.Core/Extensions/StaticFileExtensions.cs:31:                RequestPath = new PathString("/fonts")
+源码/iMES.Net/iMES.Core/Extensions/StaticFileExtensions.cs:38:                RequestPath = new PathString("/Scripts")
+源码/iMES.Net/iMES.Core/Extensions/StaticFileExtensions.cs:45:                RequestPath = new PathString("/Html")
+源码/iMES.Net/iMES.Core/Filters/ServiceFunFilter.cs:214:        protected Expression<Func<T, object>> DownLoadTemplateColumns { get; set; }
+源码/iMES.Net/iMES.Core/Filters/ServiceFunFilter.cs:219:        protected Func<List<T>, WebResponseContent> ImportOnExecuted;
+源码/iMES.Net/iMES.Core/Filters/ServiceFunFilter.cs:224:        protected Func<List<T>, WebResponseContent> ImportOnExecuting;
+源码/iMES.Net/iMES.Core/Filters/ServiceFunFilter.cs:235:        protected Func<string, ExcelWorksheet, ExcelRange, int, int, string> ImportOnReadCellValue;
+源码/iMES.Net/iMES.Core/Extensions/ServerExtension.cs:1:using iMES.Core.BaseProvider.ServerMapPath;
+源码/iMES.Net/iMES.Core/Extensions/ServerExtension.cs:16:        public static string MapPath(this string path)
+源码/iMES.Net/iMES.Core/Extensions/ServerExtension.cs:18:            return MapPath(path, false);
+源码/iMES.Net/iMES.Core/Extensions/ServerExtension.cs:26:        public static string MapPath(this string path,bool rootPath)
+源码/iMES.Net/iMES.Core/Extensions/ServerExtension.cs:28:            return AutofacContainerModule.GetService<IPathProvider>().MapPath(path,rootPath);

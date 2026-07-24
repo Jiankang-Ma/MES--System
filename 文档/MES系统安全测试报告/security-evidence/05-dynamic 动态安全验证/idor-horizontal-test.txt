@@ -1,0 +1,54 @@
+IDOR / 水平越权测试结果
+===============
+
+使用普通用户 token 查询管理员 User_Id=1 记录，并与管理员 token 对照。
+
+## 普通用户读取自身当前用户信息
+POST http://127.0.0.1:9991/api/User/getCurrentUserInfo
+status=200 OK durationMs=10
+requestHeaders={
+  "Authorization": "Bearer eyJhbGciOiJIUz...6Ke6Bghk1E (len=224)"
+}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+{"status":true,"code":null,"message":null,"data":{"userName":"111","userTrueName":"张三丰","address":null,"phoneNo":null,"email":null,"remark":null,"gender":0,"roleName":"信息员","headImageUrl":"Upload/Tables/Sys_User/202208231348289823/error.png","createDate":"2022-08-17 13:52:18"}}
+
+## 普通用户按 User_Id=1 查询 Sys_User 列表
+POST http://127.0.0.1:9991/api/Sys_User/GetPageData
+status=401 Unauthorized durationMs=6
+requestHeaders={
+  "Authorization": "Bearer eyJhbGciOiJIUz...6Ke6Bghk1E (len=224)",
+  "Content-Type": "application/json"
+}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-length": "47",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel"
+}
+bodyExcerpt:
+{"status":false,"message":"没有权限操作"}
+
+## 管理员按 User_Id=1 查询 Sys_User 列表作为对照
+POST http://127.0.0.1:9991/api/Sys_User/GetPageData
+status=200 OK durationMs=8
+requestHeaders={
+  "Authorization": "Bearer eyJhbGciOiJIUz...AgPo46QoHI (len=220)",
+  "Content-Type": "application/json"
+}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+{"status":0,"msg":null,"total":1,"rows":[{"UserName":"admin","User_Id":1,"Gender":1,"HeadImageUrl":"Upload/Tables/Sys_User/202004271001535915/04.jpg","Dept_Id":1,"DeptName":null,"Role_Id":1,"RoleName":"超级管理员","Token":"[REDACTED]","AppType":1,"UserTrueName":"超级管理员","CreateDate":"2022-08-17 13:52:18","IsRegregisterPhone":0,"PhoneNo":"13888888888","Tel":null,"CreateID":null,"Creator":null,"Enable":1,"ModifyID":1,"Modifier":"超级管理员","ModifyDate":"2022-08-17 13:52:18","AuditStatus":1,"Auditor":"超级管理员","AuditDate":"2019-08-18 00:54:06","LastLoginDate":"2017-08-28 09:58:55","LastModifyPwdDate":"2022-09-04 15:04:30","Address":"北京市西城区","Mobile":null,"Email":"283591387@qq.com","Remark":"~还没想好...","OrderNo":0}],"summary":null,"extra":null}

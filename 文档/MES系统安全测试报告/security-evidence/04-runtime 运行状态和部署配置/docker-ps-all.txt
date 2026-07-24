@@ -1,0 +1,6 @@
+$ docker ps --all
+exit_code=0
+
+CONTAINER ID   IMAGE                                        COMMAND                  CREATED      STATUS      PORTS                                         NAMES
+5394628f2e42   imes-aspnet31-fontconfig:local               "dotnet iMES.WebApi.…"   4 days ago   Up 3 days   0.0.0.0:9991->9991/tcp, [::]:9991->9991/tcp   imes-webapi-dev
+e9924247869f   mcr.microsoft.com/mssql/server:2025-latest   "/opt/mssql/bin/laun…"   5 days ago   Up 3 days   0.0.0.0:1433->1433/tcp, [::]:1433->1433/tcp   sql_server_container

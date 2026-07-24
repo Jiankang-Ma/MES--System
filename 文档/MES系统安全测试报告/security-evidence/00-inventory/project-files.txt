@@ -1,0 +1,17 @@
+$ rg --files -g package.json -g package-lock.json -g yarn.lock -g *.csproj -g *.sln -g docker-compose.yml
+exit_code=0
+
+docker-compose.yml
+源码/iMES.Vue3/package.json
+源码/iMES.Vue3/package-lock.json
+源码/iMES.Vue3/yarn.lock
+源码/iMES.Net/iMES.Custom/iMES.Custom.csproj
+源码/iMES.Net/iMES.Production/iMES.Production.csproj
+源码/iMES.Net/iMES.System/iMES.System.csproj
+源码/iMES.Net/iMES.Entity/iMES.Entity.csproj
+源码/iMES.Net/iMES.Builder/iMES.Builder.csproj
+源码/iMES.Net/iMES.Warehouse/iMES.Warehouse.csproj
+源码/iMES.Net/iMES.sln
+源码/iMES.Net/iMES.Report/iMES.Report.csproj
+源码/iMES.Net/iMES.Core/iMES.Core.csproj
+源码/iMES.Net/iMES.WebApi/iMES.WebApi.csproj

@@ -1,0 +1,36 @@
+普通用户访问管理员接口测试结果
+===============
+
+普通用户：User_Id=4378；管理员：User_Id=1；目标用户固定为不存在账号 __SEC_EVIDENCE_NO_SUCH_USER__，避免真实改密。
+
+## 普通用户访问超级管理员改密接口（不存在用户，避免真实改密）
+POST http://127.0.0.1:9991/api/User/modifyUserPwd?password=123456&userName=__SEC_EVIDENCE_NO_SUCH_USER__
+status=401 Unauthorized durationMs=4
+requestHeaders={
+  "Authorization": "Bearer eyJhbGciOiJIUz...6Ke6Bghk1E (len=224)"
+}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-length": "53",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel"
+}
+bodyExcerpt:
+{"status":false,"message":"角色没有权限操作"}
+
+## 管理员访问同一接口作为对照（不存在用户，避免真实改密）
+POST http://127.0.0.1:9991/api/User/modifyUserPwd?password=123456&userName=__SEC_EVIDENCE_NO_SUCH_USER__
+status=200 OK durationMs=11
+requestHeaders={
+  "Authorization": "Bearer eyJhbGciOiJIUz...AgPo46QoHI (len=220)"
+}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+{"status":false,"code":null,"message":"用户不存在","data":null}

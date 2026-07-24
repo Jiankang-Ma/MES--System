@@ -1,0 +1,21 @@
+$ lsof -nP -iTCP -sTCP:LISTEN
+exit_code=0
+
+COMMAND    PID    USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+rapportd   991 jmsfile   10u  IPv4 0x2b592743926dc69d      0t0  TCP *:54183 (LISTEN)
+rapportd   991 jmsfile   15u  IPv6 0x94e59eb55fac33ca      0t0  TCP *:54183 (LISTEN)
+ControlCe 1103 jmsfile    9u  IPv4 0xe2f6f5a359bbc64f      0t0  TCP *:7000 (LISTEN)
+ControlCe 1103 jmsfile   10u  IPv6 0x20d88145f8a4e9ff      0t0  TCP *:7000 (LISTEN)
+ControlCe 1103 jmsfile   11u  IPv4 0x1fb2ee881f649e82      0t0  TCP *:5000 (LISTEN)
+ControlCe 1103 jmsfile   12u  IPv6 0x87af418cdfc514a6      0t0  TCP *:5000 (LISTEN)
+com.docke 3841 jmsfile   94u  IPv6 0x39f77b1cd3cc16d6      0t0  TCP *:9991 (LISTEN)
+com.docke 3841 jmsfile  169u  IPv6 0x706168ca5b6f3541      0t0  TCP *:1433 (LISTEN)
+GitHub    4364 jmsfile   21u  IPv4 0x96f81b01fb9e796a      0t0  TCP 127.0.0.1:53360 (LISTEN)
+node      5561 jmsfile   15u  IPv4 0x2fdb6ee1fadc59bc      0t0  TCP *:9990 (LISTEN)
+WeChat    6507 jmsfile  163u  IPv4 0x3748dfdb8d940e2d      0t0  TCP 127.0.0.1:14013 (LISTEN)
+WeChat    6507 jmsfile  168u  IPv4 0x643e0fb7c2225d23      0t0  TCP 127.0.0.1:14016 (LISTEN)
+WeChat    6507 jmsfile  173u  IPv4 0x5aa518da78d5e366      0t0  TCP 127.0.0.1:14019 (LISTEN)
+WeChat    6507 jmsfile  178u  IPv4 0x22f8dc1f7a60a137      0t0  TCP 127.0.0.1:14022 (LISTEN)
+WeChat    6507 jmsfile  184u  IPv4 0xc010e7b0742eb774      0t0  TCP 127.0.0.1:14023 (LISTEN)
+Code\x20H 7308 jmsfile   54u  IPv4  0xd23a7e057bbd407      0t0  TCP 127.0.0.1:8828 (LISTEN)
+Code\x20H 7308 jmsfile   82u  IPv6 0x66707f6d51eaffcc      0t0  TCP *:50001 (LISTEN)

@@ -1,0 +1,734 @@
+{
+  "version": 1,
+  "parameters": "--outdated --include-transitive",
+  "sources": [
+    "https://api.nuget.org/v3/index.json"
+  ],
+  "projects": [
+    {
+      "path": "/Users/jmsfile/Desktop/MES--System-main/源码/iMES.Net/iMES.WebApi/iMES.WebApi.csproj",
+      "frameworks": [
+        {
+          "framework": "netcoreapp3.1",
+          "topLevelPackages": [
+            {
+              "id": "Autofac.Extensions.DependencyInjection",
+              "requestedVersion": "5.0.1",
+              "resolvedVersion": "5.0.1",
+              "latestVersion": "11.0.2"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Authentication.JwtBearer",
+              "requestedVersion": "3.1.0",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Swashbuckle.AspNetCore",
+              "requestedVersion": "5.0.0-rc5",
+              "resolvedVersion": "5.0.0-rc5",
+              "latestVersion": "10.2.3"
+            }
+          ],
+          "transitivePackages": [
+            {
+              "id": "Autofac",
+              "resolvedVersion": "4.9.4",
+              "latestVersion": "9.3.1"
+            },
+            {
+              "id": "AutoMapper",
+              "resolvedVersion": "6.2.2",
+              "latestVersion": "16.2.0"
+            },
+            {
+              "id": "Castle.Core",
+              "resolvedVersion": "4.2.1",
+              "latestVersion": "5.2.1"
+            },
+            {
+              "id": "Confluent.Kafka",
+              "resolvedVersion": "1.8.2",
+              "latestVersion": "2.15.0"
+            },
+            {
+              "id": "CSRedisCore",
+              "resolvedVersion": "3.6.5",
+              "latestVersion": "3.8.807"
+            },
+            {
+              "id": "Dapper",
+              "resolvedVersion": "1.50.5",
+              "latestVersion": "2.1.79"
+            },
+            {
+              "id": "EFCore.BulkExtensions",
+              "resolvedVersion": "2.2.2",
+              "latestVersion": "10.0.1"
+            },
+            {
+              "id": "FastMember.Signed",
+              "resolvedVersion": "1.3.0",
+              "latestVersion": "1.5.0"
+            },
+            {
+              "id": "Haukcode.WkHtmlToPdfDotNet",
+              "resolvedVersion": "1.5.72",
+              "latestVersion": "1.5.95"
+            },
+            {
+              "id": "librdkafka.redist",
+              "resolvedVersion": "1.8.2",
+              "latestVersion": "2.15.0"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Authentication.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Authentication.Core",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Authorization",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Authorization.Policy",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Hosting.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Hosting.Server.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Http",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Http.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Http.Extensions",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Http.Features",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "5.0.17"
+            },
+            {
+              "id": "Microsoft.AspNetCore.JsonPatch",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Mvc.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Mvc.Core",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Mvc.Formatters.Json",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Mvc.NewtonsoftJson",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.AspNetCore.ResponseCaching.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Routing",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.Routing.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "2.3.11"
+            },
+            {
+              "id": "Microsoft.AspNetCore.WebUtilities",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Bcl.AsyncInterfaces",
+              "resolvedVersion": "1.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Bcl.HashCode",
+              "resolvedVersion": "1.1.0",
+              "latestVersion": "6.0.0"
+            },
+            {
+              "id": "Microsoft.Data.SqlClient",
+              "resolvedVersion": "1.0.19269.1",
+              "latestVersion": "7.0.2"
+            },
+            {
+              "id": "Microsoft.EntityFrameworkCore",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.EntityFrameworkCore.Abstractions",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.EntityFrameworkCore.Analyzers",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.EntityFrameworkCore.Proxies",
+              "resolvedVersion": "2.1.4",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.EntityFrameworkCore.Relational",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.EntityFrameworkCore.SqlServer",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.ApiDescription.Server",
+              "resolvedVersion": "3.0.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.Caching.Abstractions",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.Caching.Memory",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.Configuration",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.Configuration.Abstractions",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.Configuration.Binder",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.DependencyInjection",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.DependencyModel",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.FileProviders.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.Hosting.Abstractions",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.Logging",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.Logging.Abstractions",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.ObjectPool",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.Options",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Extensions.Primitives",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.Identity.Client",
+              "resolvedVersion": "3.0.8",
+              "latestVersion": "4.86.1"
+            },
+            {
+              "id": "Microsoft.IdentityModel.JsonWebTokens",
+              "resolvedVersion": "5.6.0",
+              "latestVersion": "8.19.2"
+            },
+            {
+              "id": "Microsoft.IdentityModel.Logging",
+              "resolvedVersion": "5.6.0",
+              "latestVersion": "8.19.2"
+            },
+            {
+              "id": "Microsoft.IdentityModel.Protocols",
+              "resolvedVersion": "5.5.0",
+              "latestVersion": "8.19.2"
+            },
+            {
+              "id": "Microsoft.IdentityModel.Protocols.OpenIdConnect",
+              "resolvedVersion": "5.5.0",
+              "latestVersion": "8.19.2"
+            },
+            {
+              "id": "Microsoft.IdentityModel.Tokens",
+              "resolvedVersion": "5.6.0",
+              "latestVersion": "8.19.2"
+            },
+            {
+              "id": "Microsoft.Net.Http.Headers",
+              "resolvedVersion": "2.2.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "Microsoft.NETCore.Platforms",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "7.0.4"
+            },
+            {
+              "id": "Microsoft.NETCore.Targets",
+              "resolvedVersion": "1.1.3",
+              "latestVersion": "5.0.0"
+            },
+            {
+              "id": "Microsoft.OpenApi",
+              "resolvedVersion": "1.1.4",
+              "latestVersion": "3.9.0"
+            },
+            {
+              "id": "Microsoft.Win32.Registry",
+              "resolvedVersion": "4.5.0",
+              "latestVersion": "5.0.0"
+            },
+            {
+              "id": "Microsoft.Win32.SystemEvents",
+              "resolvedVersion": "4.7.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "MySqlConnector",
+              "resolvedVersion": "0.61.0",
+              "latestVersion": "2.6.1"
+            },
+            {
+              "id": "NETStandard.Library",
+              "resolvedVersion": "1.6.1",
+              "latestVersion": "2.0.3"
+            },
+            {
+              "id": "Newtonsoft.Json",
+              "resolvedVersion": "12.0.3",
+              "latestVersion": "13.0.4"
+            },
+            {
+              "id": "Newtonsoft.Json.Bson",
+              "resolvedVersion": "1.0.2",
+              "latestVersion": "1.0.3"
+            },
+            {
+              "id": "Npgsql",
+              "resolvedVersion": "4.1.3.1",
+              "latestVersion": "10.0.3"
+            },
+            {
+              "id": "Npgsql.EntityFrameworkCore.PostgreSQL",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "10.0.3"
+            },
+            {
+              "id": "Pomelo.EntityFrameworkCore.MySql",
+              "resolvedVersion": "3.1.0",
+              "latestVersion": "9.0.0"
+            },
+            {
+              "id": "Quartz",
+              "resolvedVersion": "3.4.0",
+              "latestVersion": "3.18.2"
+            },
+            {
+              "id": "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "runtime.native.System",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "runtime.native.System.Data.SqlClient.sni",
+              "resolvedVersion": "4.4.0",
+              "latestVersion": "4.7.0"
+            },
+            {
+              "id": "runtime.native.System.IO.Compression",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.2"
+            },
+            {
+              "id": "runtime.native.System.Net.Http",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "runtime.native.System.Net.Security",
+              "resolvedVersion": "4.0.1",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "runtime.native.System.Security.Cryptography",
+              "resolvedVersion": "4.0.0",
+              "latestVersion": "4.3.4"
+            },
+            {
+              "id": "runtime.native.System.Security.Cryptography.Apple",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.Apple",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.3"
+            },
+            {
+              "id": "SkiaSharp",
+              "resolvedVersion": "2.88.0",
+              "latestVersion": "4.150.1"
+            },
+            {
+              "id": "SkiaSharp.NativeAssets.Linux",
+              "resolvedVersion": "2.88.0",
+              "latestVersion": "4.150.1"
+            },
+            {
+              "id": "SkiaSharp.NativeAssets.macOS",
+              "resolvedVersion": "2.88.0",
+              "latestVersion": "4.150.1"
+            },
+            {
+              "id": "SkiaSharp.NativeAssets.Win32",
+              "resolvedVersion": "2.88.0",
+              "latestVersion": "4.150.1"
+            },
+            {
+              "id": "StackExchange.Redis.StrongName",
+              "resolvedVersion": "1.1.608",
+              "latestVersion": "1.2.6"
+            },
+            {
+              "id": "Swashbuckle.AspNetCore.Swagger",
+              "resolvedVersion": "5.0.0-rc5",
+              "latestVersion": "10.2.3"
+            },
+            {
+              "id": "Swashbuckle.AspNetCore.SwaggerGen",
+              "resolvedVersion": "5.0.0-rc5",
+              "latestVersion": "10.2.3"
+            },
+            {
+              "id": "Swashbuckle.AspNetCore.SwaggerUI",
+              "resolvedVersion": "5.0.0-rc5",
+              "latestVersion": "10.2.3"
+            },
+            {
+              "id": "System.Buffers",
+              "resolvedVersion": "4.5.0",
+              "latestVersion": "4.6.1"
+            },
+            {
+              "id": "System.Collections.Immutable",
+              "resolvedVersion": "1.7.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.ComponentModel.Annotations",
+              "resolvedVersion": "4.7.0",
+              "latestVersion": "5.0.0"
+            },
+            {
+              "id": "System.Configuration.ConfigurationManager",
+              "resolvedVersion": "4.7.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Console",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "System.Data.SqlClient",
+              "resolvedVersion": "4.5.0",
+              "latestVersion": "4.9.1"
+            },
+            {
+              "id": "System.Diagnostics.DiagnosticSource",
+              "resolvedVersion": "4.7.1",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Drawing.Common",
+              "resolvedVersion": "4.7.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.IdentityModel.Tokens.Jwt",
+              "resolvedVersion": "5.6.0",
+              "latestVersion": "8.19.2"
+            },
+            {
+              "id": "System.Memory",
+              "resolvedVersion": "4.5.3",
+              "latestVersion": "4.6.3"
+            },
+            {
+              "id": "System.Net.Http",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.4"
+            },
+            {
+              "id": "System.Net.Primitives",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "System.Net.Security",
+              "resolvedVersion": "4.0.0",
+              "latestVersion": "4.3.2"
+            },
+            {
+              "id": "System.Reflection.Emit",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.7.0"
+            },
+            {
+              "id": "System.Reflection.Emit.ILGeneration",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.7.0"
+            },
+            {
+              "id": "System.Reflection.Emit.Lightweight",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.7.0"
+            },
+            {
+              "id": "System.Runtime.Caching",
+              "resolvedVersion": "4.5.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Runtime.CompilerServices.Unsafe",
+              "resolvedVersion": "4.6.0",
+              "latestVersion": "6.1.2"
+            },
+            {
+              "id": "System.Runtime.Extensions",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "System.Runtime.Serialization.Formatters",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Security.AccessControl",
+              "resolvedVersion": "4.7.0",
+              "latestVersion": "6.0.1"
+            },
+            {
+              "id": "System.Security.Cryptography.Algorithms",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "System.Security.Cryptography.Cng",
+              "resolvedVersion": "4.5.0",
+              "latestVersion": "5.0.0"
+            },
+            {
+              "id": "System.Security.Cryptography.OpenSsl",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "5.0.0"
+            },
+            {
+              "id": "System.Security.Cryptography.Pkcs",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Security.Cryptography.ProtectedData",
+              "resolvedVersion": "4.7.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Security.Cryptography.X509Certificates",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.2"
+            },
+            {
+              "id": "System.Security.Permissions",
+              "resolvedVersion": "4.7.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Security.Principal.Windows",
+              "resolvedVersion": "4.7.0",
+              "latestVersion": "5.0.0"
+            },
+            {
+              "id": "System.Text.Encoding.CodePages",
+              "resolvedVersion": "4.5.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Text.Encodings.Web",
+              "resolvedVersion": "4.5.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Text.Json",
+              "resolvedVersion": "4.7.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Text.RegularExpressions",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "System.Threading.Tasks.Extensions",
+              "resolvedVersion": "4.5.1",
+              "latestVersion": "4.6.3"
+            },
+            {
+              "id": "System.ValueTuple",
+              "resolvedVersion": "4.5.0",
+              "latestVersion": "4.6.2"
+            },
+            {
+              "id": "System.Windows.Extensions",
+              "resolvedVersion": "4.7.0",
+              "latestVersion": "10.0.10"
+            },
+            {
+              "id": "System.Xml.ReaderWriter",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.3.1"
+            },
+            {
+              "id": "System.Xml.XPath.XmlDocument",
+              "resolvedVersion": "4.3.0",
+              "latestVersion": "4.7.0"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

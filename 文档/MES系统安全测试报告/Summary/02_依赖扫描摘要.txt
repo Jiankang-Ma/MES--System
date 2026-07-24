@@ -1,0 +1,14 @@
+MES 系统依赖扫描摘要
+日期：2026-07-20
+
+NuGet:
+- 命令：dotnet list iMES.WebApi/iMES.WebApi.csproj package --vulnerable --include-transitive
+- 结论：目标框架 netcoreapp3.1 已停止支持，发现多个中高危/严重漏洞包。
+- 代表性漏洞：Microsoft.AspNetCore.Authentication.JwtBearer 3.1.0、AutoMapper 6.2.2、Microsoft.Data.SqlClient 1.0.19269.1、Newtonsoft.Json 12.0.3、Npgsql 4.1.3.1、SkiaSharp 2.88.0、System.Drawing.Common 4.7.0、System.Text.Encodings.Web 4.5.0。
+
+npm:
+- 命令：npm --registry=https://registry.npmjs.org audit --json
+- 总计：148 个漏洞，low 10、moderate 70、high 54、critical 14。
+- 命令：npm --registry=https://registry.npmjs.org audit --omit=dev --json
+- 生产依赖：15 个漏洞，moderate 8、high 7。
+- 代表性直接依赖：axios、wangeditor、echarts、element-plus、sortable.js。

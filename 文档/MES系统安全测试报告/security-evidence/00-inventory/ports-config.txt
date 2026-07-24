@@ -1,0 +1,76 @@
+Known local ports from runtime/deployment:
+- Frontend dev server: http://127.0.0.1:9990
+- WebApi: http://127.0.0.1:9991
+- SQL Server container: 1433
+
+docker-compose excerpts:
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:-Redis_123456!}"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-Redis_123456!}", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: ./源码/iMES.Net
+      dockerfile: iMES.WebApi/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Connection__DBType: MsSql
+      Connection__DbConnectionString: "Data Source=${MSSQL_HOST:-host.docker.internal},${MSSQL_PORT:-1433};Initial Catalog=iMES;Persist Security Info=True;User ID=sa;Password=${MSSQL_SA_PASSWORD:-Your_Strong_Password123!};Connect Timeout=500;TrustServerCertificate=True;"
+      Connection__RedisConnectionString: "redis:6379,password=${REDIS_PASSWORD:-Redis_123456!},SyncTimeout=15000"
+      Connection__UseRedis: "true"
+      ServiceConnectingString: "Data Source=${MSSQL_HOST:-host.docker.internal},${MSSQL_PORT:-1433};Initial Catalog=iMES;Persist Security Info=True;User ID=sa;Password=${MSSQL_SA_PASSWORD:-Your_Strong_Password123!};Connect Timeout=500;TrustServerCertificate=True;"
+      ReportConnectingString: "Data Source=${MSSQL_HOST:-host.docker.internal},${MSSQL_PORT:-1433};Initial Catalog=iMES;Persist Security Info=True;User ID=sa;Password=${MSSQL_SA_PASSWORD:-Your_Strong_Password123!};Connect Timeout=500;TrustServerCertificate=True;"
+      CorsUrls: "http://localhost:9990,http://127.0.0.1:9990,http://localhost:8080,http://127.0.0.1:8080"
+      VirtualPath__StaticFile: /app/wwwroot/Static
+      VirtualPath__FolderName: /Static
+    ports:
+      - "9991:9991"
+    volumes:
+      - imes-upload:/app/Upload
+      - imes-download:/app/Download
+      - imes-quartz:/app/quartz
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./源码/iMES.Vue3
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+  # Apple Silicon note:
+  # SQL Server Linux images are x64. This optional service needs Docker Desktop
+  # x86_64 emulation/Rosetta enabled and may still be slower or fail on M2.
+  # Prefer an external SQL Server and keep MSSQL_HOST=host.docker.internal.
+  sqlserver-x64:
+    profiles: ["x64-sqlserver"]
+    platform: linux/amd64
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-Your_Strong_Password123!}"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+
+volumes:
+  redis-data:
+  imes-upload:
+  imes-download:
+  imes-quartz:
+  mssql-data:

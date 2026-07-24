@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json.Linq;
 using iMES.Core.DBManager;
+using iMES.Core.Enums;
+using iMES.Core.Filters;
 using Newtonsoft.Json;
 
 namespace iMES.Custom.Controllers
@@ -65,7 +67,8 @@ namespace iMES.Custom.Controllers
             return Content("修改成功");
         }
 
-        [HttpPost, HttpGet, Route("saveOrUpdateData"), AllowAnonymous]
+        [HttpPost, HttpGet, Route("saveOrUpdateData")]
+        [ApiActionPermission("Base_PrintTemplate", ActionPermissionOptions.Update)]
         [AcceptVerbs("GET", "POST")]
         public IActionResult saveOrUpdateData(string stage,string id,string cat)
         {

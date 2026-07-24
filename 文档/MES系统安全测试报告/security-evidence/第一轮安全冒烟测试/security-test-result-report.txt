@@ -1,0 +1,84 @@
+MES 安全动态测试结果报告
+==========================
+
+生成时间：2026-07-20
+测试根目录：/Users/jmsfile/Desktop/MES--System-main
+API 地址：http://127.0.0.1:9991
+管理员用户：User_Id=1
+普通用户：User_Id=4378 
+一、测试范围
+------------
+1. 未授权访问测试
+2. 普通用户访问管理员接口
+3. IDOR / 水平越权测试
+4. SQL 注入初步验证
+5. XSS 测试
+6. 文件上传测试
+7. CORS 测试
+8. 错误信息泄露测试
+
+二、动态测试摘要
+----------------
+- 未授权访问: 匿名访问验证码接口（预期允许）: 200; 匿名访问当前用户信息（预期拒绝）: 401; 匿名访问菜单接口（预期拒绝）: 404; 匿名读取打印模板资源（高风险验证）: 200; 匿名访问日志测试接口（会产生测试日志）: 200
+- 普通用户访问管理员接口: 普通用户访问超级管理员改密接口（不存在用户，避免真实改密）: 401; 管理员访问同一接口作为对照（不存在用户，避免真实改密）: 200
+- IDOR/水平越权: 普通用户读取自身当前用户信息: 200; 普通用户按 User_Id=1 查询 Sys_User 列表: 401; 管理员按 User_Id=1 查询 Sys_User 列表作为对照: 200
+- SQL/XSS/错误信息: SQL 注入扰动：getReportDetailInfo workOrderId: 200; SQL 注入扰动：WorkOrderCode like: 200; XSS 反射探测：DefectItemName: 200; 错误信息泄露：匿名 invalid Guid: 500; 错误信息泄露：已认证 invalid int: 200
+- 文件上传: 匿名上传 HTML 文件: 401; 普通用户上传 HTML 文件: 401
+- CORS: CORS 预检：恶意 Origin + Authorization: 204; CORS 普通 GET：Swagger + 恶意 Origin: 200
+
+三、关键发现与判定
+------------------
+- [高风险] 匿名接口暴露：打印模板资源接口返回 200，日志测试接口返回 200；其中打印模板接口可匿名返回业务字段元数据，Sys_Log/test 可匿名触发测试日志写入。
+- [通过] 基础鉴权：匿名访问当前用户信息返回 401，未返回当前用户业务数据。
+- [通过] 普通用户访问管理员接口：普通用户调用超级管理员改密接口返回 401；管理员对照请求返回 200 并进入业务校验。
+- [通过] IDOR / 水平越权：普通用户查询管理员 User_Id=1 返回 401；管理员对照查询返回 200。
+- [待复测] SQL 注入初步验证：两个只读扰动请求均返回 200，未观察到 SQL 异常或堆栈泄露（report=未发现异常文本，workOrder=未发现异常文本）；但 workOrderId 非纯数字 payload 未被直接拒绝，建议补充强类型校验与专项复测。
+- [通过/待关注] XSS 初测：脚本 payload 查询返回 200，响应摘录中未出现反射 payload；源码证据中仍需人工复核 v-html/innerHTML/WangEditor 使用点。
+- [通过] 文件上传边界：匿名上传 HTML 返回 401，普通用户上传 HTML 返回 401，本轮未形成可访问上传文件。
+- [中风险] CORS 策略：恶意 Origin 预检返回 204，Access-Control-Allow-Origin=*；Swagger 恶意 Origin GET 返回 200。生产环境建议改为明确白名单。
+- [低风险] 错误信息处理：匿名 invalid Guid 返回 500，本轮未见详细堆栈；建议统一返回 400/业务错误码，避免匿名用户触发 500。
+
+四、整改建议
+------------
+1. 需重点关注匿名接口：打印模板相关接口、Sys_Log/test、Swagger 暴露。
+2. 普通用户访问超级管理员接口应返回无权限；若响应进入“用户不存在”等业务逻辑，说明权限控制存在缺陷。
+3. IDOR 测试以普通用户查询 User_Id=1 为核心；若返回管理员记录，判定存在越权读取风险。
+4. SQL 注入初步测试只做只读参数扰动；若出现 SQL 错误、堆栈或异常详情，需要进入专项 SQL 注入复测。
+5. XSS 初步测试关注响应反射和源码中的 v-html/innerHTML/WangEditor 使用点。
+6. 文件上传测试使用无害 HTML 文件；若匿名或普通用户可上传，需继续检查文件类型校验、公开访问和下载鉴权。
+7. CORS 测试如对 https://evil.example 返回 Access-Control-Allow-Origin: * 或原样回显，生产环境需立即收紧。
+8. 错误信息泄露测试如响应包含 .NET 异常类型、堆栈、SQL 语句、文件路径，应关闭详细错误并统一错误响应。
+
+五、截图文件路径
+----------------
+/Users/jmsfile/Desktop/MES--System-main/security-evidence/第一轮安全冒烟测试
+
+六、证据文件
+------------
+00-inventory/environment.txt
+00-inventory/project-files.txt
+00-inventory/ports-config.txt
+01-source/sensitive-keywords.txt
+01-source/authentication-authorization.txt
+01-source/api-routes.txt
+01-source/sql-related-code.txt
+01-source/file-upload.txt
+01-source/frontend-xss.txt
+01-source/cors-swagger-debug.txt
+02-dotnet/dotnet-restore.txt
+02-dotnet/target-frameworks.txt
+02-dotnet/vulnerable-packages.json
+02-dotnet/outdated-packages.json
+02-dotnet/deprecated-packages.json
+03-npm/npm-audit-all.json
+03-npm/npm-audit-production.json
+04-runtime/docker-ps-all.txt
+04-runtime/docker-compose-logs.txt
+04-runtime/listening-ports.txt
+04-runtime/swagger.json
+05-dynamic/unauthenticated-users.txt
+05-dynamic/low-user-admin-api.txt
+05-dynamic/idor-horizontal-test.txt
+05-dynamic/cors-test.txt
+05-dynamic/upload-test.txt
+05-dynamic/input-validation-test.txt

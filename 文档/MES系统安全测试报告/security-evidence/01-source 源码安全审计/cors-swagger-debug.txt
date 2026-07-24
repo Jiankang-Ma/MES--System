@@ -1,0 +1,27 @@
+$ rg -n AllowAnyOrigin|Cors|UseSwagger|SwaggerUI|DeveloperException|UseException|UseStaticFiles|ServeUnknownFileTypes 源码/iMES.Net/iMES.WebApi -g *.cs -g *.json
+exit_code=0
+
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:17:using Microsoft.AspNetCore.Cors;
+源码/iMES.Net/iMES.WebApi/Startup.cs:107:            string corsUrls = Configuration["CorsUrls"];
+源码/iMES.Net/iMES.WebApi/Startup.cs:112:            services.AddCors(options =>
+源码/iMES.Net/iMES.WebApi/Startup.cs:117:                            builder.AllowAnyOrigin()
+源码/iMES.Net/iMES.WebApi/Startup.cs:191:                app.UseDeveloperExceptionPage();
+源码/iMES.Net/iMES.WebApi/Startup.cs:198:            app.UseStaticFiles().UseStaticFiles(new StaticFileOptions
+源码/iMES.Net/iMES.WebApi/Startup.cs:200:                ServeUnknownFileTypes = true
+源码/iMES.Net/iMES.WebApi/Startup.cs:213:            app.UseStaticFiles(new StaticFileOptions()
+源码/iMES.Net/iMES.WebApi/Startup.cs:229:            app.UseSwagger();
+源码/iMES.Net/iMES.WebApi/Startup.cs:230:            app.UseSwaggerUI(c =>
+源码/iMES.Net/iMES.WebApi/Startup.cs:238:            app.UseCors();
+源码/iMES.Net/iMES.WebApi/Startup.cs:247:                    string corsUrls = Configuration["CorsUrls"];
+源码/iMES.Net/iMES.WebApi/Startup.cs:250:                    .RequireCors(t =>
+源码/iMES.Net/iMES.WebApi/appsettings.json:28:    "UseSignalR": "true" //是否使用SignalR(2022.05.03)，注意需要将端的地址配置到下面的CorsUrls属性中
+源码/iMES.Net/iMES.WebApi/appsettings.json:44:  "CorsUrls": "http://localhost:8081,http://localhost:8082,http://localhost:8080,http://localhost:7080,http://localhost:9980,http://127.0.0.1:9980,http://localhost:9990,http://www.volcore.xyz,http://app.625sc.com,https://imes.625sc.com",
+源码/iMES.Net/iMES.WebApi/obj/project.assets.json:1901:          "Swashbuckle.AspNetCore.SwaggerUI": "5.0.0-rc5"
+源码/iMES.Net/iMES.WebApi/obj/project.assets.json:1945:      "Swashbuckle.AspNetCore.SwaggerUI/5.0.0-rc5": {
+源码/iMES.Net/iMES.WebApi/obj/project.assets.json:1948:          "lib/netcoreapp3.0/Swashbuckle.AspNetCore.SwaggerUI.dll": {
+源码/iMES.Net/iMES.WebApi/obj/project.assets.json:1953:          "lib/netcoreapp3.0/Swashbuckle.AspNetCore.SwaggerUI.dll": {
+源码/iMES.Net/iMES.WebApi/obj/project.assets.json:6070:    "Swashbuckle.AspNetCore.SwaggerUI/5.0.0-rc5": {
+源码/iMES.Net/iMES.WebApi/obj/project.assets.json:6077:        "lib/netcoreapp3.0/Swashbuckle.AspNetCore.SwaggerUI.dll",
+源码/iMES.Net/iMES.WebApi/obj/project.assets.json:6078:        "lib/netcoreapp3.0/Swashbuckle.AspNetCore.SwaggerUI.xml",
+源码/iMES.Net/iMES.WebApi/obj/project.assets.json:6079:        "lib/netstandard2.0/Swashbuckle.AspNetCore.SwaggerUI.dll",
+源码/iMES.Net/iMES.WebApi/obj/project.assets.json:6080:        "lib/netstandard2.0/Swashbuckle.AspNetCore.SwaggerUI.xml",

@@ -1,0 +1,19 @@
+generatedAt=2026-07-20T06:45:52.039Z
+
+root=/Users/jmsfile/Desktop/MES--System-main
+
+apiBase=http://127.0.0.1:9991
+
+node=v24.18.0
+
+$ npm --version
+exit_code=0
+
+11.16.0
+
+
+
+$ dotnet --version
+exit_code=0
+
+10.0.301

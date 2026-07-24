@@ -1,0 +1,28 @@
+MES 系统源码审计证据索引
+
+1. 硬编码密钥与默认凭据
+- 源码/iMES.Net/iMES.WebApi/appsettings.json:19,26,31-40,96
+- docker-compose.yml:4,22,25-27,59
+- 源码/iMES.Vue3/src/views/Login.vue:23
+
+2. 匿名接口
+- 已修复写接口：源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:70-72
+- 仍需业务确认的读取类接口：源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:101,189,220,241,302
+- 已修复测试接口：源码/iMES.Net/iMES.WebApi/Controllers/System/Sys_LogController.cs:21-24
+
+3. CORS、Swagger、静态文件
+- 源码/iMES.Net/iMES.WebApi/Startup.cs:107-119,124-160,198-221
+
+4. SQL 注入与动态 SQL
+- 已修复：源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_ReportWorkOrderController.cs:85-93
+- 已修复：源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderService.cs:398-404
+- 未复现候选：源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs:64-70
+- 需治理：源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:46-54,76-83,121-135,216-243
+
+5. 上传与前端 XSS 面
+- 源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:361-397,424-466
+- 源码/iMES.Vue3/src/store/index.js:5-8,28,56-60
+- 源码/iMES.Vue3/src/api/http.js:20-25,125,142,271-320
+- 源码/iMES.Vue3/src/components/basic/UploadExcel.vue:53,103-120,137-147
+- 源码/iMES.Vue3/src/components/basic/MesTable.vue:104-110,279-282
+- 源码/iMES.Vue3/src/components/editor/MesWangEditor.vue:6,55,81,90,115

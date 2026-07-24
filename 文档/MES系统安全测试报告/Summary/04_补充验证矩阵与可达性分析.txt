@@ -1,0 +1,70 @@
+MES 系统补充验证矩阵与可达性分析
+日期：2026-07-21
+
+一、结论口径
+
+1. 确认：已有源码、配置或动态请求证据证明问题存在。
+2. 部分确认：入口或危险配置存在，但完整攻击链尚未闭环。
+3. 潜在：源码模式、依赖公告或配置基线提示风险，但当前环境未确认可利用。
+4. Remediated：已完成代码或配置修改，但尚未完成独立动态复测。
+5. Closed：仅用于整改完成、部署到目标环境且动态复测通过。
+
+二、认证后权限矩阵
+
+| 接口/能力 | 匿名用户 | 普通用户 User_Id=4378 | 管理员 User_Id=1 | 结论 |
+|---|---|---|---|---|
+| POST /api/User/getCurrentUserInfo | 401 | 200，返回自身信息 | 未单独复测 | 基础认证有效 |
+| POST /api/User/modifyUserPwd | 未测 | 401，角色无权限 | 200，进入业务校验 | 管理员权限控制有效 |
+| POST /api/Sys_User/GetPageData 查询 User_Id=1 | 未测 | 401，无权限 | 200，返回管理员用户记录 | 水平越权初测未成功 |
+| POST /api/Sys_Menu/getMenu | 404/拒绝 | 待补充 | 待补充 | 需补齐菜单权限矩阵 |
+| POST /api/*/Upload | 401 | 401，无权限 | 待补充 | 上传链需具备 Upload 权限账号复测 |
+| GET /api/Base_PrintTemplate/getResourceByCatId | 200 | 待补充 | 待补充 | 匿名访问已确认 |
+
+三、匿名接口动态验证
+
+| 接口 | 结果 | 状态 |
+|---|---|---|
+| /api/User/getVierificationCode | 200，返回验证码图片与 uuid | 确认正常匿名接口 |
+| /api/User/getCurrentUserInfo | 401，未返回用户信息 | 确认防护有效 |
+| /api/Base_PrintTemplate/getResourceByCatId | 200，返回销售订单字段元数据 | 部分确认，高优先级复测 |
+| /api/Sys_Log/test | 200，源码显示写入 10 条日志 | 确认，中风险组合链条件 |
+| /swagger/index.html | 200，Swagger UI 可访问 | 部分确认，低/中风险暴露面 |
+
+四、上传利用链
+
+| 环节 | 证据 | 结论 |
+|---|---|---|
+| 鉴权 | ApiBaseController.Upload 需要 Upload 权限；匿名和普通用户上传 HTML 均 401 | 本轮未确认低权上传 |
+| 文件校验 | ServiceBase.Upload 直接保存原始文件名，未见扩展名、MIME、魔数、大小校验启用 | 潜在风险确认 |
+| 公开访问 | Startup 公开 /Upload，根静态文件允许未知类型 | 成功上传后可能公开访问 |
+| 待复测 | 使用具备 Upload 权限账号上传 HTML、伪装图片、双扩展名、大文件并访问回显 | 完整利用链尚未闭环 |
+
+五、XSS 数据流
+
+| 数据源 | 存储/传输 | 渲染点 | 结论 |
+|---|---|---|---|
+| 富文本编辑器输入 | modelValue 保存 HTML | 后续展示或打印模板渲染 | 存储型 XSS 潜在 |
+| 表格 formatter | 列配置和业务字段拼接 HTML | MesTable.vue v-html | formatter 拼接用户字段时可触发 |
+| 上传/导入结果 message | 后端或前端错误消息 | UploadExcel.vue v-html | 返回内容未净化时可触发 |
+| 用户 token | localStorage.user | XSS 成功后可读取 | XSS 影响会话 |
+| DefectItemName 反射探测 | 返回 200，未反射 payload | 未确认反射 XSS | 需存储型专项复测 |
+
+六、依赖可达性分析
+
+| 类别 | 代表项 | 可达性 | 处置 |
+|---|---|---|---|
+| EOL | .NET Core 3.1、Node 14 | 运行/构建链确认存在 | 按平台升级治理，不等同单个漏洞 |
+| 后端生产依赖 | SQL Client、System.*、SkiaSharp、Newtonsoft.Json | 需结合调用点确认 | 优先升级生产可达包 |
+| Swagger 组件 | Swashbuckle.AspNetCore.SwaggerUI | Swagger 暴露时可达 | 生产关闭或鉴权 |
+| 前端生产依赖 | axios、wangeditor、echarts、element-plus | 前端页面可达 | 优先升级或替换，补回归 |
+| 开发依赖 | @vue/cli-service、webpack 链路 | 主要在 CI/开发环境可达 | 隔离 CI 权限，升级构建链 |
+
+七、容器配置测试
+
+| 测试点 | 当前观察 | 建议 |
+|---|---|---|
+| API 端口 | imes-webapi-dev 映射 0.0.0.0:9991->9991/tcp | 生产经反向代理暴露，限制直接访问 |
+| SQL Server | 容器映射 1433，应用使用 sa | 使用最小权限账号，限制网络访问 |
+| DataProtection | 日志提示 key 未持久化 | 持久化 key ring 或接入密钥系统 |
+| Quartz | SQL pre-login handshake 错误 | 修复 TLS/驱动/连接串并加健康检查 |
+| 静态文件 | /Upload 公开映射 | 私有文件走授权下载，公开文件隔离域名 |

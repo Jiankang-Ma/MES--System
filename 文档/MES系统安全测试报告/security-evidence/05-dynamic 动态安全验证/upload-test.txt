@@ -1,0 +1,33 @@
+文件上传测试结果
+========
+
+使用无害 HTML 文件测试匿名/普通用户上传边界，关注是否被鉴权与类型校验拦截。
+
+## 匿名上传 HTML 文件
+POST http://127.0.0.1:9991/api/Base_DefectItem/Upload
+status=401 Unauthorized durationMs=3
+requestHeaders={}
+responseHeaders={
+  "content-type": "application/json",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+{"message":"授权未通过","status":false,"code":401}
+
+## 普通用户上传 HTML 文件
+POST http://127.0.0.1:9991/api/Base_DefectItem/Upload
+status=401 Unauthorized durationMs=7
+requestHeaders={
+  "Authorization": "Bearer eyJhbGciOiJIUz...6Ke6Bghk1E (len=224)"
+}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-length": "47",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel"
+}
+bodyExcerpt:
+{"status":false,"message":"没有权限操作"}

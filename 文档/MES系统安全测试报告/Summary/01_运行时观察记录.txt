@@ -1,0 +1,19 @@
+ MES 系统运行时观察记录
+日期：2026-07-20
+
+1. 前端
+- screen -ls：存在 detached 会话 5544.imes-vue3。
+- ps aux：存在 node --openssl-legacy-provider ./node_modules/@vue/cli-service/bin/vue-cli-service.js serve。
+- curl -i http://127.0.0.1:9990：HTTP 200，页面标题为“MES-您的新一代工厂管家”。
+- curl -i http://127.0.0.1:8080：连接拒绝。
+
+2. 后端与数据库
+- docker ps：imes-webapi-dev 容器 Up，映射 0.0.0.0:9991->9991/tcp。
+- docker ps：sql_server_container 容器 Up，映射 1433/tcp。
+- curl -i http://127.0.0.1:9991/swagger/index.html：曾返回 HTTP 200，Server: Kestrel，Swagger UI 可访问。
+- 后续对 9991 的部分探测出现 connection refused，说明本地 API 可用性不稳定。
+- docker logs --tail 40 imes-webapi-dev：发现 DataProtection key 未持久化提示，以及 Quartz SQL pre-login handshake 错误。
+
+3. 动态验证边界
+- 未执行破坏性渗透测试、暴力破解、真实数据导出或写入式攻击。
+- 当前环境未暴露可用的浏览器自动化工具，未采集 UI 截图。

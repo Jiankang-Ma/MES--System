@@ -1,0 +1,72 @@
+未授权访问测试结果
+=========
+
+仅对本地测试环境执行。重点观察未登录接口是否返回 200/业务数据/详细错误。
+
+## 匿名访问验证码接口（预期允许）
+GET http://127.0.0.1:9991/api/User/getVierificationCode
+status=200 OK durationMs=13
+requestHeaders={}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+{"img":"iVBORw0KGgoAAAANSUhEUgAAAEgAAAAgCAYAAACxSj5wAAAABHNCSVQICAgIfAhkiAAAAiJJREFUaIHtmcF1wyAMhoVfp4F9eoiHSToMPmQfex16aKEUS4BkYeeQ7+QXgyT/SDImECp4a2u3D48fbUfDLowKZjRnxQ3cALi/t8jnveJikQKN4kwRNHyxBLqqJ2kgjWWCXxbnoMVtXZtjjozviUGTLn89CsMDgrc2wOP0ikxo975eOyaEEDDhzJfBBb2jw3mrAnR2GbP3i4VojAFvLczblsZgvks/5ZjW/QkQKHE0WZzrFhMTDQCSOByfXD52wSDitLLmCItz7F5VZo9WHBhoBuWMFCciWVnt7MEW6baufxlElVX+u0SsVo1Twe3iMAbtRQB4j9KimUEU2INKtwpxHtZrvLUs+1LEJUYZ4/YNKXkpSX3mD99rI45LJRbuYVdmVElxnUjHhRD+ZRX1NgM4ll21uewMyo3Fa05wo8qEElniL7fFFiifHK81g+PCadC1/keh1qQlu9h8DFU+lAB586b8SShtTOkNwtw954Z6MoWbTVGYcl4UhrsPkoo3YRP906YGfbT51T4pakHHOeWYedvQ7OmNpwYWD1pi8yfv1SpZndocb226vzi3E4QrUqtX1kgC+adsVbj0BFnufbA587YN3UEnNM9UNLjqjDr6Kn2S50FvfhC/5ns5uhfCNqZSO6L5r1ReZ9Pz7NcdMhNo96BeG9Q4tkAafxCeSc1vT0zvJt1geJM+i1Efxk2BrjjFk9DzYSzhJUqMe0JJfaeN4Bul4t1SKkSu6gAAAABJRU5ErkJggg==","uuid":"7e712a1b-45da-4fea-ae0f-caaab3aed3c6"}
+
+## 匿名访问当前用户信息（预期拒绝）
+POST http://127.0.0.1:9991/api/User/getCurrentUserInfo
+status=401 Unauthorized durationMs=4
+requestHeaders={}
+responseHeaders={
+  "content-type": "application/json",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+{"message":"授权未通过","status":false,"code":401}
+
+## 匿名访问菜单接口（预期拒绝）
+POST http://127.0.0.1:9991/api/Sys_Menu/getMenu
+status=404 Not Found durationMs=2
+requestHeaders={}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-length": "0",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel"
+}
+bodyExcerpt:
+(empty)
+
+## 匿名读取打印模板资源（高风险验证）
+GET http://127.0.0.1:9991/api/Base_PrintTemplate/getResourceByCatId?id=00000000-0000-0000-0000-000000000000&cat=Production_SalesOrder
+status=200 OK durationMs=13
+requestHeaders={}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+{"data":[{"id":"bill","name":"单据头","fields":[{"id":"SalesOrder_Id","name":"销售订单主键ID"},{"id":"SalesOrderCode","name":"单据编号"},{"id":"Remark","name":"备注"},{"id":"CreateDate","name":"创建时间"},{"id":"CreateID","name":"创建人编号"},{"id":"Creator","name":"创建人"},{"id":"Modifier","name":"修改人"},{"id":"ModifyDate","name":"修改时间"},{"id":"ModifyID","name":"修改人编号"}],"url":"dataBill"},{"id":"detail","name":"单据体","fields":[{"id":"SalesOrderList_Id","name":"销售订单产品明细表主键ID"},{"id":"SalesOrder_Id","name":"销售订单"},{"id":"ProductCode","name":"产品编号"},{"id":"ProductName","name":"产品名称"},{"id":"ProductStandard","name":"产品规格"},{"id":"WorkOrderCode","name":"工单编号"},{"id":"Qty","name":"数量"},{"id":"FinishQty","name":"完成数"},{"id":"CreateDate","name":"创建时间"},{"id":"CreateID","name":"创建人编号"},{"id":"Creator","name":"创建人"},{"id":"Modifier","name":"修改人"},{"id":"ModifyDate","name":"修改时间"},{"id":"ModifyID","name":"修改人编号"},{"id":"Product_Id","name":"产品ID"}],"url":"dataDetail"}],"message":"成功","status":1,"success":true}
+
+## 匿名访问日志测试接口（会产生测试日志）
+GET http://127.0.0.1:9991/api/Sys_Log/test
+status=200 OK durationMs=14
+requestHeaders={}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-length": "2",
+  "content-type": "text/plain; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel"
+}
+bodyExcerpt:
+11

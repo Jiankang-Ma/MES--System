@@ -1,0 +1,616 @@
+$ rg -n FromSql|ExecuteSql|QueryList|QueryFirst|Dapper|StringBuilder|WHERE|where|SELECT|SqlFilters|DbSql|\$@|\$" 源码/iMES.Net -g *.cs
+exit_code=0
+
+源码/iMES.Net/iMES.System/Services/flow/Partial/Sys_WorkFlowTableService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.System/Services/flow/Partial/Sys_WorkFlowStepService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.System/Services/flow/Partial/Sys_WorkFlowService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.System/Services/flow/Partial/Sys_WorkFlowTableStepService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.System/Services/Quartz/Partial/Sys_QuartzLogService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.System/Services/Quartz/Partial/Sys_QuartzOptionsService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_MenuService.cs:39:            //  DBServerProvider.SqlDapper.q
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_MenuService.cs:198:                                return webResponse.Error($"视图/表名【{menu.TableName}】已被其他菜单使用");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_MenuService.cs:213:                        return webResponse.Error($"父级id不能为自己");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_MenuService.cs:217:                        return webResponse.Error($"不能选择此父级id，选择的父级id与当前菜单形成依赖关系");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_MenuService.cs:253:                Logger.Info($"表:{menu.TableName},菜单：{menu.MenuName},权限{menu.Auth},{(webResponse.Status ? "成功" : "失败")}{webResponse.Message}");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_UserService.cs:164:                Logger.Info(LoggerType.ReplaceToeken, ($"用户Id:{userInfo?.User_Id},用户{userInfo?.UserTrueName}")
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_UserService.cs:356:                return responseData.OK($"用户新建成功.帐号{user.UserName}密码{pwd}");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_UserService.cs:385:                    return new WebResponseContent().Error($"没有权限删除用户：{string.Join(',', userNames)}");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_UserService.cs:596:                     Logger.Error($"解析表单出错：{fileName}，错误信息{ex.Message}。");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DeptService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_RoleService.cs:186:                            Logger.Error($"sys_roleservice获取子角色异常RoleContext,角色id:{x.Id}");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_RoleService.cs:187:                            Console.WriteLine($"sys_roleservice获取子角色异常RoleContext,角色id:{x.Id}");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_RoleService.cs:301:                _responseContent.OK($"保存成功：新增加配菜单权限{addCount}条,更新菜单{updateCount}条,删除权限{delAuths.Count()}条");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_RoleService.cs:309:                Logger.Info($"权限分配置:{message}{_responseContent.Message}");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_RoleService.cs:334:                return _responseContent.Error($"角色名【{role.RoleName}】已存在,请设置其他角色名");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_RoleService.cs:346:                    return _responseContent.Error($"上级角色不能选择自己");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_RoleService.cs:350:                    return _responseContent.Error($"不能修改自己的角色");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_RoleService.cs:354:                    return _responseContent.Error($"不能选择此上级角色，选择的上级角色与当前角色形成依赖关系");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_VersionInfoService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:41:                dbSql = s.DbSql,
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:54:                return repository.DapperContext.QueryList<object>(dbSql, null);
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:76:            string sql = Dictionaries.Where(x => x.DicNo == dicNo).FirstOrDefault()?.DbSql;
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:82:            sql = $"SELECT * FROM ({sql}) AS t WHERE value LIKE @value";
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:83:            return repository.DapperContext.QueryList<object>(sql, new { value = "%" + value + "%" });
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:99:            //string sql = Dictionaries.Where(x => x.DicNo == dicNo).FirstOrDefault()?.DbSql;
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:104:            //sql = $"SELECT * FROM ({sql}) AS t WHERE t.key = @key";
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:105:            //return await Task.FromResult(repository.DapperContext.QueryFirst<object>(sql, new { key }));
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:121:            var dicInfo = Dictionaries.Where(x => keyData.ContainsKey(x.DicNo) && !string.IsNullOrEmpty(x.DbSql))
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:122:                .Select(x => new { x.DicNo, x.DbSql })
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:131:                    string sql = DictionaryHandler.GetCustomDBSql(x.DicNo, x.DbSql);
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:132:                    sql = $"SELECT * FROM ({sql}) AS t WHERE " +
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:133:                   $"{keySql}" +
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:134:                   $" in @data";
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:135:                    list.Add(new { key = x.DicNo, data = repository.DapperContext.QueryList<object>(sql, new { data }) });
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:148:            var dicInfo = Dictionaries.Where(x => keyData.ContainsKey(x.DicNo) && !string.IsNullOrEmpty(x.DbSql))
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:149:                .Select(x => new { x.DicNo, x.DbSql })
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:157:                    string sql = DictionaryHandler.GetCustomDBSql(x.DicNo, x.DbSql);
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:158:                    sql = $"SELECT * FROM ({sql}) AS t WHERE t.key=any(@data)";
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:159:                    list.Add(new { key = x.DicNo, data = repository.DapperContext.QueryList<object>(sql, new { data = data.Select(s => s.ToString()).ToList() }) });
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:183:                return new WebResponseContent().Error($"字典编号:{ dicNo}已存在。!");
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:194:                dictionary.DbSql = SqlFilters(dictionary.DbSql);
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:216:        private static string SqlFilters(string source)
+源码/iMES.Net/iMES.System/Services/System/Partial/Sys_DictionaryService.cs:258:                dic.DbSql = SqlFilters(dic.DbSql);
+源码/iMES.Net/iMES.System/Services/form/Partial/FormCollectionObjectService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.System/Services/form/Partial/FormCollectionObjectService.cs:82:                    Logger.Error($"解析表单出错：{data.Title},表单配置：{data.FormConfig},{ex.Message}");
+源码/iMES.Net/iMES.System/Services/form/Partial/FormDesignOptionsService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.WebApi/Program.cs:30:            //        Console.WriteLine($"recieve:{DateTime.Now.ToLongTimeString()}  value:{res.Message.Value}");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaProducer.cs:63://                        Logger.Error(LoggerType.KafkaException, $"Topic:{Topic},ServerIp:{KafkaHelper.GetServerIp()},ServerName:{ KafkaHelper.GetServerName()}", null, $"Delivery Error:{result.Error.Reason}");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaProducer.cs:68://                Logger.Error(LoggerType.KafkaException, $"Topic:{Topic},Delivery failed: { ex.Error.Reason}", null, ex.Message + ex.StackTrace);
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaProducer.cs:91://                //Console.WriteLine($"Delivered '{dr.Value}' to '{dr.TopicPartitionOffset}'");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaProducer.cs:95://                Logger.Error(LoggerType.KafkaException, $"Topic:{Topic},ServerIp:{KafkaHelper.GetServerIp()},ServerName:{ KafkaHelper.GetServerName()},Delivery failed: { ex.Error.Reason}", null, ex.Message + ex.StackTrace);
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:80://                    Logger.Error(LoggerType.KafkaException, null, null, $"Error:{e.Reason}");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:83://                    Console.WriteLine($"-{DateTime.Now:yyyy-MM-dd HH:mm:ss} > 消息监听中..");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:87://                    Console.WriteLine($"-分配的kafka分区:{partitionsStr}");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:91://                    Console.WriteLine($"-回收了kafka的分区:{partitionsStr}");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:113://                        Logger.Error(LoggerType.KafkaException, $"Topic:{Topic},{ex.Error.Reason}", null, ex.Message + ex.StackTrace);
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:117://                        Logger.Error(LoggerType.KafkaException, $"Topic:{result.Topic}", null, ex.Message + ex.StackTrace);
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:137://                    Logger.Error(LoggerType.KafkaException, null, null, $"Error:{e.Reason}");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:140://                    Console.WriteLine($"-{DateTime.Now:yyyy-MM-dd HH:mm:ss} > 消息监听中..");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:144://                    Console.WriteLine($"-分配的kafka分区:{partitionsStr}");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:148://                    Console.WriteLine($"-回收了kafka的分区:{partitionsStr}");
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:170://                        Logger.Error(LoggerType.KafkaException, $"Topic:{Topics.ToArray()},{ex.Error.Reason}", null, ex.Message + ex.StackTrace);
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:174://                        Logger.Error(LoggerType.KafkaException, $"Topic:{result.Topic}", null, ex.Message + ex.StackTrace);
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:211://                    Logger.Error(LoggerType.KafkaException, $"Topic:{Topic}", null, ex.Message + ex.StackTrace);
+源码/iMES.Net/iMES.Core/KafkaManager/Service/KafkaConsumer.cs:243://                Logger.Error(LoggerType.KafkaException, $"Topic:{Topic}", null, ex.Message + ex.StackTrace);
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProductService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProductService.cs:87:              return DBServerProvider.SqlDapper.QueryList<Base_Product>(sql, null);
+源码/iMES.Net/iMES.Warehouse/Services/Warehouse/Partial/Ware_OutWareHouseBillService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Warehouse/Services/Warehouse/Partial/Ware_OutWareHouseBillService.cs:83:                        return webResponse.Error($"产品库存不足，当前库存{available}，申请出库{requested}");
+源码/iMES.Net/iMES.Report/Services/Report/Partial/View_DefectItemDistributeService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Warehouse/Services/Warehouse/Partial/Ware_WareHouseBillService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_Process_ExtendDataService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Report/Services/Report/Partial/View_SalaryReportService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Warehouse/Services/Warehouse/Partial/View_WareInOutDetailService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Warehouse/Services/Warehouse/Partial/View_StockBalanceService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_NoticeService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Report/Services/Report/Partial/View_DefectItemSummaryService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Warehouse/Services/Warehouse/Partial/Ware_WareHouseBillListService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Warehouse/Services/Warehouse/Partial/Ware_OutWareHouseBillListService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessLineListService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/KafkaManager/KafkaHelper.cs:51://                if (Regex.IsMatch(ip.ToString(), @"^10\.((25[0-5]|2[0-4]\d|1\d{2}|\d?\d)\.){2}(25[0-5]|2[0-4]\d|1\d{2}|\d?\d)$"))
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_DefectItemService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/Extensions/ObjectExtension.cs:748:            where T : struct
+源码/iMES.Net/iMES.Core/Extensions/ObjectExtension.cs:1174:        private static readonly Regex MobileRegex = new Regex("^1[3-9][0-9]\\d{4,8}$");
+源码/iMES.Net/iMES.Core/Extensions/ObjectExtension.cs:1175:        private static readonly Regex EmailRegex = new Regex("^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\\.[a-zA-Z0-9_-]{2,3}){1,2})$");
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:9:using iMES.Core.Dapper;
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:150:        /// 获取调用系统库的Dapper(2020.08.22)
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:152:        public static ISqlDapper SqlDapper
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:156:                return new SqlDapper(DefaultConnName);
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:163:        public static ISqlDapper SqlDapperReport
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:167:                return new SqlDapper(ReportConnectingString);
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:174:        public static ISqlDapper SqlDapperService
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:178:                return new SqlDapper(ServiceConnectingString);
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:185:        public static ISqlDapper SqlDapperUserCurrentService
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:189:                return new SqlDapper(ServiceUserCurrnetConnectingString);
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:196:        public static ISqlDapper GetSqlDapper(string dbName = null)
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:198:            return new SqlDapper(dbName ?? DefaultConnName);
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:203:        public static ISqlDapper GetSqlDapper<TEntity>()
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:221:            return GetSqlDapper(dbName);
+源码/iMES.Net/iMES.Core/DBManager/DBServerProvider.cs:276:            throw new Exception($"未配置[{key}]的数据库连接");
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_DefectItem_ExtendDataService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Report/Services/Report/Partial/View_ProductionReportService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Report/Services/Report/Partial/View_EmployeePerformanceService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/Extensions/RequestExtension.cs:13:        public static T GetService<T>(this HttpContext context) where T : class
+源码/iMES.Net/iMES.Core/Extensions/RequestExtension.cs:65:        public static T Request<T>(this HttpContext context, string parameter) where T : class
+源码/iMES.Net/iMES.Report/Services/Report/Partial/View_OutputStatisticsService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:236:        ///    string sql = " ;DELETE FROM " + typeEntity.Name + " where " + typeEntity.GetKeyName() +
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:323:            StringBuilder declareTable = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:341:            StringBuilder stringLeft = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:342:            StringBuilder stringCenter = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:343:            StringBuilder stringRight = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:405:                declareTable.AppendLine(" SELECT " + (string.Join(",", fixedColumns?.GetExpressionToArray() ?? new string[] { "*" })) + " FROM " + tempTablbe);
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:449:            StringBuilder declareTable = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:455:            StringBuilder stringLeft = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:456:            StringBuilder stringCenter = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:457:            StringBuilder stringRight = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:516:            declareTable.AppendLine(" SELECT * FROM " + tempTablbe);
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:817:                message = $"{propertyInfo.GetDisplayName()}不能为空";
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:895:                    // reslutMsg = $"整数{arr[0]}最多位,小数最多{arr[1]}位";
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:917:                    reslutMsg = $"字符长度最多【200000】";
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:930:                        reslutMsg = $"最多只能【{length}】个字符。";
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:1293:            ) where TResult : class
+源码/iMES.Net/iMES.Core/Extensions/EntityProperties.cs:1330:        public static void MapValueToEntity<TSource, TResult>(this TSource source, TResult result, Expression<Func<TResult, object>> expression = null) where TResult : class
+源码/iMES.Net/iMES.Core/Services/Logger.cs:89:                    WriteText($"未获取到httpcontext信息,type:{loggerType.ToString()},reqParam:{requestParameter},respParam:{responseParameter},ex:{ex},success:{status.ToString()}");
+源码/iMES.Net/iMES.Core/Services/Logger.cs:139:                    DBServerProvider.SqlDapper.BulkInsert(queueTable, "Sys_Log", SqlBulkCopyOptions.KeepIdentity, null, _loggerPath);
+源码/iMES.Net/iMES.Core/Services/Logger.cs:151:                    Console.WriteLine($"日志批量写入数据时出错:{ex.Message}");
+源码/iMES.Net/iMES.Core/Services/Logger.cs:164:                Utilities.FileHelper.WriteFile(_loggerPath + "WriteError\\", $"{DateTime.Now.ToString("yyyyMMdd")}.txt", message + "\r\n");
+源码/iMES.Net/iMES.Core/Services/Logger.cs:168:                Console.WriteLine($"日志写入文件时出错:{ex.Message}");
+源码/iMES.Net/iMES.Core/Services/Logger.cs:249:                    log.ExceptionInfo += $"日志读取参数出错:{ex.Message}";
+源码/iMES.Net/iMES.Core/Services/Logger.cs:250:                    Console.WriteLine($"日志读取参数出错:{ex.Message}");
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:133:            string sqlMain = @"SELECT 
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:143:                                where
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:148:            string sqlDetail = @"SELECT 
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:158:                                where
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:164:            List<filedDetail> main = DBServerProvider.SqlDapper.QueryList<filedDetail>(sqlMain, new { tableNameMain });
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:165:            List<filedDetail> detail = DBServerProvider.SqlDapper.QueryList<filedDetail>(sqlDetail, new { tableNameDetail });
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:251:                    sql = "select * from " + tableNameMain + " where SalesOrder_Id=@salesOrder_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:254:                    Production_SalesOrder entity = DBServerProvider.SqlDapper.QueryList<Production_SalesOrder>(sql, new { salesOrder_Id })[0];
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:259:                    sql = "select * from " + tableNameMain + " where ProductPlan_Id=@productPlan_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:261:                    Production_ProductPlan entityProductPlan = DBServerProvider.SqlDapper.QueryList<Production_ProductPlan>(sql, new { productPlan_Id })[0];
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:266:                    sql = "select * from " + tableNameMain + " where AssembleWorkOrder_Id=@assembleWorkOrder_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:268:                    Production_AssembleWorkOrder entityAssembleWorkOrder = DBServerProvider.SqlDapper.QueryList<Production_AssembleWorkOrder>(sql, new { assembleWorkOrder_Id })[0];
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:273:                    sql = "select * from " + tableNameMain + " where OutWareHouseBill_Id=@outWareHouseBill_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:275:                    Ware_OutWareHouseBill entityOutWareHouseBill = DBServerProvider.SqlDapper.QueryList<Ware_OutWareHouseBill>(sql, new { outWareHouseBill_Id })[0];
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:280:                    sql = "select * from " + tableNameMain + " where WareHouseBill_Id=@wareHouseBill_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:282:                    Ware_WareHouseBill entityWareHouseBill = DBServerProvider.SqlDapper.QueryList<Ware_WareHouseBill>(sql, new { wareHouseBill_Id })[0];
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:287:                    sql = "select * from " + tableNameMain + " where SalesOrder_Id=@salesOrder_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:290:                    Production_SalesOrder entity2 = DBServerProvider.SqlDapper.QueryList<Production_SalesOrder>(sql, new { salesOrder_Id2 })[0];
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:313:                    sql = "select * from " + tableNameDetail + " where SalesOrder_Id=@salesOrder_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:314:                    List<Production_SalesOrderList> entityList = DBServerProvider.SqlDapper.QueryList<Production_SalesOrderList>(sql, new { salesOrder_Id });
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:320:                    sql = "select * from " + tableNameDetail + " where ProductPlan_Id=@productPlan_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:321:                    List<Production_ProductPlanList> entityListProductPlan = DBServerProvider.SqlDapper.QueryList<Production_ProductPlanList>(sql, new { productPlan_Id });
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:327:                    sql = "select * from " + tableNameDetail + " where AssembleWorkOrder_Id=@assembleWorkOrder_Id  ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:328:                    List<Production_AssembleWorkOrderList> entityListAssembleWorkOrder = DBServerProvider.SqlDapper.QueryList<Production_AssembleWorkOrderList>(sql, new { assembleWorkOrder_Id });
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:334:                    sql = "select * from " + tableNameDetail + " where OutWareHouseBill_Id=@outWareHouseBill_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:335:                    List<Ware_OutWareHouseBillList> entityListOutWareHouseBill = DBServerProvider.SqlDapper.QueryList<Ware_OutWareHouseBillList>(sql, new { outWareHouseBill_Id });
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:341:                    sql = "select * from " + tableNameDetail + " where WareHouseBill_Id=@wareHouseBill_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:342:                    List<Ware_WareHouseBillList> entityListWareHouseBill = DBServerProvider.SqlDapper.QueryList<Ware_WareHouseBillList>(sql, new { wareHouseBill_Id });
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:348:                    sql = "select * from " + tableNameDetail + " where SalesOrder_Id=@salesOrder_Id ";
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:349:                    List<Production_SalesOrderList> entityList2 = DBServerProvider.SqlDapper.QueryList<Production_SalesOrderList>(sql, new { salesOrder_Id2 });
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_NoticeController.cs:41:            List<NoticeOutput> list = DBServerProvider.SqlDapper.QueryList<NoticeOutput>(woSql, new { });
+源码/iMES.Net/iMES.Core/Extensions/StringExtension.cs:52:            return $"{urlPath}{(urlPath.IndexOf("?token") > 0 ? "&" : "?")}uid={userId}&rt_v={DateTime.Now.ToString("HHmmss")}";
+源码/iMES.Net/iMES.Core/Extensions/StringExtension.cs:76:            if (new Regex(@"^1[3578][01379]\d{8}$").IsMatch(input)
+源码/iMES.Net/iMES.Core/Extensions/StringExtension.cs:78:                || new Regex(@"^(1[012345678]\d{8}|1[345678][0123456789]\d{8})$").IsMatch(input)
+源码/iMES.Net/iMES.Core/Extensions/StringExtension.cs:190:            return Regex.IsMatch(str, @"^[+-]?\d*[.]?\d*$");
+源码/iMES.Net/iMES.Core/Extensions/StringExtension.cs:567:            System.Text.StringBuilder newRandom = new System.Text.StringBuilder(62);
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:8:using iMES.Core.Dapper;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:16:    public interface IRepository<TEntity> where TEntity : BaseEntity
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:24:        ISqlDapper DapperContext { get; }
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:36:        /// <param name="where"></param>
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:38:        List<TEntity> Find(Expression<Func<TEntity, bool>> where);
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:59:        /// <param name="predicate">where条件</param>
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:85:        List<TFind> Find<TFind>(Expression<Func<TFind, bool>> predicate) where TFind : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:87:        Task<TFind> FindAsyncFirst<TFind>(Expression<Func<TFind, bool>> predicate) where TFind : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:91:        Task<List<TFind>> FindAsync<TFind>(Expression<Func<TFind, bool>> predicate) where TFind : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:109:            where Source : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:121:            where Source : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:132:            where Source : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:138:        bool Exists<TExists>(Expression<Func<TExists, bool>> predicate) where TExists : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:140:        Task<bool> ExistsAsync<TExists>(Expression<Func<TExists, bool>> predicate) where TExists : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:178:        IQueryable<TFind> IQueryablePage<TFind>(int pageIndex, int pagesize, out int rowcount, Expression<Func<TFind, bool>> predicate, Expression<Func<TEntity, Dictionary<object, QueryOrderBy>>> orderBy, bool returnRowCount = true) where TFind : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:200:        int Update<TSource>(TSource entity, Expression<Func<TSource, object>> properties, bool saveChanges = false) where TSource : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:202:        int Update<TSource>(TSource entity, bool saveChanges = false) where TSource : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:204:        int Update<TSource>(TSource entity, string[] properties, bool saveChanges = false) where TSource : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:206:        int UpdateRange<TSource>(IEnumerable<TSource> entities, bool saveChanges = false) where TSource : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:214:        int UpdateRange<TSource>(IEnumerable<TSource> models, Expression<Func<TSource, object>> properties, bool saveChanges = false) where TSource : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:216:        int UpdateRange<TSource>(IEnumerable<TSource> entities, string[] properties, bool saveChanges = false) where TSource : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:234:            bool saveChange = false) where Detail : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:253:           where T : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:264:        int ExecuteSqlCommand(string sql, params SqlParameter[] sqlParameters);
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:266:        List<TEntity> FromSql(string sql, params SqlParameter[] sqlParameters);
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:270:        /// 使用方式 FormattableString sql=$"select * from xx where name ={xx} and pwd={xx1} "，
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:271:        /// FromSqlInterpolated内部处理sql注入的问题，直接在{xx}写对应的值即可
+源码/iMES.Net/iMES.Core/BaseProvider/IRepository.cs:276:        IQueryable<TEntity> FromSqlInterpolated([System.Diagnostics.CodeAnalysis.NotNull] FormattableString sql);
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_ProcessController.cs:82:            string woSql = @" SELECT TOP 5   [ProcessName] name, SUM([PlanQty]) data
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_ProcessController.cs:84:            List<BoardEntity> list = DBServerProvider.SqlDapper.QueryList<BoardEntity>(woSql, new { });
+源码/iMES.Net/iMES.Core/Extensions/LambdaExtensions.cs:362:        /// 通过字段动态生成where and /or表达
+源码/iMES.Net/iMES.Core/Extensions/LambdaExtensions.cs:363:        /// 如:有多个where条件，当条件成立时where 1=1 and/or 2=2,依次往后拼接
+源码/iMES.Net/iMES.Core/Extensions/LambdaExtensions.cs:407:        /// 合并两个where条件，如：多个查询条件时，判断条件成立才where
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:30:         where T : BaseEntity
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:31:         where TRepository : IRepository<T>
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:103:                return repository.DbContext.Set<T>().FromSqlRaw(QuerySql);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:106:            return repository.DbContext.Set<T>().FromSqlRaw(multiTenancyString);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:127:            //sql = $" {sql} and createid!={UserContext.Current.UserId}";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:128:            object obj = repository.DapperContext.ExecuteScalar(sql, null);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:145:            //sql = $" {sql} and createid!={UserContext.Current.UserId}";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:146:            object obj = repository.DapperContext.ExecuteScalar(sql, null);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:328:        private PageGridData<Detail> GetDetailPage<Detail>(PageDataOptions options) where Detail : class
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:337:            Expression<Func<Detail, bool>> whereExpression = keyName.CreateExpression<Detail>(options.Value, LinqExpressionType.Equal);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:339:            var queryeable = repository.DbContext.Set<Detail>().Where(whereExpression);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:368:            //    return Response.Error($"文件大小不能超过：{ LimitUpFileSizee}M,{string.Join(",", limitFiles)}");
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:370:            string filePath = $"Upload/Tables/{typeof(T).GetEntityTableName()}/{DateTime.Now.ToString("yyyMMddHHmmsss") + new Random().Next(1000, 9999)}/";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:382:                    //    fileName += $"({i}){fileName}";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:393:                Logger.Error($"上传文件失败：{typeof(T).GetEntityTableCnName()},路径：{filePath},失败文件:{files[i]},{ex.Message + ex.StackTrace}");
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:411:            string dicPath = $"Download/{DateTime.Now.ToString("yyyMMdd")}/Template/".MapPath();
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:429:            string dicPath = $"Upload/{DateTime.Now.ToString("yyyMMdd")}/{typeof(T).Name}/".MapPath();
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:431:            dicPath = $"{dicPath}{Guid.NewGuid().ToString()}_{formFile.FileName}";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:445:                Logger.Error($"表{typeof(T).GetEntityTableCnName()}导入失败{ex.Message + ex.InnerException?.Message}");
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:481:            string savePath = $"Download/ExcelExport/{folder}/".MapPath();
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:582:        public WebResponseContent Add<TDetail>(T entity, List<TDetail> list = null, bool validationEntity = true) where TDetail : class
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:676:        public void AddDetailToDBSet<TDetail>() where TDetail : class
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:682:        private WebResponseContent Add<TDetail>(SaveModel saveDataModel) where TDetail : class
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:717:        public List<Tkey> GetUpdateDetailSelectKeys<DetailT, Tkey>(string detailKeyName, string mainKeyName, string mainKeyValue) where DetailT : class
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:721:            Expression<Func<DetailT, bool>> whereExpression = mainKeyName.CreateExpression<DetailT>(mainKeyValue, LinqExpressionType.Equal);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:722:            List<Tkey> detailKeys = queryable.Where(whereExpression).Select(selectExpression).ToList();
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:735:        public WebResponseContent UpdateToEntity<DetailT>(SaveModel saveModel, PropertyInfo mainKeyProperty, PropertyInfo detailKeyInfo, object keyDefaultVal) where DetailT : class
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1123:                 : $"'{string.Join("','", keys)}'";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1135:            string sql = $"DELETE FROM {entityType.GetEntityTableName() } where {tKey} in ({joinKeys});";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1139:                sql = $"DELETE FROM \"public\".\"{entityType.GetEntityTableName() }\" where \"{tKey}\" in ({joinKeys});";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1148:                        sql += $"DELETE FROM \"public\".\"{detailType.GetEntityTableName()}\" where \"{tKey}\" in ({joinKeys});";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1152:                        sql += $"DELETE FROM {detailType.GetEntityTableName()} where {tKey} in ({joinKeys});";
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1158:            //repository.DapperContext.ExcuteNonQuery(sql, CommandType.Text, null, true);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1165:                repository.ExecuteSqlCommand(sql);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1190:            Expression<Func<T, bool>> whereExpression = typeof(T).GetKeyName().CreateExpression<T>(keys[0], LinqExpressionType.Equal);
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1191:            T entity = repository.FindAsIQueryable(whereExpression).FirstOrDefault();
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1355:            Expression<Func<TSource, object>> sourceExpression = null) where TResult : class
+源码/iMES.Net/iMES.Core/BaseProvider/ServiceBase.cs:1369:        public virtual void MapValueToEntity<TSource, TResult>(TSource source, TResult result, Expression<Func<TResult, object>> expression = null) where TResult : class
+源码/iMES.Net/iMES.Core/Extensions/AutofacManager/AutofacContainerModule.cs:9:        public static TService GetService<TService>() where TService:class
+源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_DefectItemController.cs:45:            List<BoardEntity> list = DBServerProvider.SqlDapper.QueryList<BoardEntity>(woSql, new { });
+源码/iMES.Net/iMES.Core/Extensions/AutofacManager/AutofacContainerModuleExtension.cs:3:using Dapper;
+源码/iMES.Net/iMES.Core/Extensions/AutofacManager/AutofacContainerModuleExtension.cs:17:using iMES.Core.Dapper;
+源码/iMES.Net/iMES.Core/Extensions/AutofacManager/AutofacContainerModuleExtension.cs:72:                SqlMapper.AddTypeHandler(new DapperParseGuidTypeHandler());
+源码/iMES.Net/iMES.Core/BaseProvider/DictionaryComponent/DictionaryViewComponent.cs:1:using iMES.Core.Dapper;
+源码/iMES.Net/iMES.Core/BaseProvider/DictionaryComponent/DictionaryViewComponent.cs:30:            StringBuilder stringBuilder = new StringBuilder();
+源码/iMES.Net/iMES.Core/BaseProvider/DictionaryComponent/DictionaryViewComponent.cs:37:                           where dicNos.Contains(d.DicNo)
+源码/iMES.Net/iMES.Core/BaseProvider/DictionaryComponent/DictionaryViewComponent.cs:38:                           select new { list.DicValue, list.DicName, d.Config, d.DbSql, list.OrderNo, d.DicNo }).ToListAsync();
+源码/iMES.Net/iMES.Core/BaseProvider/DictionaryComponent/DictionaryViewComponent.cs:42:                stringBuilder.AppendLine($" var optionConfig{item.Key} = {item.Select(x => x.Config).FirstOrDefault()}");
+源码/iMES.Net/iMES.Core/BaseProvider/DictionaryComponent/DictionaryViewComponent.cs:44:                string dbSql = item.Select(s => s.DbSql).FirstOrDefault();
+源码/iMES.Net/iMES.Core/BaseProvider/DictionaryComponent/DictionaryViewComponent.cs:46:                stringBuilder.AppendLine($@" var dataSource{item.Key} = {
+源码/iMES.Net/iMES.Core/BaseProvider/DictionaryComponent/DictionaryViewComponent.cs:48:                    ? DBServerProvider.GetSqlDapper().QueryList<object>(dbSql, null).Serialize()
+源码/iMES.Net/iMES.Core/BaseProvider/DictionaryComponent/DictionaryViewComponent.cs:53:                stringBuilder.AppendLine($" optionConfig{item.Key}.data = dataSource{item.Key};");
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Sys_Table_ExtendService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/BaseProvider/IService.cs:13:    public interface IService<T> where T : BaseEntity
+源码/iMES.Net/iMES.Core/BaseProvider/IService.cs:62:        WebResponseContent Add<TDetail>(T entity, List<TDetail> list = null, bool validationEntity = true) where TDetail : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IService.cs:123:           Expression<Func<TSource, object>> sourceExpression = null) where TResult : class;
+源码/iMES.Net/iMES.Core/BaseProvider/IService.cs:134:        void MapValueToEntity<TSource, TResult>(TSource source, TResult result, Expression<Func<TResult, object>> expression = null) where TResult : class;
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_MeritPay_ExtendDataService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:12:using iMES.Core.Dapper;
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:23:    public abstract class RepositoryBase<TEntity> where TEntity : BaseEntity
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:51:        public ISqlDapper DapperContext
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:53:            get { return DBServerProvider.GetSqlDapper<TEntity>(); }
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:87:        public virtual bool Exists<TExists>(Expression<Func<TExists, bool>> predicate) where TExists : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:92:        public virtual Task<bool> ExistsAsync<TExists>(Expression<Func<TExists, bool>> predicate) where TExists : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:106:        public virtual List<TFind> Find<TFind>(Expression<Func<TFind, bool>> predicate) where TFind : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:111:        public virtual Task<TFind> FindAsyncFirst<TFind>(Expression<Func<TFind, bool>> predicate) where TFind : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:121:        public virtual Task<List<TFind>> FindAsync<TFind>(Expression<Func<TFind, bool>> predicate) where TFind : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:146:        public virtual IQueryable<TFind> FindAsIQueryable<TFind>(Expression<Func<TFind, bool>> predicate) where TFind : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:153:            where Source : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:160:              where Source : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:174:            where Source : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:237:        public virtual IQueryable<TFind> IQueryablePage<TFind>(int pageIndex, int pagesize, out int rowcount, Expression<Func<TFind, bool>> predicate, Expression<Func<TEntity, Dictionary<object, QueryOrderBy>>> orderBy, bool returnRowCount = true) where TFind : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:299:        public virtual int Update<TSource>(TSource entity, Expression<Func<TSource, object>> properties, bool saveChanges = false) where TSource : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:308:        public virtual int Update<TSource>(TSource entity, string[] properties, bool saveChanges = false) where TSource : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:312:        public virtual int Update<TSource>(TSource entity, bool saveChanges = false) where TSource : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:316:        public virtual int UpdateRange<TSource>(IEnumerable<TSource> entities, Expression<Func<TSource, object>> properties, bool saveChanges = false) where TSource : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:320:        public virtual int UpdateRange<TSource>(IEnumerable<TSource> entities, bool saveChanges = false) where TSource : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:330:        public int UpdateRange<TSource>(IEnumerable<TSource> entities, string[] properties, bool saveChanges = false) where TSource : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:409:            bool saveChange = false) where Detail : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:435:            bool delNotExist = false) where TDetail : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:442:            Expression<Func<TDetail, bool>> whereExpression = keyName.CreateExpression<TDetail>(keyValue, LinqExpressionType.Equal);
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:444:            List<object> detailKeys = details.Where(whereExpression).Select(selectExpression).ToList();
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:496:            return $"修改[{editCount}]条,新增[{addCount}]条,删除[{delCount}]条";
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:520:                 : $"'{string.Join("','", keys)}'";
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:522:            string sql = $"DELETE FROM {entityType.GetEntityTableName() } where {tKey} in ({joinKeys});";
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:527:                    sql = sql + $"DELETE FROM {detailType.GetEntityTableName()} where {tKey} in ({joinKeys});";
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:529:            return ExecuteSqlCommand(sql);
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:554:            where T : class
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:590:        public virtual int ExecuteSqlCommand(string sql, params SqlParameter[] sqlParameters)
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:592:            return DbContext.Database.ExecuteSqlRaw(sql, sqlParameters);
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:595:        public virtual List<TEntity> FromSql(string sql, params SqlParameter[] sqlParameters)
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:597:            return DBSet.FromSqlRaw(sql, sqlParameters).ToList();
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:602:        /// 使用方式 FormattableString sql=$"select * from xx where name ={xx} and pwd={xx1} "，
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:603:        /// FromSqlInterpolated内部处理sql注入的问题，直接在{xx}写对应的值即可
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:608:        public virtual IQueryable<TEntity> FromSqlInterpolated([NotNull] FormattableString sql)
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:610:            //DBSet.FromSqlInterpolated(sql).Select(x => new { x,xxx}).ToList();
+源码/iMES.Net/iMES.Core/BaseProvider/RepositoryBase.cs:611:            return DBSet.FromSqlInterpolated(sql);
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_AssembleWorkOrderController.cs:50:            List<Production_WorkOrder> list = DBServerProvider.SqlDapper.QueryList<Production_WorkOrder>(woSql, new { });
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessLineService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/Extensions/GenericExtension.cs:29:        public static Dictionary<string, object> ToDictionary<T>(this T t, Expression<Func<T, object>> expression) where T : class
+源码/iMES.Net/iMES.Core/Extensions/GenericExtension.cs:43:        public static Dictionary<string, string> ToDictionary<TInterface, T>(this TInterface t, Dictionary<string, string> dic = null) where T : class, TInterface
+源码/iMES.Net/iMES.Core/Tenancy/TenancyManager.cs:8:    public static class TenancyManager<T> where T : class
+源码/iMES.Net/iMES.Core/Tenancy/TenancyManager.cs:17:            string multiTenancyString = $"select * from {tableName}";
+源码/iMES.Net/iMES.Core/Tenancy/TenancyManager.cs:27:                //    multiTenancyString += $" where UserId='{UserContext.Current.UserId}'";
+源码/iMES.Net/iMES.Core/Tenancy/TenancyManager.cs:31:                    multiTenancyString += $" where CreateID='{UserContext.Current.UserId}'";
+源码/iMES.Net/iMES.Core/Tenancy/TenancyManager.cs:51:                    multiTenancyString = $"select count(*) FROM {tableName} " +
+源码/iMES.Net/iMES.Core/Tenancy/TenancyManager.cs:52:                       $" where CreateID='{UserContext.Current.UserId}'" +
+源码/iMES.Net/iMES.Core/Tenancy/TenancyManager.cs:53:                       $" and  { tableKey} in ({ids}) ";
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_ProductPlanController.cs:49:            List<Production_WorkOrder> list = DBServerProvider.SqlDapper.QueryList<Production_WorkOrder>(woSql, new { });
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/View_Base_MaterialDetailService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_PrintCatalogService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/Middleware/ExceptionHandlerMiddleWare.cs:40:                Console.WriteLine($"服务器处理出现异常:{message}");
+源码/iMES.Net/iMES.Core/CacheManager/Service/MemoryCacheService .cs:78:        public T ListDequeue<T>(string key) where T : class
+源码/iMES.Net/iMES.Core/CacheManager/Service/MemoryCacheService .cs:171:        public T Get<T>(string key) where T : class
+源码/iMES.Net/iMES.Core/ModelBinder/BinderObject.cs:5:    public class BinderObject<T> where T : class
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_WorkOrderController.cs:77:                string sql = "select * from View_OutputStatistics where WorkOrder_Id=@workOrderId ";
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_WorkOrderController.cs:79:                List<Report_OutputReturnData> list = DBServerProvider.SqlDapper.QueryList<Report_OutputReturnData>(sql, new { workOrderId });
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_WorkOrderController.cs:102:            List<HomeNumberOutput> list =  DBServerProvider.SqlDapper.QueryList<HomeNumberOutput>(woSql, new { });
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_WorkOrderController.cs:113:            List<HomeProcessNumberOutput> list = DBServerProvider.SqlDapper.QueryList<HomeProcessNumberOutput>(woSql, new { });
+源码/iMES.Net/iMES.Core/CacheManager/Service/RedisCacheService.cs:44:        public T ListDequeue<T>(string key) where T : class
+源码/iMES.Net/iMES.Core/CacheManager/Service/RedisCacheService.cs:102:        public T Get<T>(string key) where T : class
+源码/iMES.Net/iMES.Core/Extensions/ConvertJsonExtension.cs:20:            StringBuilder sb = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/ConvertJsonExtension.cs:103:            StringBuilder Json = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/ConvertJsonExtension.cs:233:            StringBuilder jsonString = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/ConvertJsonExtension.cs:266:            StringBuilder Json = new StringBuilder();
+源码/iMES.Net/iMES.Core/Extensions/ConvertJsonExtension.cs:305:            StringBuilder jsonString = new StringBuilder();
+源码/iMES.Net/iMES.Core/EFDbContext/BaseDbContext.cs:65:                string mapPath = ($"Log/").MapPath();
+源码/iMES.Net/iMES.Core/EFDbContext/BaseDbContext.cs:66:                Utilities.FileHelper.WriteFile(mapPath, $"syslog_{DateTime.Now.ToString("yyyyMMddHHmmss")}.txt", ex.Message + ex.StackTrace + ex.Source);
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_SalesOrderController.cs:50:            List<Production_WorkOrder> list = DBServerProvider.SqlDapper.QueryList<Production_WorkOrder>(woSql, new { });
+源码/iMES.Net/iMES.Core/Quartz/HttpResultfulJob.cs:41:                Console.WriteLine($"未获取到作业"); 
+源码/iMES.Net/iMES.Core/Quartz/HttpResultfulJob.cs:46:                Console.WriteLine($"未配置作业:{taskOptions.TaskName}的url地址");
+源码/iMES.Net/iMES.Core/Quartz/HttpResultfulJob.cs:47:                QuartzFileHelper.Error($"未配置作业:{taskOptions.TaskName}的url地址");
+源码/iMES.Net/iMES.Core/Quartz/HttpResultfulJob.cs:113:                    Console.WriteLine($"日志写入异常:{taskOptions.TaskName},{ex.Message}");
+源码/iMES.Net/iMES.Core/Quartz/HttpResultfulJob.cs:114:                    QuartzFileHelper.Error($"日志写入异常:{typeof(HttpResultfulJob).Name},{taskOptions.TaskName},{ex.Message}");
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_MaterialDetail_ExtendDataService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/CacheManager/IService/ICacheService.cs:39:        T ListDequeue<T>(string key) where T : class;
+源码/iMES.Net/iMES.Core/CacheManager/IService/ICacheService.cs:84:        T Get<T>(string key) where T : class;
+源码/iMES.Net/iMES.Core/Quartz/QuartzFileHelper.cs:27:                string path = $"{AppSetting.CurrentPath}\\quartz\\{folder}\\".ReplacePath();
+源码/iMES.Net/iMES.Core/Quartz/QuartzFileHelper.cs:28:                FileHelper.WriteFile(path, $"{fileName}.txt", message, true);
+源码/iMES.Net/iMES.Core/Quartz/QuartzFileHelper.cs:32:                Console.WriteLine($"文件写入异常{message},{ex.Message + ex.StackTrace}");
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_MaterialDetailService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:44:                        GroupName = $"group{i}",
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:45:                        TaskName = $"task{i}",
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:57:                Console.WriteLine($"作业启动异常:{ex.Message + ex.StackTrace}");
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:88:                    msg = $"添加作业失败，作业:{taskOptions.TaskName},表达式不正确:{ taskOptions.CronExpression}";
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:117:                msg = $"作业启动:{taskOptions.TaskName}";
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:123:                //    msg = $"作业启动:{taskOptions.TaskName}";
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:134:                msg = $"作业启动异常:{taskOptions.TaskName},{ex.Message}";
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:222:                    errorMsg = $"未找到分组[{groupName}]";
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:230:                    errorMsg = $"未找到触发器[{taskName}]";
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:238:                    errorMsg = $"未找到触发器[{taskName}]";
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:260:                return result ?? new { status = true, msg = $"作业{action.ToString()}成功" };
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:295:                        msg = $"作业:{taskOptions.TaskName},分组：{taskOptions.GroupName}已经存在"
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:308:                return (date != null, date == null ? $"请确认表达式{cronExpression}是否正确!" : "");
+源码/iMES.Net/iMES.Core/Quartz/QuartzNETExtension.cs:312:                return (false, $"请确认表达式{cronExpression}是否正确!{e.Message}");
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:42:            //if (System.IO.File.Exists(($"Views\\PageExtension\\{projectName }\\{TableName}Extension.cshtml").MapPath()))
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:44:            //    ViewBag.UrlExtension = $"~/Views/PageExtension/{projectName}/{TableName}Extension.cshtml";
+源码/iMES.Net/iMES.Core/Controllers/Basic/BaseController.cs:112:                Logger.Error($"文件下载出错:{path}{ex.Message}");
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_ReportWorkOrderController.cs:88:            const string woSql = @"SELECT rwo.*, p.ProcessName, u.UserTrueName ProductUserName
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_ReportWorkOrderController.cs:92:                                             where rwo.WorkOrder_Id = @workOrderId";
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_ReportWorkOrderController.cs:93:            List<Production_ReportWorkOrder> list = DBServerProvider.SqlDapper.QueryList<Production_ReportWorkOrder>(woSql, new { workOrderId });
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_ReportWorkOrderController.cs:104:            string woSql = @" SELECT TOP 5 p.ProcessName name ,SUM([ReportQty]) data
+源码/iMES.Net/iMES.WebApi/Controllers/Production/Partial/Production_ReportWorkOrderController.cs:106:            List<BoardEntity> list = DBServerProvider.SqlDapper.QueryList<BoardEntity>(woSql, new { });
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Sys_User_ExtendDataService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/Controllers/Basic/ApiBaseController.cs:158:            //    Logger.Error($"文件下载出错:{path}{ex.Message}");
+源码/iMES.Net/iMES.Core/Filters/ApiAuthorizeFilter.cs:68:            //    Console.Write($"IsAuthenticated:{context.HttpContext.User.Identity.IsAuthenticated}," +
+源码/iMES.Net/iMES.Core/Filters/ApiAuthorizeFilter.cs:69:            //        $"userToken{UserContext.Current.Token}" +
+源码/iMES.Net/iMES.Core/Filters/ApiAuthorizeFilter.cs:70:            //        $"BootstrapContext:{((ClaimsIdentity)context.HttpContext.User.Identity)?.BootstrapContext?.ToString()}");
+源码/iMES.Net/iMES.Core/Quartz/HttpManager.cs:49:                QuartzFileHelper.Error($"http请求异常，url:{url},{ex.Message+ex.StackTrace}");
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_NumberRuleService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/Filters/ActionPermissionFilter.cs:105:                Logger.Info(LoggerType.Authorzie, $"没有权限操作," +
+源码/iMES.Net/iMES.Core/Filters/ActionPermissionFilter.cs:106:                    $"用户ID{_userContext.UserId}:{_userContext.UserTrueName}," +
+源码/iMES.Net/iMES.Core/Filters/ActionPermissionFilter.cs:107:                    $"角色ID:{_userContext.RoleId}:{_userContext.UserInfo.RoleName}," +
+源码/iMES.Net/iMES.Core/Filters/ActionPermissionFilter.cs:108:                    $"操作权限{ActionPermission.TableName}:{ActionPermission.TableAction}");
+源码/iMES.Net/iMES.Core/WorkFlow/WorkFlowManager.cs:44:        private static void Rewrite<T>(T entity, Sys_WorkFlow workFlow,bool changeTableStatus) where T:class
+源码/iMES.Net/iMES.Core/WorkFlow/WorkFlowManager.cs:62:                Console.WriteLine($"未查到流程数据，id：{ workFlow.WorkFlow_Id}");
+源码/iMES.Net/iMES.Core/WorkFlow/WorkFlowManager.cs:106:        public static void AddProcese<T>(T entity, bool rewrite = false,bool changeTableStatus=true) where T:class
+源码/iMES.Net/iMES.Core/WorkFlow/WorkFlowManager.cs:176:            ) where T : class
+源码/iMES.Net/iMES.Core/Infrastructure/DictionaryHandler.cs:50:                return "SELECT \"Role_Id\" as key,\"RoleName\" as value from Sys_Role";
+源码/iMES.Net/iMES.Core/Infrastructure/DictionaryHandler.cs:52:            return $@"SELECT Role_Id as 'key',RoleName as 'value' FROM Sys_Role 
+源码/iMES.Net/iMES.Core/Infrastructure/DictionaryHandler.cs:53:                           WHERE Enable=1 ";
+源码/iMES.Net/iMES.Core/Infrastructure/DictionaryHandler.cs:71:            string sql = $@"SELECT Role_Id as 'key',RoleName as 'value' FROM Sys_Role 
+源码/iMES.Net/iMES.Core/Infrastructure/DictionaryHandler.cs:72:                           WHERE Enable=1  and Role_Id in ({string.Join(',', roleIds)})";
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessListService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/Filters/ServiceFunFilter.cs:13:    public abstract class ServiceFunFilter<T> where T : class
+源码/iMES.Net/iMES.Core/Filters/ServiceFunFilter.cs:62:        /// 例：QuerySql=$"select * from tb1 as a where  a.name='xxxx' x.id in (select b.id from tb2 b)";
+源码/iMES.Net/iMES.Core/Filters/ServiceFunFilter.cs:115:        /// 如果执行的是手写sql请用repository.DbContext.Database.ExecuteSqlCommand()或 repository.DbContext.Set<T>().FromSql执行具体sql语句
+源码/iMES.Net/iMES.Core/Filters/ServiceFunFilter.cs:154:        /// 如果执行的是手写sql请用repository.DbContext.Database.ExecuteSqlCommand()或 repository.DbContext.Set<T>().FromSql执行具体sql语句
+源码/iMES.Net/iMES.Core/Filters/ServiceFunFilter.cs:165:        /// 如果执行的是手写sql请用repository.DbContext.Database.ExecuteSqlCommand()或 repository.DbContext.Set<T>().FromSql执行具体sql语句
+源码/iMES.Net/iMES.Core/Infrastructure/DictionaryManager.cs:45:                    return DBServerProvider.SqlDapper.QueryList<SourceKeyVaule>(sql, null).Select(s => new Sys_DictionaryList()
+源码/iMES.Net/iMES.Core/Infrastructure/DictionaryManager.cs:53:                    Logger.Error($"字典执行sql异常,sql:{sql},异常信息：{ex.Message + ex.StackTrace}");
+源码/iMES.Net/iMES.Core/Infrastructure/DictionaryManager.cs:64:                    string sql = DictionaryHandler.GetCustomDBSql(item.DicNo, item.DbSql);
+源码/iMES.Net/iMES.Core/Infrastructure/DictionaryManager.cs:65:                    if (!string.IsNullOrEmpty(item.DbSql))
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Sys_UnitService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:32:                throw new Exception($"键{validatorGroup.ToString()}的表达式已经注册过了");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:78:                throw new Exception($"键{general.ToString()}参数配置已经注入过了");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:91:                throw new Exception($"键{general.ToString()}参数配置已经注入过了");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:115:                Console.WriteLine($"未注册{validatorGroup}参数的表达式");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:116:                throw new Exception($"未注册{validatorGroup}参数的表达式");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:140:                    throw new Exception($"未注册{generalName.ToString()}参数的配置");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:164:                context.Result = new JsonResult(new WebResponseContent().Error($"请提交参数"));
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:236:                        actionContext.ActionErrorResult($"请提交参数[{general.CNName}]");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:241:                        actionContext.ActionErrorResult($"参数[{general.CNName}]不能为空");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:268:                actionContext.ActionErrorResult($"请提交参数{options.CNName}");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:280:                        actionContext.ActionErrorResult($"[{options.CNName}]必须是整数");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:285:                        actionContext.ActionErrorResult($"[{options.CNName}]不能小于[{options.Min}]");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:290:                        actionContext.ActionErrorResult($"[{options.CNName}]不能大于[{options.Max}]");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:297:                        actionContext.ActionErrorResult($"[{options.CNName}]至少[{options.Min}]个字符");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:301:                        actionContext.ActionErrorResult($"[{options.CNName}]最多[{options.Max}]个字符");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:308:                        actionContext.ActionErrorResult($"[{options.CNName}]应该是日期格式");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:315:                        actionContext.ActionErrorResult($"[{options.CNName}]不是数字");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:320:                        actionContext.ActionErrorResult($"[{options.CNName}]不能小于[{options.Min}]");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:325:                        actionContext.ActionErrorResult($"[{options.CNName}]不能大于[{options.Max}]");
+源码/iMES.Net/iMES.Core/ObjectActionValidator/ExpressValidator/MethodsValidator.cs:331:                        actionContext.ActionErrorResult($"[{options.CNName}]不是Guid类型");
+源码/iMES.Net/iMES.Core/UserManager/RoleContext.cs:97:                            Logger.Error($"获取子角色异常RoleContext,角色id:{x.Id}");
+源码/iMES.Net/iMES.Core/UserManager/RoleContext.cs:98:                            Console.WriteLine($"获取子角色异常RoleContext,角色id:{x.Id}");
+源码/iMES.Net/iMES.Core/Utilities/JwtHelper.cs:23:            string exp = $"{new DateTimeOffset(DateTime.Now.AddMinutes(ManageUser.UserContext.MenuType == 1? 43200: AppSetting.ExpMinutes)).ToUnixTimeSeconds()}";
+源码/iMES.Net/iMES.Core/Utilities/JwtHelper.cs:29:                new Claim(JwtRegisteredClaimNames.Iat, $"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}"),
+源码/iMES.Net/iMES.Core/Utilities/JwtHelper.cs:30:                new Claim(JwtRegisteredClaimNames.Nbf,$"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}") ,
+源码/iMES.Net/iMES.Core/UserManager/UserContext.cs:45:        private static T GetService<T>() where T : class
+源码/iMES.Net/iMES.Core/UserManager/UserContext.cs:280:                                                  where b.Role_Id == roleId //&& a.ParentId > 0
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_ProcessService.cs:282:            List<Base_Process> list = DBServerProvider.SqlDapper.QueryList<Base_Process>(sql, null);
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_PrintTemplateService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:23:using iMES.Core.Dapper;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:116:                    dbName = $" and table_schema = '{dbName}' ";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:122:                Console.WriteLine($"获取mysql数据库名异常:{ex.Message}");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:134:            return $@"SELECT
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:157:            WHERE
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:168:            return $@"
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:169:	SELECT CASE WHEN t.ColumnType IN ('DECIMAL','smallmoney','money') THEN 
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:174:                    SELECT col.prec AS  'Prec',col.scale AS 'Scale',t.name AS ColumnType,col.name AS ColumnName FROM          dbo.syscolumns col
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:186:                                      WHERE     obj.name =@tableName) AS t";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:198:            StringBuilder stringBuilder = new StringBuilder();
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:200:            stringBuilder.Append("			SELECT ");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:223:            stringBuilder.Append("WHERE	\"lower\" ( TABLE_NAME ) = \"lower\" (@tableName )  ");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:245:                            return webResponse.Error($"实际表名【{tableTrueName }】已创建实体，不能创建别名【{tableName}】实体");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:252:                                return webResponse.Error($"实际表名【{tableTrueName }】已被【{entity.Name}】创建建实体,不能创建别名【{tableName}】实体,请将别名更换为【{entity.Name}】");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:271:        private ISqlDapper GetDapper(string dbServer)
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:274:            ISqlDapper sqlDapper;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:278:                    sqlDapper = DBServerProvider.SqlDapperService;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:281:                    sqlDapper = DBServerProvider.SqlDapperReport;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:284:                    sqlDapper = DBServerProvider.SqlDapper;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:287:            return sqlDapper;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:329:            List<TableColumnInfo> tableColumnInfoList = GetDapper(sysTableInfo.DBServer).QueryList<TableColumnInfo>(sql, new { tableName });
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:357:                return WebResponseContent.Instance.Error($"父级id不能为自己");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:361:                return WebResponseContent.Instance.Error($"不能将字段【{sysTableInfo.ExpressField}】设置为快捷编辑,因为已经设置了数据源");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:426:            List<Sys_TableColumn> columns = GetDapper(tableInfo.DBServer)
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:427:                  .QueryList<Sys_TableColumn>(sql, new { tableName });
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:468:            return webResponse.OK($"新加字段【{addColumns.Count}】个,删除字段【{delColumns.Count}】,修改字段【{updateColumns.Count}】");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:486:                return $"没有查到{tableName}表信息";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:491:                return $"命名空间、项目文件夹都不能为空";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:508:                apiPath += $"\\Controllers\\{projectName}\\";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:510:                if (!File.Exists($"{apiPath}Partial\\{tableName}Controller.cs"))
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:514:                    FileHelper.WriteFile($"{apiPath}Partial\\", tableName + "Controller.cs", partialController);
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:542:            string path = $"{frameworkFolder}\\{nameSpace}\\IServices\\{ foldername}\\";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:558:            path = $"{frameworkFolder}\\{nameSpace}\\Services\\{ foldername}\\";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:577:                path = $"{frameworkFolder}\\{nameSpace}\\Controllers\\{ foldername}\\";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:713:            if (!FileHelper.DirectoryExists(vuePath)) return $"未找项目路径{vuePath}!";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:726:                return $"编辑类型为[{string.Join(',', eidtTye)}]时必须选择数据源";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:730:                return $"查询类型为[{string.Join(',', eidtTye)}]时必须选择数据源";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:734:                return $"请设置[app列]";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:736:            StringBuilder sb = GetGridColumns(sysColumnList, sysTableInfo.ExpressField, false, true, app: isApp);
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:836:                    return $"请先生成明细表{ sysTableInfo.DetailName}的配置!";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:838:                    return $"明细表{ sysTableInfo.DetailName}没有列的信息,请确认是否有列数据或列数据是否被删除!";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:842:                    return $"明细表【{_name}】字段【table显示类型】设置为了【文件或图片】,编辑行只能设置为0或不设置";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:868:            string extensionPath = isApp ? $"{srcPath}\\pages\\{spaceFolder}\\" : $"{srcPath}\\extension\\{spaceFolder}\\";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:876:                    || FileHelper.FileExists($"{extensionPath}+\\{ sysTableInfo.FolderName.ToLower()}\\{ exFileName}"))
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:879:                    extensionPath = $"{srcPath}\\extension\\{spaceFolder}\\{ sysTableInfo.FolderName.ToLower()}\\";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:897:                if (!FileHelper.FileExists($"{vuePath}\\{ spaceFolder}\\{sysTableInfo.TableName}\\{sysTableInfo.TableName}Extend.js"))
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:901:                    FileHelper.WriteFile($"{vuePath}\\{ spaceFolder}\\{sysTableInfo.TableName}\\", sysTableInfo.TableName + "Extend.js", pageContentEx);
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:904:                FileHelper.WriteFile($"{vuePath}\\{ spaceFolder}\\{sysTableInfo.TableName}\\", sysTableInfo.TableName + "Options.js", pageContent);
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:906:                if (!FileHelper.FileExists($"{vuePath}\\{ spaceFolder}\\{sysTableInfo.TableName}\\{sysTableInfo.TableName}.vue"))
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:910:                    FileHelper.WriteFile($"{vuePath}\\{ spaceFolder}\\{sysTableInfo.TableName}\\", sysTableInfo.TableName + ".vue", pageContent);
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:913:                string name = FileHelper.ReadFile(@$"{srcPath}\pages.json");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:914:                string appPath = $"pages/{spaceFolder}/{sysTableInfo.TableName}/{sysTableInfo.TableName}";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:921:                    StringBuilder builder = new StringBuilder();
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:937:                FileHelper.WriteFile($"{vuePath}\\{ spaceFolder}\\", sysTableInfo.TableName + ".vue", pageContent);
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:940:                string routerPath = $"{srcPath}\\router\\viewGird.js";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:942:                if (!routerContent.Contains($"path: '/{sysTableInfo.TableName}'"))
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:948:                    FileHelper.WriteFile($"{srcPath}\\router\\", "viewGird.js", routerContent);
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:972:            return $@"SELECT  DISTINCT
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1015:                WHERE
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1026:            return $@"
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1027:            SELECT TableName,
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1074:        FROM    (SELECT obj.name AS TableName ,
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1079:                            CASE WHEN EXISTS (SELECT   1
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1087:                                               WHERE sc.id = col.id
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1109:                  WHERE obj.name = @tableName--表名
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1121:            StringBuilder stringBuilder = new StringBuilder();
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1122:            stringBuilder.Append("SELECT ");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1152:            stringBuilder.Append("			SELECT ");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1213:            stringBuilder.Append("	SELECT col_description(a.attrelid,a.attnum) as description,a.attname as name ");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1215:            stringBuilder.Append("where \"lower\"(c.relname) = \"lower\"(@tableName) and a.attrelid = c.oid and a.attnum>0 ");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1218:            stringBuilder.Append("	SELECT ");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1226:            stringBuilder.Append("	WHERE ");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1230:            stringBuilder.Append("WHERE ");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1309:            List<Sys_TableColumn> columns = GetDapper(dbServer)
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1310:                .QueryList<Sys_TableColumn>(GetCurrentSql(tableName,dbServer), new { tableName });
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1328:            string sqlDapper;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1332:                    sqlDapper = DBServerProvider.ServiceConnectingString;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1335:                    sqlDapper = DBServerProvider.ReportConnectingString;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1338:                    sqlDapper = DBServerProvider.SysConnectingString;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1341:            return sqlDapper;
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1399:        private StringBuilder GetGridColumns(List<Sys_TableColumn> list, string expressField, bool detail, bool vue = false, bool app = false)
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1403:            StringBuilder sb = new StringBuilder();
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1596:            StringBuilder AttributeBuilder = new StringBuilder();
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1824:            string modelPath = $"{mapPath}\\{modelNameSpace}\\DomainModels\\{folderName}\\";
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1919:            var whereReslut = list.Where(predicate).OrderBy(orderBy).ThenByDescending(c => c.OrderNo).ToList();
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1920:            foreach (var item in whereReslut.GroupBy(keySelector))
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1954:                    return webResponse.Error($"请勾选表[{tableInfo.TableName}]的主键");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1964:                    return webResponse.Error($"明细表必须包括[{tableInfo.TableName}]主键字段[{key}]");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1968:                    return webResponse.Error($"明细表的字段[{tableColumn.ColumnName}]类型必须与主表的主键的类型相同");
+源码/iMES.Net/iMES.Builder/Services/Core/Partial/Sys_TableInfoService.cs:1976:                    return webResponse.Error($"主表主键类型为Guid，明细表[{tableInfo.DetailName}]配置的字段[{key}]长度必须是36，请重将明细表字段[{key}]长度设置为36，点击保存与生成Model");
+源码/iMES.Net/iMES.Core/Utilities/EPPlusHelper.cs:111:                                return responseContent.Error($"第{m}行[{options.ColumnCNName}]验证未通过,不能为空。");
+源码/iMES.Net/iMES.Core/Utilities/EPPlusHelper.cs:123:                                return responseContent.Error($"[{options.ColumnCNName}]字段数字典编号[{options.DropNo}]缺失,请检查字典配置");
+源码/iMES.Net/iMES.Core/Utilities/EPPlusHelper.cs:132:                                return responseContent.Error($"第{m}行[{options.ColumnCNName}]验证未通过,必须是字典数据中[{values}]的值。");
+源码/iMES.Net/iMES.Core/Utilities/EPPlusHelper.cs:156:                            return responseContent.Error($"第{m}行[{options.ColumnCNName}]验证未通过,{result.Item2}");
+源码/iMES.Net/iMES.Core/Utilities/EPPlusHelper.cs:555:            path = path ?? $"Download/ExcelExport/{ DateTime.Now.ToString("yyyyyMMdd")}/";
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_Product_ExtendDataService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.WebApi/Controllers/Hubs/HomePageMessageHub.cs:40:            //Console.WriteLine($"建立连接{Context.ConnectionId}");
+源码/iMES.Net/iMES.WebApi/Controllers/Hubs/HomePageMessageHub.cs:45:            //await Clients.All.SendAsync("ReceiveHomePageMessage", 1, new { title = "系统消息", content = $"{Context.ConnectionId} 上线" });
+源码/iMES.Net/iMES.WebApi/Controllers/Hubs/HomePageMessageHub.cs:56:            //Console.WriteLine($"断开连接{Context.ConnectionId}");
+源码/iMES.Net/iMES.WebApi/Controllers/Hubs/HomePageMessageHub.cs:62:            //   await Clients.All.SendAsync("ReceiveHomePageMessage", 4, new { title = "系统消息", content = $"{Context.ConnectionId} 离线" });
+源码/iMES.Net/iMES.Custom/Services/Custom/Partial/Base_MeritPayService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Core/Dapper/ISqlDapper.cs:7:using Dapper;
+源码/iMES.Net/iMES.Core/Dapper/ISqlDapper.cs:9:namespace iMES.Core.Dapper
+源码/iMES.Net/iMES.Core/Dapper/ISqlDapper.cs:11:    public interface ISqlDapper
+源码/iMES.Net/iMES.Core/Dapper/ISqlDapper.cs:18:        ISqlDapper SetTimout(int timeout);
+源码/iMES.Net/iMES.Core/Dapper/ISqlDapper.cs:19:        void BeginTransaction(Func<ISqlDapper, bool> action, Action<Exception> error);
+源码/iMES.Net/iMES.Core/Dapper/ISqlDapper.cs:20:        List<T> QueryList<T>(string cmd, object param, CommandType? commandType = null, bool beginTransaction = false);
+源码/iMES.Net/iMES.Core/Dapper/ISqlDapper.cs:22:        Task<IEnumerable<T>> QueryListAsync<T>(string cmd, object param, CommandType? commandType = null, bool beginTransaction = false);
+源码/iMES.Net/iMES.Core/Dapper/ISqlDapper.cs:24:        T QueryFirst<T>(string cmd, object param, CommandType? commandType = null, bool beginTransaction = false) where T : class;
+源码/iMES.Net/iMES.Core/Dapper/ISqlDapper.cs:26:        Task<T> QueryFirstAsync<T>(string cmd, object param, CommandType? commandType = null, bool beginTransaction = false) where T : class;
+源码/iMES.Net/iMES.Core/Dapper/ISqlDapper.cs:137:        /// <param name="fileName">默认$"{DateTime.Now.ToString("yyyyMMddHHmmss")}.csv"</param>
+源码/iMES.Net/iMES.WebApi/Controllers/System/Sys_LogController.cs:36:                DBServerProvider.SqlDapper.AddRange<Sys_Log>(list);
+源码/iMES.Net/iMES.WebApi/Controllers/System/Sys_LogController.cs:37:                //  DBServerProvider.SqlDapper.BulkInsert<Sys_Log>(list);
+源码/iMES.Net/iMES.Core/Utilities/Response/FilterResponse.cs:48:                    Content = $@"<html><head><title></title></head><body>{desc}</body></html>",
+源码/iMES.Net/iMES.Core/Dapper/DapperParseGuidTypeHandler.cs:1:using Dapper;
+源码/iMES.Net/iMES.Core/Dapper/DapperParseGuidTypeHandler.cs:7:namespace iMES.Core.Dapper
+源码/iMES.Net/iMES.Core/Dapper/DapperParseGuidTypeHandler.cs:9:    public class DapperParseGuidTypeHandler : SqlMapper.TypeHandler<Guid?>
+源码/iMES.Net/iMES.Core/Utilities/VierificationCodeServices.cs:95:            return $"{Convert.ToBase64String(buffer.Array, 0, (int)memStream.Length)}";
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:2:using Dapper;
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:20:namespace iMES.Core.Dapper
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:22:    public class SqlDapper : ISqlDapper
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:27:        public SqlDapper()
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:31:        public SqlDapper(string connKeyName, DbCurrentType dbCurrentType)
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:36:        public SqlDapper(string connKeyName)
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:50:        public ISqlDapper SetTimout(int timeout)
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:142:        /// 2020.06.15增加Dapper事务处理
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:145:        public void BeginTransaction(Func<ISqlDapper, bool> action, Action<Exception> error)
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:189:        public List<T> QueryList<T>(string cmd, object param, CommandType? commandType = null, bool beginTransaction = false)
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:196:        public async Task<IEnumerable<T>> QueryListAsync<T>(string cmd, object param, CommandType? commandType = null, bool beginTransaction = false)
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:204:        public async Task<T> QueryFirstAsync<T>(string cmd, object param, CommandType? commandType = null, bool beginTransaction = false) where T : class
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:208:                return await conn.QueryFirstOrDefaultAsync<T>(cmd, param, dbTransaction, commandType: commandType ?? CommandType.Text, commandTimeout: commandTimeout);
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:213:        public T QueryFirst<T>(string cmd, object param, CommandType? commandType = null, bool beginTransaction = false) where T : class
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:217:                return conn.QueryFirstOrDefault<T>(cmd, param, dbTransaction, commandType: commandType ?? CommandType.Text, commandTimeout: commandTimeout);
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:225:                return await conn.QueryFirstOrDefaultAsync(cmd, param, dbTransaction, commandType: commandType ?? CommandType.Text, commandTimeout: commandTimeout);
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:233:                return conn.QueryFirstOrDefault(cmd, param, dbTransaction, commandType: commandType ?? CommandType.Text, commandTimeout: commandTimeout);
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:586:                sql = $"insert into {entityType.GetEntityTableName()}({string.Join(",", columns)})" +
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:587:                 $"values(@{string.Join(",@", columns)});";
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:592:                sql = $"insert into {entityType.GetEntityTableName()}({"\"" + string.Join("\",\"", columns) + "\""})" +
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:593:                    $"values(@{string.Join(",@", columns)});";
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:598:                sql = $"insert into {entityType.GetEntityTableName()}({string.Join(",", columns)})" +
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:599:                 $"select {string.Join(",", columns)}  from  {EntityToSqlTempName.TempInsert};";
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:655:                string sqltext = $@"UPDATE { entityType.GetEntityTableName()} SET {string.Join(",", paramsList)} WHERE {entityType.GetKeyName()} = @{entityType.GetKeyName()} ;";
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:660:            string fileds = string.Join(",", properties.Select(x => $" a.{x.Name}=b.{x.Name}").ToArray());
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:661:            string sql = $"update  a  set {fileds} from  {entityType.GetEntityTableName()} as a inner join {EntityToSqlTempName.TempInsert.ToString()} as b on a.{key.Name}=b.{key.Name}";
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:675:                throw new Exception($"主键类型【{validation.Where(x => !x.Item1).Select(s => s.Item3).FirstOrDefault()}】不正确");
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:681:                 : $"'{string.Join("','", keys)}'";
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:686:                sql = $"DELETE FROM \"public\".\"{entityType.GetEntityTableName()}\" where \"{tKey}\" in ({joinKeys});";
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:690:                sql = $"DELETE FROM {entityType.GetEntityTableName() } where {tKey} in ({joinKeys});";
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:773:            string text = $"当前行:{table.Rows.Count}";
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:825:            StringBuilder sb = new StringBuilder();
+源码/iMES.Net/iMES.Core/Dapper/SqlDapper.cs:865:            string copySql = $"copy \"public\".\"{tableName}\"({string.Join(',', columns)}) FROM STDIN (FORMAT BINARY)";
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_UserController.cs:62:            string key = $"rp:Token:{UserContext.Current.UserId}";
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_UserController.cs:115:                string _message = $"用户{userInfo?.User_Id}_{userInfo?.UserTrueName},({(responseContent.Status ? "token替换成功": "token替换失败")})";
+源码/iMES.Net/iMES.WebApi/Controllers/System/Partial/Sys_VersionInfoController.cs:42:            List<Sys_VersionInfo> list = DBServerProvider.SqlDapper.QueryList<Sys_VersionInfo>(sql, new { });
+源码/iMES.Net/iMES.Entity/MappingConfiguration/MappingManager.cs:16:    public interface IEntityMappingConfiguration<T> : IEntityMappingConfiguration where T : class
+源码/iMES.Net/iMES.Entity/MappingConfiguration/MappingManager.cs:21:    public abstract class EntityMappingConfiguration<T> : IEntityMappingConfiguration<T> where T : class
+源码/iMES.Net/iMES.Entity/MappingConfiguration/MappingManager.cs:85://        propertyBuilder.Relational(ConfigurationSource.Explicit).HasColumnType($"decimal({precision},{scale})");
+源码/iMES.Net/iMES.Entity/BaseCore/MappingManager.cs:17://    public interface IEntityMappingConfiguration<T> : IEntityMappingConfiguration where T : class
+源码/iMES.Net/iMES.Entity/BaseCore/MappingManager.cs:22://    public abstract class EntityMappingConfiguration<T> : IEntityMappingConfiguration<T> where T : class
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs:65:                    object obj = DBServerProvider.SqlDapper.QueryDynamicList(progressSql, new
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs:140:            string sql = "select count(1) from Production_WorkOrderList where WorkOrder_Id=@workOrderId";
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs:141:            detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { workOrderId = pageData.Value }).GetInt();
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs:143:            sql = @$"select s.WorkOrderList_Id,
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs:148:                                         from Production_WorkOrderList where WorkOrder_Id=@workOrderId
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs:152:                         where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} 
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs:156:            detailGrid.rows = repository.DapperContext.QueryList<Production_WorkOrderList>(sql, new { workOrderId = pageData.Value });
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_ProductPlanService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_ProductPlanService.cs:188:                List<Production_WorkOrder> list = DBServerProvider.SqlDapper.QueryList<Production_WorkOrder>(woSql, new { });
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_ProductPlanListService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderService.cs:81:                string sql = @"  SELECT * FROM GetAssembleProcess ";
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderService.cs:82:                List<Production_AssembleWorkOrder>  list = DBServerProvider.SqlDapper.QueryList<Production_AssembleWorkOrder>(sql, null);
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderService.cs:385:                    List<Production_WorkOrder>  list =  DBServerProvider.SqlDapper.QueryList<Production_WorkOrder>(woSql, new { });
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderService.cs:399:                    object obj =  DBServerProvider.SqlDapper.ExecuteScalar("SerializeJSON", new { ParameterSQL }, Sys.Data.CommandType.StoredProcedure);
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_ReportWorkOrderListService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_SalesOrderListService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderListService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderListService.cs:60:                List<Production_WorkOrderList> storeList = DBServerProvider.SqlDapper.QueryList<Production_WorkOrderList>(sql, new { });
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderListService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_ReportWorkOrderService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_SalesOrderService.cs:3:*可使用repository.调用常用方法，获取EF/Dapper等信息
+源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_SalesOrderService.cs:362:                List<Production_WorkOrder> list = DBServerProvider.SqlDapper.QueryList<Production_WorkOrder>(woSql, new { });
+源码/iMES.Net/iMES.Entity/DomainModels/System/Sys_Dictionary.cs:74:       public string DbSql { get; set; }

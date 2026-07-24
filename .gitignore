@@ -10,6 +10,8 @@
 
 # Editor and operating-system files
 .DS_Store
+~$*.docx
+**/~$*.docx
 .idea/
 .vscode/
 .vs/

@@ -395,9 +395,13 @@ namespace iMES.Production.Services
                         detailGrid.rows[i].BadQty = 0;
                         detailGrid.rows[i].Status = "1";
                     }
-                    string ParameterSQL = "select * from  Func_GetProcessLineAndProgressByID('" + detailGrid.rows[i].WorkOrderCode + "'," + detailGrid.rows[i].ProcessLine_Id + ")";
-                    object obj =  DBServerProvider.SqlDapper.ExecuteScalar("SerializeJSON", new { ParameterSQL }, Sys.Data.CommandType.StoredProcedure);
-                    detailGrid.rows[i].ProductionSchedule = obj.ToString();//storeList.Find(x => x.Product_Id == detailGrid.rows[i].Product_Id).InventoryQty;
+                    const string progressSql = @"select * from Func_GetProcessLineAndProgressByID(@workOrderCode, @processLineId)";
+                    object obj = DBServerProvider.SqlDapper.QueryDynamicList(progressSql, new
+                    {
+                        workOrderCode = detailGrid.rows[i].WorkOrderCode,
+                        processLineId = detailGrid.rows[i].ProcessLine_Id
+                    });
+                    detailGrid.rows[i].ProductionSchedule = obj.Serialize();//storeList.Find(x => x.Product_Id == detailGrid.rows[i].Product_Id).InventoryQty;
                 }
                 else
                 {

@@ -1,0 +1,84 @@
+SQL 注入 / XSS / 错误信息泄露初步验证结果
+===========================
+
+仅使用只读参数扰动和无害 payload，观察状态码、响应体是否泄露堆栈、SQL 错误或反射输入。
+
+## SQL 注入扰动：getReportDetailInfo workOrderId
+GET http://127.0.0.1:9991/api/Production_ReportWorkOrder/getReportDetailInfo?workOrderId=1%27%20OR%201%3D1--
+status=200 OK durationMs=6
+requestHeaders={
+  "Authorization": "Bearer eyJhbGciOiJIUz...AgPo46QoHI (len=220)"
+}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+[{"ProcessName":"破洞","ProductUserName":"测试账户2","WorkOrderCode":null,"ReportWorkOrder_Id":1,"WorkOrder_Id":"2","Process_Id":2,"Product_Id":4,"ProductCode":"CP202207302014290004","ProductName":"测试产品","ProductStandard":"测试规格","ProcessStatus":"2","ProductUser":"4390","ReportQty":12,"Unit_Id":1,"GoodQty":12,"NoGoodQty":2,"ProcessProgress":"0/12","StartDate":"2022-08-15 18:00:00","EndDate":"2022-08-16 18:00:00","ReoportDurationHour":24,"ReoportDurationMinute":0,"StandardProgress":"10/1:10:50","ActualProgress":"0.50/1:00:00","RateStandard":null,"PriceType":1,"UnitPrice":12.000,"GuessPrice":144.000,"ApproveStatus":2,"ApproveUser":"超级管理员","ReportTime":"2022-08-16 18:13:30","CreateDate":"2022-08-16 18:13:55","CreateID":1,"Creator":"超级管理员","Modifier":"超级管理员","ModifyDate":"2022-08-16 22:29:33","ModifyID":1,"Production_ReportWorkOrderList":null},{"ProcessName":"焊接","ProductUserName":"测试账户2","WorkOrderCode":null,"ReportWorkOrder_Id":2,"WorkOrder_Id":"2","Process_Id":1,"Product_Id":4,"ProductCode":"CP202207302014290004","ProductName":"测试产品","ProductStandard":"测试规格","ProcessStatus":"2","ProductUser":"4390","ReportQty":12,"Unit_Id":1,"GoodQty":12,"NoGoodQty":null,"ProcessProgress":"0/12","StartDate":"2022-08-16 13:00:00","EndDate":"2022-08-17 13:00:00","ReoportDurationHour":24,"ReoportDurationMinute":0,"StandardProgress":null,"ActualProgress":"0.50/1:00:00","RateStandard":null,"PriceType":1,"UnitPrice":12.000,"GuessPrice":144.000,"ApproveStatus":2,"ApproveUser":"超级管理员","ReportTime":"2022-08-17 13:52:18","CreateDate":"2022-08-17 13:53:09","CreateID":1,"Creator":"超级管理员","Modifier":null,"ModifyDate":null,"ModifyID":null,"Production_ReportWorkOrderList":null},{"ProcessName":"焊接","ProductUserName":"角色帐号2_1","WorkOrderCode":null,"ReportWorkOrder_Id":3,"WorkOrder_Id":"15","Process_Id":1,"Produ
+
+## SQL 注入扰动：WorkOrderCode like
+POST http://127.0.0.1:9991/api/Production_WorkOrder/GetPageData
+status=200 OK durationMs=9
+requestHeaders={
+  "Authorization": "Bearer eyJhbGciOiJIUz...AgPo46QoHI (len=220)",
+  "Content-Type": "application/json"
+}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+{"status":0,"msg":null,"total":0,"rows":[],"summary":null,"extra":null}
+
+## XSS 反射探测：DefectItemName
+POST http://127.0.0.1:9991/api/Base_DefectItem/GetPageData
+status=200 OK durationMs=7
+requestHeaders={
+  "Authorization": "Bearer eyJhbGciOiJIUz...AgPo46QoHI (len=220)",
+  "Content-Type": "application/json"
+}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+{"status":0,"msg":null,"total":0,"rows":[],"summary":null,"extra":null}
+
+## 错误信息泄露：匿名 invalid Guid
+GET http://127.0.0.1:9991/api/Base_PrintTemplate/saveOrUpdateData?stage=probe&id=not-a-guid&cat=Production_SalesOrder
+status=500 Internal Server Error durationMs=5
+requestHeaders={}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+{"message":"~服务器没有正确处理请求,请稍等再试!","status":false}
+
+## 错误信息泄露：已认证 invalid int
+GET http://127.0.0.1:9991/api/Production_ReportWorkOrder/getReportDetailInfo?workOrderId=not-an-int
+status=200 OK durationMs=5
+requestHeaders={
+  "Authorization": "Bearer eyJhbGciOiJIUz...AgPo46QoHI (len=220)"
+}
+responseHeaders={
+  "access-control-expose-headers": "vol_exp",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Mon, 20 Jul 2026 06:46:15 GMT",
+  "server": "Kestrel",
+  "transfer-encoding": "chunked"
+}
+bodyExcerpt:
+[]

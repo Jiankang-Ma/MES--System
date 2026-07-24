@@ -1,0 +1,271 @@
+MES 系统静态扫描候选项低影响修复记录
+日期：2026-07-22
+状态口径：Closed 仅用于整改完成并动态复测通过；本文件中的代码级修复统一标记为 Remediated，待重新构建部署和动态复测后再关闭。
+
+## SQL INJECTION 风险：
+`Production_WorkOrderService.GetPageData`：静态扫描候选项认为工单编号会被拼接到传入 `SerializeJSON` 的动态 SQL 中，存在 SQL 注入风险。复核当前源码后，该候选项在当前版本未复现：代码已使用 Dapper 参数绑定调用 `Func_GetProcessLineAndProgressByID(@workOrderCode, @processLineId)`，并通过 `obj.Serialize()` 保持前端原 JSON 字符串格式。
+
+## 未复现：生产工单分页生产进度 SQL 拼接（2026-07-22）
+
+### 影响接口
+
+`POST /api/Production_WorkOrder/GetPageData`
+
+代码位置：`源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs:64-70`。
+
+### 判断结果
+
+当前代码中 `workOrderCode` 和 `processLineId` 会作为 SQL 参数传递，不再作为 SQL 语法字符串的一部分。特殊字符只能作为查询值处理，无法改变函数调用语义或追加 SQL 语句。
+
+### 验证方式
+
+```bash
+nl -ba '源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs' | sed -n '60,72p'
+rg -n "SerializeJSON|Func_GetProcessLineAndProgressByID" '源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_WorkOrderService.cs'
+```
+
+预期结果：只看到 `@workOrderCode`、`@processLineId` 参数绑定调用，不再出现 `SerializeJSON` 动态 SQL 存储过程调用。
+
+---
+
+## SQL INJECTION 风险：
+`Production_AssembleWorkOrderService`：静态扫描候选项标记为 `GetPageData`，复核后 `GetPageData` 未发现该拼接点；实际可确认的拼接点位于 `GetDetailPage`，代码将 `WorkOrderCode` 与 `ProcessLine_Id` 拼接为 `Func_GetProcessLineAndProgressByID(...)` SQL 字符串，再传入 `SerializeJSON` 执行。若工单编号来自业务输入或历史脏数据，可能造成 SQL 语义被污染。
+
+## 已修复：装配工单明细生产进度 SQL 拼接（2026-07-22）
+
+### 影响接口
+
+`POST /api/Production_AssembleWorkOrder/GetDetailPage`
+
+代码位置：`源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderService.cs:398-404`。
+
+### 修改内容
+
+修复前将 `WorkOrderCode` 和 `ProcessLine_Id` 拼接成可执行 SQL 字符串，并传入 `SerializeJSON` 存储过程。
+
+修复后改为 Dapper 参数绑定查询，并继续把结果序列化为字符串，避免影响前端 `JSON.parse(scope.row.ProductionSchedule)`：
+
+```csharp
+const string progressSql = @"select * from Func_GetProcessLineAndProgressByID(@workOrderCode, @processLineId)";
+object obj = DBServerProvider.SqlDapper.QueryDynamicList(progressSql, new
+{
+    workOrderCode = detailGrid.rows[i].WorkOrderCode,
+    processLineId = detailGrid.rows[i].ProcessLine_Id
+});
+detailGrid.rows[i].ProductionSchedule = obj.Serialize();
+```
+
+`workOrderCode` 与 `processLineId` 会作为 SQL 参数传递，而不是 SQL 语法的一部分；返回字段与前端消费格式保持不变。
+
+### 验证方式
+
+```bash
+nl -ba '源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderService.cs' | sed -n '392,405p'
+rg -n "SerializeJSON|Func_GetProcessLineAndProgressByID" '源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderService.cs'
+dotnet build '源码/iMES.Net/iMES.Production/iMES.Production.csproj' --no-restore -p:CheckEolTargetFramework=false
+```
+
+API 重新构建并启动后，可使用以下动态复测命令截图：
+
+```bash
+curl -i -X POST 'http://127.0.0.1:9991/api/Production_AssembleWorkOrder/GetDetailPage' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <TOKEN>' \
+  --data '{"page":1,"rows":10,"value":"<AssembleWorkOrder_Id>"}'
+```
+
+预期结果：正常装配工单 ID 仍返回明细；特殊字符或异常工单编号不应导致 SQL 异常、扩大查询范围或执行额外语句。
+
+---
+
+## 未授权访问风险：
+`Base_PrintTemplateController`：`saveOrUpdateData`、`getResourceByCatId`、`getDataById`、`getDataByIdPrint`、`getBillData`、`getDetailData` 等接口存在 `AllowAnonymous`。其中 `saveOrUpdateData` 是写接口，可修改非内置打印模板；匿名写入一旦成功，可能发展为打印模板篡改或存储型 XSS。读取类接口可能被现场打印链路依赖，本轮不直接全部移除匿名，避免影响打印预览、模板渲染或扫码打印流程。
+
+## 已修复：打印模板保存接口匿名写入（2026-07-22）
+
+### 影响接口
+
+`GET/POST /api/Base_PrintTemplate/saveOrUpdateData`
+
+代码位置：`源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs:70-72`。
+
+### 修改内容
+
+修复前：
+
+```csharp
+[HttpPost, HttpGet, Route("saveOrUpdateData"), AllowAnonymous]
+```
+
+修复后：
+
+```csharp
+[HttpPost, HttpGet, Route("saveOrUpdateData")]
+[ApiActionPermission("Base_PrintTemplate", ActionPermissionOptions.Update)]
+```
+
+匿名用户不再允许保存或修改打印模板；已登录用户还需要具备 `Base_PrintTemplate` 的 Update 权限。该改动只收紧写接口，不改变模板内容保存逻辑、参数名称或响应结构。
+
+### 验证方式
+
+```bash
+nl -ba '源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs' | sed -n '66,74p'
+rg -n "saveOrUpdateData.*AllowAnonymous|AllowAnonymous.*saveOrUpdateData" '源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs'
+dotnet build '源码/iMES.Net/iMES.WebApi/iMES.WebApi.csproj' --no-restore -p:CheckEolTargetFramework=false
+```
+
+API 重新构建并启动后，可使用以下动态复测命令截图：
+
+```bash
+curl -i -X POST 'http://127.0.0.1:9991/api/Base_PrintTemplate/saveOrUpdateData?id=<PrintTemplateId>&cat=<CatalogCode>' \
+  --data-urlencode 'stage={"demo":"security-test"}'
+```
+
+预期结果：匿名请求返回 401/403 或框架统一未授权响应。
+
+授权用户回归命令：
+
+```bash
+curl -i -X POST 'http://127.0.0.1:9991/api/Base_PrintTemplate/saveOrUpdateData?id=<PrintTemplateId>&cat=<CatalogCode>' \
+  -H 'Authorization: Bearer <TOKEN>' \
+  --data-urlencode 'stage=<原模板JSON>'
+```
+
+预期结果：具备 Update 权限的模板维护用户仍可保存非内置模板；无 Update 权限用户被拒绝。
+
+### 暂缓范围
+
+`getResourceByCatId`、`getDataById`、`getDataByIdPrint`、`getBillData`、`getDetailData` 本轮保留原匿名策略，原因是这些接口可能参与打印设计器、打印预览或现场打印读取链路。后续应按业务确认结果拆分为：设计器字段接口必须鉴权；后台单据读取必须按单据权限校验；仅确需外部打印的接口使用一次性打印 token、短期签名或内网限制。
+
+---
+
+## 未授权访问风险：
+`Sys_LogController.Test`：`GET /api/Sys_Log/test` 原允许匿名访问，每次循环写入 10 条日志。该接口更像开发测试入口，不属于正常业务链路；匿名暴露会造成日志污染、数据库增长和攻击链噪声。
+
+## 已修复：匿名固定日志测试接口（2026-07-22）
+
+### 影响接口
+
+`GET /api/Sys_Log/test`
+
+代码位置：`源码/iMES.Net/iMES.WebApi/Controllers/System/Sys_LogController.cs:21-24`。
+
+### 修改内容
+
+修复前：
+
+```csharp
+[Route("test"), AllowAnonymous, HttpGet]
+```
+
+修复后：
+
+```csharp
+[Route("test"), HttpGet]
+[ApiExplorerSettings(IgnoreApi = true)]
+[ApiActionPermission(ActionRolePermission.SuperAdmin)]
+```
+
+匿名用户不再可调用该测试入口；Swagger 文档不再展示该 Action；如确需保留测试功能，仅超级管理员可访问。
+
+### 验证方式
+
+```bash
+nl -ba '源码/iMES.Net/iMES.WebApi/Controllers/System/Sys_LogController.cs' | sed -n '18,26p'
+rg -n "Route\\(\"test\"\\).*AllowAnonymous|AllowAnonymous.*Route\\(\"test\"\\)" '源码/iMES.Net/iMES.WebApi/Controllers/System/Sys_LogController.cs'
+dotnet build '源码/iMES.Net/iMES.WebApi/iMES.WebApi.csproj' --no-restore -p:CheckEolTargetFramework=false
+```
+
+API 重新构建并启动后，可使用以下动态复测命令截图：
+
+```bash
+curl -i 'http://127.0.0.1:9991/api/Sys_Log/test'
+curl -i -H 'Authorization: Bearer <LOW_USER_TOKEN>' 'http://127.0.0.1:9991/api/Sys_Log/test'
+curl -i -H 'Authorization: Bearer <ADMIN_TOKEN>' 'http://127.0.0.1:9991/api/Sys_Log/test'
+```
+
+预期结果：匿名用户和普通用户被拒绝；如保留测试入口，只有超级管理员可访问。
+
+---
+
+## 配置泄露风险：
+`appsettings.json`：源码配置中包含数据库、Redis、JWT 和用户加密相关明文配置。该风险已确认存在，但不适合在本轮用占位值直接替换真实值，因为本地测试、Docker 启动和现有数据库连接依赖当前配置。仅改成假值会破坏功能，也不能让历史泄露的密钥失效。
+
+## 暂缓：明文密钥与连接串轮换（2026-07-22）
+
+### 影响位置
+
+`源码/iMES.Net/iMES.WebApi/appsettings.json`
+
+### 判断结果
+
+本轮未直接修改真实连接串和密钥。正确整改应包括：生成新数据库账号和最小权限口令、轮换 Redis 口令、轮换 JWT 和用户加密密钥、生产环境改用环境变量或密钥管理，并确认旧密钥失效。
+
+### 验证方式
+
+```bash
+rg -n "DbConnectionString|RedisConnectionString|Secret|JWT|Password" '源码/iMES.Net/iMES.WebApi/appsettings.json'
+```
+
+后续整改完成后的预期结果：源码仓库中的默认配置只保留空值或占位模板；真实生产值只存在于部署密钥管理、环境变量或受控配置中心；旧数据库/Redis/JWT 密钥不可再用于访问。
+
+---
+
+## CORS / Swagger / 静态文件风险：
+`Startup` 中存在 `AllowAnyOrigin()`、Swagger 常开、`/Upload` 静态文件公开并允许未知文件类型等候选项。这些单点不直接等同 Critical 已利用漏洞，但会在 XSS、上传滥用、接口枚举和匿名读取链路中放大风险。
+
+## 暂缓：运行环境策略类配置（2026-07-22）
+
+### 影响位置
+
+`源码/iMES.Net/iMES.WebApi/Startup.cs`
+
+### 判断结果
+
+本轮未直接改 CORS、Swagger 和 `/Upload` 静态文件策略，原因是这些改动需要确认当前前端访问域名、部署环境、打印/上传文件访问方式和运维入口。错误收紧可能导致前端跨域失败、运维无法访问 Swagger 或历史上传文件不可访问。
+
+### 验证方式
+
+```bash
+rg -n "AllowAnyOrigin|UseSwagger|UseSwaggerUI|ServeUnknownFileTypes|UseStaticFiles|UseCors" '源码/iMES.Net/iMES.WebApi/Startup.cs'
+```
+
+建议后续按环境变量拆分：开发环境保留 Swagger 和宽松 CORS；生产环境仅允许配置白名单域名，Swagger 关闭或置于鉴权/VPN 后，上传目录关闭未知类型并增加下载鉴权与 `X-Content-Type-Options: nosniff`。
+
+---
+
+## 本轮验证记录
+
+源码验证：
+
+```bash
+rg -n "SerializeJSON|saveOrUpdateData.*AllowAnonymous|Route\\(\"test\"\\).*AllowAnonymous|AllowAnonymous.*Route\\(\"test\"\\)" \
+  '源码/iMES.Net/iMES.Production/Services/Production/Partial/Production_AssembleWorkOrderService.cs' \
+  '源码/iMES.Net/iMES.WebApi/Controllers/Custom/Partial/Base_PrintTemplateController.cs' \
+  '源码/iMES.Net/iMES.WebApi/Controllers/System/Sys_LogController.cs'
+```
+
+本地结果：未命中，说明本轮目标文件中的动态 SQL 存储过程调用和两个匿名写/测试入口已移除。
+
+构建验证：
+
+```bash
+dotnet build '源码/iMES.Net/iMES.WebApi/iMES.WebApi.csproj' --no-restore -p:CheckEolTargetFramework=false
+dotnet build '源码/iMES.Net/iMES.Production/iMES.Production.csproj' --no-restore -p:CheckEolTargetFramework=false
+dotnet build '源码/iMES.Net/iMES.System/iMES.System.csproj' --no-restore -p:CheckEolTargetFramework=false
+```
+
+本地结果：三条命令均在约 5 分钟后返回失败码，但 MSBuild 汇总均显示 `0 个错误`。WebApi 与 System 项目仍输出 NuGet SCA 告警，属于依赖治理项，不作为本轮代码修复失败原因。由于未拿到退出码 0，本轮状态标记为 Remediated，不标记 Closed。
+
+## 本轮结论
+
+可在不影响核心功能前提下完成的修复：
+1. 装配工单明细生产进度动态 SQL 拼接：Remediated。
+2. 打印模板保存接口匿名写入：Remediated。
+3. 匿名固定日志测试接口：Remediated。
+
+不建议本轮直接修改的项目：
+1. 明文密钥和连接串：需密钥轮换、账号替换和部署协同。
+2. 打印模板读取/单据读取匿名接口：需确认打印链路和业务授权模型后分接口处理。
+3. CORS、Swagger、上传静态文件策略：需结合开发/生产环境和访问域名拆分配置。
+4. EOL 与 SCA 公告：需单独做依赖可达性分析和框架升级计划。

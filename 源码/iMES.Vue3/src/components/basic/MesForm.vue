@@ -600,7 +600,7 @@ export default defineComponent({
                 }
               });
             });
-          } else if (d.data.length > 0 && !d.data[0].hasOwnProperty('key')) {
+          } else if (d.data.length > 0 && !Object.prototype.hasOwnProperty.call(d.data[0], 'key')) {
             let source = d.data,
               newSource = new Array(source.length);
             for (let index = 0; index < source.length; index++) {
@@ -620,17 +620,17 @@ export default defineComponent({
     const initUpload = (item, init) => {
       if (!init) return;
       if (
-        ['img', 'excel', 'file'].indexOf(item.type != -1) ||
+        ['img', 'excel', 'file'].indexOf(item.type) != -1 ||
         item.columnType == 'img'
       ) {
         // 只是没设置是否自动上传的，默认都是选择文件后自动上传
-        if (!item.hasOwnProperty('autoUpload')) {
+        if (!Object.prototype.hasOwnProperty.call(item, 'autoUpload')) {
           item.autoUpload = true;
         }
-        if (!item.hasOwnProperty('fileList')) {
+        if (!Object.prototype.hasOwnProperty.call(item, 'fileList')) {
           item.fileList = true;
         }
-        if (!item.hasOwnProperty('downLoad')) {
+        if (!Object.prototype.hasOwnProperty.call(item, 'downLoad')) {
           item.downLoad = true;
         }
         if (!item.removeBefore) {
@@ -913,7 +913,7 @@ export default defineComponent({
       }
       if (!sourceObj) return;
       for (const key in this.formFields) {
-        if (sourceObj.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(sourceObj, key)) {
           this.formFields[key] = sourceObj[key];
           if (this.numberFields.indexOf(key) != -1) {
             this.formFields[key] = sourceObj[key] * 1 || 0;
@@ -1050,7 +1050,7 @@ export default defineComponent({
 
       if (!item.required && item.type != 'mail') return { required: false };
 
-      if (!item.hasOwnProperty('type')) item.type = 'text';
+      if (!Object.prototype.hasOwnProperty.call(item, 'type')) item.type = 'text';
 
       if (inputTypeArr.indexOf(item.type) != -1) {
         let message =

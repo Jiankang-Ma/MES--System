@@ -919,7 +919,7 @@ export default defineComponent({
           }
         });
       if (!this.beginEdit(row, column, row.elementIndex)) return;
-      if (row.hasOwnProperty('elementIndex')) {
+      if (Object.prototype.hasOwnProperty.call(row, 'elementIndex')) {
         if (this.edit.rowIndex == row.elementIndex) {
           return;
         }
@@ -1090,7 +1090,7 @@ export default defineComponent({
       this.columns.forEach((x) => {
         // 2022.05.06 添加行时，如果列有编辑属性，设置开启编辑(避免关闭编辑后，无法再次启用编辑)??
         //x.readonly = false;
-        if (!row.hasOwnProperty(x.field)) {
+        if (!Object.prototype.hasOwnProperty.call(row, x.field)) {
           if (x.edit && x.edit.type == 'switch') {
             row[x.field] = x.type == 'bool' ? false : 0;
           } else if (!row.hidden) {
@@ -1394,7 +1394,7 @@ export default defineComponent({
       let sum = 0;
       let _index = 0;
       (this.url ? this.rowData : this.tableData).forEach((x, index) => {
-        if (x.hasOwnProperty(column.field) && !isNaN(x[column.field])) {
+        if (Object.prototype.hasOwnProperty.call(x, column.field) && !isNaN(x[column.field])) {
           _index = index;
           sum += x[column.field] * 1;
         }

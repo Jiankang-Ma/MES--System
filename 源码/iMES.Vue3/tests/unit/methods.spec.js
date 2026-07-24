@@ -805,8 +805,8 @@ describe('methods.js — 辅助方法', () => {
 // ----------------------------------------------------------------
 // 8. WH-BUG-14 download this 绑定
 // ----------------------------------------------------------------
-describe('methods.js — download this 绑定', () => {
-  it('WH-BUG-14 download() onload回调中this指向XHR实例而非Vue组件,$error调用失败', () => {
+describe('methods.js — download() 错误处理', () => {
+  it('WH-BUG-14 download() 下载失败时箭头函数正确绑定this,调用Vue组件$error', () => {
     const originalXHR = global.XMLHttpRequest
 
     // 模拟 XHR，捕获 onload 回调
@@ -818,6 +818,7 @@ describe('methods.js — download this 绑定', () => {
       this.responseType = ''
       this.response = new Blob()
       this.status = 500  // 模拟下载失败状态码
+      this.abort = () => {}
     }
     Object.defineProperty(MockXHR.prototype, 'onload', {
       set(fn) { capturedOnload = fn },
@@ -826,18 +827,53 @@ describe('methods.js — download this 绑定', () => {
     })
     global.XMLHttpRequest = MockXHR
 
+    let errorCalled = ''
     const ctx = createMockContext({
-      $refs: { export: { click: () => {}, href: '' } }
-      // ctx 上有 $error 方法（在 createMockContext 中定义）
+      $refs: { export: { click: () => { errorCalled = 'click' }, href: '' } },
+      $error: (msg) => { errorCalled = msg }
     })
     const bound = methods.download.bind(ctx)
     bound('http://test.com/download', 'test.xlsx')
 
-    // 当 onload 被浏览器调用时，this 指向 XHR 实例
-    // XHR 实例没有 $error 方法，抛出 TypeError（正确行为应调用 ctx.$error）
-    expect(() => {
-      capturedOnload()
-    }).to.throw(TypeError)
+    // 修复后 onload 为箭头函数，this 绑定 Vue 组件上下文
+    // 当 status != 200 时，应调用 ctx.$error 而非抛出 TypeError
+    capturedOnload()
+
+    expect(errorCalled).to.equal('下载文件出错了..')
+
+    global.XMLHttpRequest = originalXHR
+  })
+
+  it('download() 下载成功时应触发导出', () => {
+    const originalXHR = global.XMLHttpRequest
+
+    let capturedOnload = null
+    function MockXHR() {
+      this.open = () => {}
+      this.setRequestHeader = () => {}
+      this.send = () => {}
+      this.responseType = ''
+      this.response = new Blob()
+      this.status = 200  // 成功
+      this.abort = () => {}
+    }
+    Object.defineProperty(MockXHR.prototype, 'onload', {
+      set(fn) { capturedOnload = fn },
+      get() { return capturedOnload },
+      configurable: true
+    })
+    global.XMLHttpRequest = MockXHR
+
+    let clickCalled = false
+    const ctx = createMockContext({
+      $refs: { export: { click: () => { clickCalled = true }, href: '' } }
+    })
+    const bound = methods.download.bind(ctx)
+    bound('http://test.com/download', 'test.xlsx')
+
+    capturedOnload()
+
+    expect(clickCalled).to.be.true
 
     global.XMLHttpRequest = originalXHR
   })
@@ -886,7 +922,7 @@ describe('methods.js — hasOwnProperty 安全', () => {
     // 模拟后台返回的字典数据，其中 data 数组元素覆写了 hasOwnProperty
     const keys = ['StatusDic']
     ctx.dicKeys = [
-      { dicNo: 'StatusDic', data: [], type: 'cascader' }
+      { dicNo: 'StatusDic', data: [], type: 'cascader', fileds: ['Status'] }
     ]
 
     // 构造包含覆写 hasOwnProperty 的数据源的 formOptions

@@ -559,3 +559,85 @@ describe('MesForm.vue — initUpload', () => {
     expect(wrapper.exists()).to.be.true
   })
 })
+
+// ----------------------------------------------------------------
+// 10. MesForm.vue — hasOwnProperty 安全（WH-BUG-16 补充）
+// ----------------------------------------------------------------
+describe('MesForm.vue — hasOwnProperty 安全补充', () => {
+  beforeEach(() => {
+    installLocalStorageMock()
+  })
+
+  it('WH-BUG-16a initFormRules() 字典数据元素覆写hasOwnProperty时不应抛异常', (done) => {
+    // L603: Object.prototype.hasOwnProperty.call(d.data[0], 'key')
+    // 当字典返回数据中第一个元素覆写 hasOwnProperty 时不应抛异常
+    const httpMock = {
+      post: (url, keys) => {
+        expect(keys).to.include('Status')
+        return Promise.resolve([
+          { dicNo: 'Status', data: [{ hasOwnProperty: 'hijacked', value: 'x' }] }
+        ])
+      }
+    }
+    expect(() => {
+      shallowMount(MesForm, {
+        props: {
+          formRules: [
+            [{ field: 'Status', title: '状态', type: 'select', dataKey: 'Status', data: [] }]
+          ],
+          formFields: { Status: '' },
+          loadKey: true
+        },
+        ...mountOptions(httpMock)
+      })
+    }).to.not.throw()
+
+    setTimeout(done, 100)
+  })
+
+  it('WH-BUG-16b reset(sourceObj) sourceObj覆写hasOwnProperty时不应抛异常', () => {
+    // L916: Object.prototype.hasOwnProperty.call(sourceObj, key)
+    const wrapper = shallowMount(MesForm, {
+      props: {
+        formRules: [
+          [{ field: 'Name', title: '名称', type: 'text' }]
+        ],
+        formFields: { Name: '' },
+        loadKey: false
+      },
+      ...mountOptions()
+    })
+
+    const sourceObj = { hasOwnProperty: 'hijacked', Name: '测试名称' }
+    expect(() => {
+      wrapper.vm.reset(sourceObj)
+    }).to.not.throw()
+
+    // 同时验证正常的字段恢复不受影响
+    expect(wrapper.vm.formFields.Name).to.equal('测试名称')
+  })
+
+  it('WH-BUG-16c getRule() 表单配置项覆写hasOwnProperty时不应抛异常', () => {
+    // L1053: Object.prototype.hasOwnProperty.call(item, 'type')
+    const wrapper = shallowMount(MesForm, {
+      props: {
+        formRules: [
+          [{ field: 'Name', title: '名称', type: 'text' }]
+        ],
+        formFields: { Name: '' },
+        loadKey: false
+      },
+      ...mountOptions()
+    })
+
+    // required=true 且没有 type 字段的 item，会进入 L1053 分支设置默认 type='text'
+    const formFields = { Name: '' }
+    const item = { field: 'Name', title: '名称', required: true, hasOwnProperty: 'hijacked' }
+    expect(() => {
+      wrapper.vm.getRule(item, formFields)
+    }).to.not.throw()
+
+    // 验证默认 type 被正确设置
+    expect(item.type).to.equal('text')
+  })
+})

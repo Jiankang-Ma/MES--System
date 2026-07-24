@@ -168,3 +168,65 @@
 ## 交接结论
 
 前端四个目标模块的前期单元测试已经完成，共 88 个用例，86 个通过、2 个失败、0 个跳过。ViewGrid 通用 CRUD 方法、明细数据操作、动态表格基础功能、动态表单验证与重置已建立测试基线；3 个失败项已记录在"本次发现的问题"中。本轮未修改业务源码，"修改"和"复测"两列留空，供后续修复阶段继续填写。
+
+
+
+## 流程图与生产领域测试： Fitzgerald
+
+## 本次范围
+
+测试范围限定为 `源码/iMES.Vue3` 的流程图自研逻辑和生产领域 extension，重点覆盖流程节点/连线规则，以及销售订单、生产计划、生产工单、装配工单和报工的数据加工与前端状态控制。`components/workflow/jsplumb.js` 为第三方连线库，本轮不为其编写测试用例。
+
+| 模块 | 源码路径 | 测试重点 |
+| --- | --- | --- |
+| 流程图基础 | `src/components/workflow/utils.js`、`data_default.js`、`force-directed.js` | 有向/反向连线判断、连接器查询、节点 ID、默认流程结构、自动布局坐标 |
+| 流程图组件 | `src/components/workflow/node.vue`、`node_form.vue`、`workflow.vue` | 节点选中与移动、审批类型字段切换、节点保存、连线标签、画布新增节点与重名处理 |
+| 销售订单与生产计划 | `src/extension/production/production/Production_SalesOrder.js`、`Production_ProductPlan.js` | 编码筛选、行选中与明细刷新、表单编号提示 |
+| 生产工单 | `src/extension/production/production/Production_WorkOrder.js` | 产品回填、工序明细生成、字典标签转换、已开始工单阻断 |
+| 装配工单 | `src/extension/production/production/Production_AssembleWorkOrder.js` | 编码筛选、工序进度步骤定位 |
+| 报工 | `src/extension/production/production/Production_ReportWorkOrder.js` | 工时/效率计算、相同时间保护、新增默认状态与时间 |
+
+单元测试不连接 SQL Server、Redis 或真实 HTTP API；extension 方法通过 mock `this` 上下文、`$refs`、HTTP 和消息组件执行。流程图仅 mock jsPlumb 对象以验证项目自身的调用和数据变化，不验证第三方连线库内部实现。本轮只完成前期测试，不修改业务源码，不进行修改后复测。
+
+## 执行信息
+
+| 项目 | 结果 |
+| --- | --- |
+| 执行日期 | 2026-07-24 |
+| 当前分支 | `dev` |
+| 当前 commit SHA | `68748a1` |
+| 测试工程 | `源码/iMES.Vue3` |
+| 测试目录 | `源码/iMES.Vue3/tests/unit` |
+| 执行方式 | 在 `源码/iMES.Vue3` 执行 `npm run test:unit -- --grep 'components/workflow|extension/production'` |
+| 测试框架 | Vue CLI Unit Mocha + Chai 4.3.6 + Vue Test Utils |
+| 结果 | **32 个用例：32 通过，0 失败，0 跳过** |
+| 运行时 | Node.js 25.1.0；测试入口自动添加 `NODE_OPTIONS=--openssl-legacy-provider` 兼容旧版 Webpack |
+
+测试编译和断言均成功。Browserslist 数据过期提示、Vue 的 `resolveComponent` 警告及 Node 弃用提示不影响本轮测试执行结果。
+
+## 已通过的测试点
+
+| 模块 | 测试点 | 结果 |
+| --- | --- | --- |
+| 流程图基础规则 | 正向/反向连线判断、连接器 source/target 查询、节点 ID、默认流程、自动布局 | 6/6 通过 |
+| 流程图节点 | 节点选中样式、坐标、点击/删除/移动事件、只读节点禁止连线 | 4/4 通过 |
+| 节点配置表单 | 审批用户/角色/部门字段切换、编辑副本隔离、保存节点、保存连线标签 | 4/4 通过 |
+| 流程编辑器 | 节点移动、连线标签同步、拖入画布时重名规避和 jsPlumb 端点初始化 | 3/3 通过 |
+| 销售订单 | 编码进入页面筛选、无编码不请求、列表行选中和明细刷新 | 3/3 通过 |
+| 生产计划 | 编码进入页面筛选、表单编号自动生成提示 | 2/2 通过 |
+| 生产工单 | 产品选择回填、工序明细初始化、权限/不良品标签、编辑明细标签、重复开始阻断 | 5/5 通过 |
+| 装配工单 | 编码筛选、首个未完成工序步骤定位 | 2/2 通过 |
+| 报工 | 跨天工时/效率、相同时间保护、新增报工默认字段 | 3/3 通过 |
+
+正式测试文件：
+
+- `源码/iMES.Vue3/tests/unit/workflow.spec.js`
+- `源码/iMES.Vue3/tests/unit/production-extension.spec.js`
+
+## 本次发现的问题
+
+本范围 32 个用例全部通过，未新增失败项或需要进入修复阶段的前端缺陷。
+
+## 交接结论
+
+Fitzgerald 已完成流程图与生产领域前期单元测试，共 32 个用例，32 个通过、0 个失败、0 个跳过。流程节点和连线的关键数据规则，以及销售订单、生产计划、工单、装配工单、报工的前端数据加工与状态控制已建立测试基线。本轮未修改业务源码；后续若修改上述规则，应先运行本章节记录的定向命令，再运行完整 `npm run test:unit` 回归。

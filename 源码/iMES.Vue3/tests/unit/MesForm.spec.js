@@ -511,3 +511,51 @@ describe('MesForm.vue — getText 只读显示', () => {
     expect(wrapper.vm.getText({ Status: '0' }, item)).to.equal('禁用')
   })
 })
+
+// ----------------------------------------------------------------
+// 9. WH-BUG-15 initUpload 括号错误 + hasOwnProperty
+// ----------------------------------------------------------------
+describe('MesForm.vue — initUpload', () => {
+  beforeEach(() => {
+    installLocalStorageMock()
+  })
+
+  it('WH-BUG-15 initUpload() 当item.type为img时应设置autoUpload/fileList/downLoad属性', () => {
+    const wrapper = shallowMount(MesForm, {
+      props: {
+        formRules: [
+          [{ field: 'Photo', title: '照片', type: 'img' }]
+        ],
+        formFields: { Photo: '' },
+        loadKey: true
+      },
+      ...mountOptions()
+    })
+
+    // initFormRules(true) 中调用 initUpload(item, true)
+    // 正确行为：item.type 为 'img' 时，应设置 autoUpload=true, fileList=true, downLoad=true
+    // 缺陷代码：indexOf(item.type != -1) 括号位置错误，条件永远为 false，不会进入 if 块
+    const photoItem = wrapper.vm.formRules[0].find(x => x.field === 'Photo')
+    expect(photoItem.autoUpload).to.be.true
+    expect(photoItem.fileList).to.be.true
+    expect(photoItem.downLoad).to.be.true
+  })
+
+  it('WH-BUG-15b initUpload() item覆写hasOwnProperty时不应抛异常', () => {
+    const wrapper = shallowMount(MesForm, {
+      props: {
+        formRules: [
+          [{ field: 'Photo', title: '照片', type: 'img', columnType: 'img', hasOwnProperty: 'hijacked' }]
+        ],
+        formFields: { Photo: '' },
+        loadKey: true
+      },
+      ...mountOptions()
+    })
+
+    // initUpload 中使用 item.hasOwnProperty('autoUpload') 等
+    // 当 item 对象覆写 hasOwnProperty 时，应使用 Object.prototype.hasOwnProperty.call 避免异常
+    // 只要能成功挂载不抛异常即表示通过
+    expect(wrapper.exists()).to.be.true
+  })
+})

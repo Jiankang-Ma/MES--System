@@ -9,9 +9,16 @@ export default {
         return c.field;
       });
     }
+    let oldViewColumns = this.viewColumns || [];
     this.viewColumns = this.columns
       .filter((c) => {
-        return !c.hidden && !c.render;
+        return (
+          !c.render &&
+          (!c.hidden ||
+            oldViewColumns.some((column) => {
+              return column.field == c.field;
+            }))
+        );
       })
       .map((c) => {
         return { field: c.field, title: c.title, show: !c.hidden };
@@ -22,7 +29,8 @@ export default {
     this.getCacheViewColumn();
   },
   getViewCacheKey(){
-    return 'custom:column'+this.table.name;
+    let userKey = this.userId === undefined || this.userId === null ? '' : ':' + this.userId;
+    return 'custom:column'+this.table.name + userKey;
   },
   getCacheViewColumn() {
     try {
@@ -32,7 +40,12 @@ export default {
       let sortTableColumns = [];
       //弹出框的列
       let _viewColumns = [];
+      let cacheFields = [];
       columns.forEach((column) => {
+        if (cacheFields.indexOf(column.field) != -1) {
+          return;
+        }
+        cacheFields.push(column.field);
         let _column = this.viewColumns.find((c) => {
           return c.field == column.field;
         });
@@ -82,11 +95,12 @@ export default {
     }
     let _columns = [];
     this.orginColumnFields.forEach((x) => {
-      _columns.push(
-        this.columns.find((c) => {
-          return c.field == x;
-        })
-      );
+      let column = this.columns.find((c) => {
+        return c.field == x;
+      });
+      if (column) {
+        _columns.push(column);
+      }
     });
     let otherColumns = this.columns.filter((c) => {
       return !this.orginColumnFields.some((s) => {

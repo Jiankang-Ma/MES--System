@@ -17,7 +17,7 @@ Vue 单测已从仓库根目录 `tests/前端自动化测试用例` 迁移到所
 
 运行期间的 Browserslist 过期提示、Vue 运行时模板提示和 jsdom 导航提示不影响测试发现与断言执行；20 个失败项仍按下文缺陷表跟踪。
 
-## 前端公共工具与用户列缓存测试： 丁伯源
+## 前端公共工具与用户列缓存测试： 丁泊源
 
 ## 本次范围
 
@@ -74,28 +74,30 @@ Vue 单测已从仓库根目录 `tests/前端自动化测试用例` 迁移到所
 
 | 编号 | 复现场景 | 修改 | 复测 |
 | --- | --- | --- | --- |
-| FE-TREE-01 | `convertTree()` 处理一个根节点和一个子节点时，callback 实际收到 `[1, 2, 2]`，子节点被调用两次 |  |  |
-| FE-FMT-01 | `isPhone('1,123456789')` 返回 `true`，手机号第二位字符组错误接受逗号 |  |  |
-| FE-FMT-02 | `isDecimal('12a50')` 返回 `true`，未转义的 `.` 把任意字符当作小数点 |  |  |
-| FE-FMT-03 | `isDecimal('-')` 返回 `true` |  |  |
-| FE-FMT-04 | `isNumber('-')` 返回 `true` |  |  |
-| FE-URL-01 | `checkUrl('http://999.999.999.999/file')` 返回 `true`，IPv4 分段未限制在 0～255 |  |  |
-| FE-URL-02 | `checkUrl('https://example.technology/path')` 返回 `false`，顶级域名被限制为 1～6 位，是否支持现代长顶级域名待确认 |  |  |
-| FE-URL-03 | `matchUrlIp()` 把 `api.example.com.evil.test` 误判为匹配 `api.example.com` |  |  |
-| FE-URL-04 | `getImgSrc('/Upload/a.png', 'http://localhost:9991/')` 返回含 `//Upload` 的地址 |  |  |
-| FE-URL-05 | `downloadImg()` 请求成功后抛出 `ReferenceError: callback is not defined` |  |  |
-| FE-DATE-01 | `formatTimeStamp(0)` 返回 `-`，零时间戳是否应作为有效时间待确认 |  |  |
-| FE-DATE-02 | `formatTimeStamp('not-a-date')` 返回 `NaN-aN-aN aN:aN:aN` |  |  |
-| FE-DATE-03 | 2026-07-22 执行 `getLastWeekStartDate()` 返回 2026-07-13，预期 2026-07-12 |  |  |
-| FE-DATE-04 | 2026-07-22 执行 `getLastWeekEndDate()` 返回 2026-07-19，预期 2026-07-18 |  |  |
-| FE-COLUMN-01 | 同一表格的不同用户得到相同缓存键 `custom:columnTable_A`，是否要求用户隔离待确认 |  |  |
-| FE-COLUMN-02 | 缓存包含重复字段时，恢复结果出现重复列 `['name', 'name', 'code', 'qty']` |  |  |
-| FE-COLUMN-03 | 重复初始化后，被缓存隐藏的 `name` 列从可选列列表消失，无法重新勾选 |  |  |
-| FE-COLUMN-04 | 原字段被删除后调用 `resetViewColumns()`，结果数组包含 `undefined` |  |  |
+| FE-TREE-01 | `convertTree()` 处理一个根节点和一个子节点时，callback 实际收到 `[1, 2, 2]`，子节点被调用两次 | 顶层遍历不再对非根节点提前执行 callback；子节点只在递归生成时回调，异常补入节点单独回调一次。 | 2026-07-27 定向复测通过。 |
+| FE-FMT-01 | `isPhone('1,123456789')` 返回 `true`，手机号第二位字符组错误接受逗号 | 手机号正则改为 `^1[3-9][0-9]{9}$`，只接受 13 到 19 号段数字。 | 2026-07-27 定向复测通过。 |
+| FE-FMT-02 | `isDecimal('12a50')` 返回 `true`，未转义的 `.` 把任意字符当作小数点 | 小数正则改为 `^-?[0-9]+(\.[0-9]+)?$`，小数点必须为真实 `.`。 | 2026-07-27 定向复测通过。 |
+| FE-FMT-03 | `isDecimal('-')` 返回 `true` | 小数正则要求负号后必须至少有一位数字。 | 2026-07-27 定向复测通过。 |
+| FE-FMT-04 | `isNumber('-')` 返回 `true` | 整数正则改为 `^-?[0-9]+$`，单独负号不再通过。 | 2026-07-27 定向复测通过。 |
+| FE-URL-01 | `checkUrl('http://999.999.999.999/file')` 返回 `true`，IPv4 分段未限制在 0～255 | IP 地址正则改为逐段校验 `0-255`。 | 2026-07-27 定向复测通过。 |
+| FE-URL-02 | `checkUrl('https://example.technology/path')` 返回 `false`，顶级域名被限制为 1～6 位，是否支持现代长顶级域名待确认 | 顶级域名长度放宽到 `1-63` 位，兼容现代长顶级域名。 | 2026-07-27 定向复测通过。 |
+| FE-URL-03 | `matchUrlIp()` 把 `api.example.com.evil.test` 误判为匹配 `api.example.com` | 使用 `URL` 解析后比较 host，避免字符串包含误判相似域名。 | 2026-07-27 定向复测通过。 |
+| FE-URL-04 | `getImgSrc('/Upload/a.png', 'http://localhost:9991/')` 返回含 `//Upload` 的地址 | 拼接前仅在 `src` 为字符串且两端都有 `/` 时去掉一个斜杠，保留原有相对路径拼接行为。 | 2026-07-27 定向复测通过。 |
+| FE-URL-05 | `downloadImg()` 请求成功后抛出 `ReferenceError: callback is not defined` | 请求成功后改为调用传入的 `data.callback(...)`。 | 2026-07-27 定向复测通过。 |
+| FE-DATE-01 | `formatTimeStamp(0)` 返回 `-`，零时间戳是否应作为有效时间待确认 | 空值判断只拦截 `null`、`undefined` 和空字符串，数字 `0` 按合法时间戳格式化。 | 2026-07-27 定向复测通过。 |
+| FE-DATE-02 | `formatTimeStamp('not-a-date')` 返回 `NaN-aN-aN aN:aN:aN` | `new Date()` 后增加 `isNaN(date.getTime())` 判断，非法日期返回 `-`。 | 2026-07-27 定向复测通过。 |
+| FE-DATE-03 | 2026-07-22 执行 `getLastWeekStartDate()` 返回 2026-07-13，预期 2026-07-12 | 上周开始日期改为本周开始日期前 7 天。 | 2026-07-27 定向复测通过。 |
+| FE-DATE-04 | 2026-07-22 执行 `getLastWeekEndDate()` 返回 2026-07-19，预期 2026-07-18 | 上周结束日期改为本周开始日期前 1 天。 | 2026-07-27 定向复测通过。 |
+| FE-COLUMN-01 | 同一表格的不同用户得到相同缓存键 `custom:columnTable_A`，是否要求用户隔离待确认 | 缓存键在存在 `userId` 时追加 `:userId`；未提供 `userId` 时保留原缓存键。 | 2026-07-27 定向复测通过。 |
+| FE-COLUMN-02 | 缓存包含重复字段时，恢复结果出现重复列 `['name', 'name', 'code', 'qty']` | 读取缓存时按 `field` 去重，只恢复第一次出现的字段。 | 2026-07-27 定向复测通过。 |
+| FE-COLUMN-03 | 重复初始化后，被缓存隐藏的 `name` 列从可选列列表消失，无法重新勾选 | 重复初始化时保留已在自定义列列表出现过的隐藏列，仍允许重新勾选。 | 2026-07-27 定向复测通过。 |
+| FE-COLUMN-04 | 原字段被删除后调用 `resetViewColumns()`，结果数组包含 `undefined` | 重置列顺序时只加入当前仍存在的列，过滤已删除字段。 | 2026-07-27 定向复测通过。 |
 
 ## 交接结论
 
-前端三个目标模块的前期单元测试已经完成，共 63 个用例，45 个通过、18 个失败、0 个跳过。树的基础转换、常规日期范围、正常格式校验和常规用户列缓存恢复已建立测试基线；18 个失败项已记录在“本次发现的问题”中。本轮未修改业务源码，“修改”和“复测”两列留空，供后续修复阶段继续填写。
+前端三个目标模块的修复复测已完成。2026-07-27 在 `源码/iMES.Vue3` 执行 `npm run test:unit -- tests/unit/common.spec.js tests/unit/dateFormatUtil.spec.js tests/unit/ViewGridCustomColumn.spec.js tests/unit/environment.spec.js`，结果为 63 个用例全部通过、0 失败、0 跳过。本次仅按上表修复公共工具、日期工具和用户列缓存恢复相关问题。
+
+---
 
 ## ViewGrid方法、明细、动态表格与动态表单测试：楼博涵
 
@@ -200,26 +202,8 @@ Vue 单测已从仓库根目录 `tests/前端自动化测试用例` 迁移到所
 | 报工 | `src/extension/production/production/Production_ReportWorkOrder.js` | 工时/效率计算、相同时间保护、新增默认状态与时间 |
 
 单元测试不连接 SQL Server、Redis 或真实 HTTP API；extension 方法通过 mock `this` 上下文、`$refs`、HTTP 和消息组件执行。流程图仅 mock jsPlumb 对象以验证项目自身的调用和数据变化，不验证第三方连线库内部实现。本轮只完成前期测试，不修改业务源码，不进行修改后复测。
----
 
-## 上传、表单设计器及业务扩展测试：Pizzicato（cjy）
-
-## 本次范围
-
-测试范围限定为 `源码/iMES.Vue3` 中组长指定的上传、表单设计器与业务扩展逻辑。测试均为 **unit tests**，通过 Mock 隔离 HTTP、Store、浏览器下载、窗口打开和组件引用，不连接 SQL Server、Redis 或真实 HTTP API，也不依赖已部署的前后端服务。
-
-| 模块 | 源码路径 | 测试重点 |
-| --- | --- | --- |
-| 通用上传 | `src/components/basic/MesUpload.vue` | 文件名、格式/数量/大小校验、单选/多选、自动上传、上传钩子、服务端路径、下载、移除钩子 |
-| Excel 导入 | `src/components/basic/UploadExcel.vue` | Excel 类型校验、导入前钩子、成功/失败/异常状态、模板下载、鉴权请求、JSON 错误响应 |
-| 表单设计器 | `src/components/basic/MesFormDraggable/MesFormDraggable.vue` | 栅格宽度、行分组、上传/字典/编辑器配置转换、表格配置、复制/删除/清空、保存事件 |
-| 仓储扩展 | `src/extension/warehouse` | 入库/出库单打印选择规则、产品选择、行联动、自动编号提示、库存与收发明细固定列 |
-| 基础资料扩展 | `src/extension/custom` | 用户/产品/工序/绩效/不良品扩展表映射、编辑只读规则、编号规则预览 |
-| 系统扩展 | `src/extension/system` | 字典 SQL 的 key/value 契约、角色父级配置和缓存刷新、表单收集列与查询条件、数组值展开 |
-| 报表扩展 | `src/extension/report` | 日期格式、固定查询布局、序号、表格高度以及不良品、产量、工资字段合计 |
-
-本轮只建立测试基线并记录失败现象，不修改上述业务源码。失败用例保持真实失败，没有改成跳过或反向断言。
-## Fitzgerald 执行信息
+## 执行信息
 
 | 项目 | 结果 |
 | --- | --- |
@@ -234,34 +218,10 @@ Vue 单测已从仓库根目录 `tests/前端自动化测试用例` 迁移到所
 | 运行时 | Node.js 25.1.0；测试入口自动添加 `NODE_OPTIONS=--openssl-legacy-provider` 兼容旧版 Webpack |
 
 测试编译和断言均成功。Browserslist 数据过期提示、Vue 的 `resolveComponent` 警告及 Node 弃用提示不影响本轮测试执行结果。
-## Pizzicato（cjy）执行信息
 
-| 当前分支 | `tests/Vue-cjy` |
-| 基线 commit SHA | `29389e3df1d6c58dba9433609352ff8306667796` |
-| 测试工程 | `源码/iMES.Vue3` |
-| 测试目录 | `源码/iMES.Vue3/tests/unit` |
-| 构建命令 | `docker build --progress=plain -t imes-vue-cjy-tests:local -f "源码/iMES.Vue3/tests/unit/Dockerfile" "源码/iMES.Vue3"` |
-| 执行命令 | `docker run --rm imes-vue-cjy-tests:local` |
-| 测试框架 | Vue CLI Unit Mocha 4.5.18 + Mocha 6.2.3 + Chai 4.3.6 |
-| 运行时 | Docker `node:14-bullseye` |
-| 结果 | **99 个用例：94 通过，5 失败，0 跳过** |
 
-Webpack 编译成功。Browserslist 数据过期提示不影响本次测试结果。仓库原有 `tests/unit/example.spec.js` 引用了不存在的 `@/components/HelloWorld.vue`，会阻断所有正式用例编译，已删除该无效 Vue CLI 示例文件。
 
-## Pizzicato（cjy）修复与复测执行信息
-
-| 项目 | 结果 |
-| --- | --- |
-| 修复日期 | 2026-07-27 |
-| 修复分支 | `retests-modify/cjy` |
-| 修复基线 | 最新 `dev`，commit `c86aea931e71f64e4f2d32dc322901ced0062a93` |
-| 修改文件 | `src/components/basic/MesFormDraggable/MesFormDraggable.vue`、`src/components/basic/MesUpload.vue`、`src/components/basic/UploadExcel.vue` |
-| 构建命令 | `docker build --progress=plain -t imes-vue-cjy-tests:local -f "源码/iMES.Vue3/tests/unit/Dockerfile" "源码/iMES.Vue3"` |
-| 复测命令 | `docker run --rm imes-vue-cjy-tests:local npm run test:unit -- tests/unit/MesUpload.spec.js tests/unit/UploadExcel.spec.js tests/unit/MesFormDraggable.spec.js tests/unit/WarehouseExtensions.spec.js tests/unit/CustomExtensions.spec.js tests/unit/SystemExtensions.spec.js tests/unit/ReportExtensions.spec.js` |
-| 复测结果 | **99 个用例：99 通过，0 失败，0 跳过** |
-
-修复仅针对五条已确认失败项，没有改变测试断言，也没有扩展业务规则。Webpack 编译成功；Browserslist 数据过期提示不影响测试结果。
-## Fitzgerald 已通过的测试点
+## 已通过的测试点
 
 | 模块 | 测试点 | 结果 |
 | --- | --- | --- |
@@ -288,7 +248,57 @@ Webpack 编译成功。Browserslist 数据过期提示不影响本次测试结�
 
 Fitzgerald 已完成流程图与生产领域前期单元测试，共 32 个用例，32 个通过、0 个失败、0 个跳过。流程节点和连线的关键数据规则，以及销售订单、生产计划、工单、装配工单、报工的前端数据加工与状态控制已建立测试基线。本轮未修改业务源码；后续若修改上述规则，应先运行本章节记录的定向命令，再运行完整 `npm run test:unit` 回归。
 
-## Pizzicato（cjy）已通过的测试点
+---
+
+## 上传、表单设计器及业务扩展测试：Pizzicato（cjy）
+
+## 本次范围
+
+测试范围限定为 `源码/iMES.Vue3` 中组长指定的上传、表单设计器与业务扩展逻辑。测试均为 **unit tests**，通过 Mock 隔离 HTTP、Store、浏览器下载、窗口打开和组件引用，不连接 SQL Server、Redis 或真实 HTTP API，也不依赖已部署的前后端服务。
+
+| 模块 | 源码路径 | 测试重点 |
+| --- | --- | --- |
+| 通用上传 | `src/components/basic/MesUpload.vue` | 文件名、格式/数量/大小校验、单选/多选、自动上传、上传钩子、服务端路径、下载、移除钩子 |
+| Excel 导入 | `src/components/basic/UploadExcel.vue` | Excel 类型校验、导入前钩子、成功/失败/异常状态、模板下载、鉴权请求、JSON 错误响应 |
+| 表单设计器 | `src/components/basic/MesFormDraggable/MesFormDraggable.vue` | 栅格宽度、行分组、上传/字典/编辑器配置转换、表格配置、复制/删除/清空、保存事件 |
+| 仓储扩展 | `src/extension/warehouse` | 入库/出库单打印选择规则、产品选择、行联动、自动编号提示、库存与收发明细固定列 |
+| 基础资料扩展 | `src/extension/custom` | 用户/产品/工序/绩效/不良品扩展表映射、编辑只读规则、编号规则预览 |
+| 系统扩展 | `src/extension/system` | 字典 SQL 的 key/value 契约、角色父级配置和缓存刷新、表单收集列与查询条件、数组值展开 |
+| 报表扩展 | `src/extension/report` | 日期格式、固定查询布局、序号、表格高度以及不良品、产量、工资字段合计 |
+
+本轮只建立测试基线并记录失败现象，不修改上述业务源码。失败用例保持真实失败，没有改成跳过或反向断言。
+
+测试编译和断言均成功。Browserslist 数据过期提示、Vue 的 `resolveComponent` 警告及 Node 弃用提示不影响本轮测试执行结果。
+## 执行信息
+
+| 当前分支 | `tests/Vue-cjy` |
+| 基线 commit SHA | `29389e3df1d6c58dba9433609352ff8306667796` |
+| 测试工程 | `源码/iMES.Vue3` |
+| 测试目录 | `源码/iMES.Vue3/tests/unit` |
+| 构建命令 | `docker build --progress=plain -t imes-vue-cjy-tests:local -f "源码/iMES.Vue3/tests/unit/Dockerfile" "源码/iMES.Vue3"` |
+| 执行命令 | `docker run --rm imes-vue-cjy-tests:local` |
+| 测试框架 | Vue CLI Unit Mocha 4.5.18 + Mocha 6.2.3 + Chai 4.3.6 |
+| 运行时 | Docker `node:14-bullseye` |
+| 结果 | **99 个用例：94 通过，5 失败，0 跳过** |
+
+Webpack 编译成功。Browserslist 数据过期提示不影响本次测试结果。仓库原有 `tests/unit/example.spec.js` 引用了不存在的 `@/components/HelloWorld.vue`，会阻断所有正式用例编译，已删除该无效 Vue CLI 示例文件。
+
+## 修复与复测执行信息
+
+| 项目 | 结果 |
+| --- | --- |
+| 修复日期 | 2026-07-27 |
+| 修复分支 | `retests-modify/cjy` |
+| 修复基线 | 最新 `dev`，commit `c86aea931e71f64e4f2d32dc322901ced0062a93` |
+| 修改文件 | `src/components/basic/MesFormDraggable/MesFormDraggable.vue`、`src/components/basic/MesUpload.vue`、`src/components/basic/UploadExcel.vue` |
+| 构建命令 | `docker build --progress=plain -t imes-vue-cjy-tests:local -f "源码/iMES.Vue3/tests/unit/Dockerfile" "源码/iMES.Vue3"` |
+| 复测命令 | `docker run --rm imes-vue-cjy-tests:local npm run test:unit -- tests/unit/MesUpload.spec.js tests/unit/UploadExcel.spec.js tests/unit/MesFormDraggable.spec.js tests/unit/WarehouseExtensions.spec.js tests/unit/CustomExtensions.spec.js tests/unit/SystemExtensions.spec.js tests/unit/ReportExtensions.spec.js` |
+| 复测结果 | **99 个用例：99 通过，0 失败，0 跳过** |
+
+修复仅针对五条已确认失败项，没有改变测试断言，也没有扩展业务规则。Webpack 编译成功；Browserslist 数据过期提示不影响测试结果。
+
+
+## 已通过的测试点
 
 | 基础资料扩展 | 五类扩展表路由映射、表名只读、编辑标识锁定、编号片段重置与预览 | 9/9 通过 |
 | 表单设计器 | 全宽/半宽栅格、上传/编辑器/字典配置转换、普通组件过滤、表格穿插时的同行分组、深拷贝、删除/清空、排序、表格配置和保存事件 | 14/14 通过 |
@@ -323,3 +333,5 @@ Fitzgerald 已完成流程图与生产领域前期单元测试，共 32 个用�
 ## 交接结论
 
 组长指定的上传导入、表单设计器、仓储、基础资料、系统和报表业务规则单元测试及修复后复测已经完成。初测共 99 个用例，94 个通过、5 个失败；在最新 `dev` 基线 `c86aea931e71f64e4f2d32dc322901ced0062a93` 上对五条已确认问题进行最小范围修复后，定向复测为 **99 个通过、0 个失败、0 个跳过**。本次只修改三个对应业务组件，未修改测试断言或无关业务逻辑，可交由组长继续执行整体前端回归。
+---
+

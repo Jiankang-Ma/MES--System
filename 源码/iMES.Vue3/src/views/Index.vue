@@ -358,7 +358,9 @@ export default defineComponent({
         return
       }
       if (item.path.indexOf('http') != -1) {
-        window.open(item.path)
+        if (_config.base.isValidUrl(item.path)) {
+          window.open(item.path)
+        }
         return
       }
       if (typeof item == 'string' || item.path == '/login') {

@@ -4,7 +4,11 @@ function getUserInfo(state) {
   if (state.userInfo) return state.userInfo;
   let userInfo = localStorage.getItem(keys.USER);
   if (userInfo) {
-    state.userInfo = JSON.parse(userInfo);
+    try {
+      state.userInfo = JSON.parse(userInfo);
+    } catch (e) {
+      console.warn('用户信息解析失败');
+    }
   }
   return state.userInfo;
 }

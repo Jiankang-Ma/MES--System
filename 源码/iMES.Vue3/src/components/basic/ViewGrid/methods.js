@@ -721,7 +721,12 @@ let methods = {
       }
       let resultRow;
       if (typeof x.data == 'string' && x.data != '') {
-        resultRow = JSON.parse(x.data);
+        try {
+          resultRow = JSON.parse(x.data);
+        } catch (e) {
+          console.warn('JSON解析失败:', x.data);
+          resultRow = x.data;
+        }
       } else {
         resultRow = x.data;
       }

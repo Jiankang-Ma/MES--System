@@ -102,11 +102,11 @@
                     )
                 "
                 v-html="
-                  columnChildren.formatter(
+                  $base.escapeHtml(columnChildren.formatter(
                     scope1.row,
                     columnChildren,
                     scope1.$index
-                  )
+                  ))
                 "
               ></div>
               <div v-else-if="column.bind">
@@ -278,7 +278,7 @@
             <div
               v-else-if="column.formatter"
               @click="formatterClick(scope.row, column, $event)"
-              v-html="column.formatter(scope.row, column)"
+              v-html="$base.escapeHtml(column.formatter(scope.row, column))"
             ></div>
             <!-- 2021.11.18修复table数据源设置为normal后点击行$event缺失的问题 -->
             <div

@@ -6,6 +6,101 @@ function clone(value) {
 }
 
 describe('uitils/common.js', () => {
+  describe('XSS防护 - escapeHtml', () => {
+    it('应转义HTML特殊字符', () => {
+      const input = '<script>alert("XSS")</script>'
+      const expected = '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;'
+      expect(common.escapeHtml(input)).to.equal(expected)
+    })
+
+    it('应转义单引号', () => {
+      expect(common.escapeHtml("It's a test")).to.equal("It&#039;s a test")
+    })
+
+    it('应处理空值和undefined', () => {
+      expect(common.escapeHtml(null)).to.equal(null)
+      expect(common.escapeHtml(undefined)).to.equal(undefined)
+      expect(common.escapeHtml('')).to.equal('')
+    })
+
+    it('应保留普通文本不变', () => {
+      expect(common.escapeHtml('Hello World')).to.equal('Hello World')
+    })
+  })
+
+  describe('URL安全 - isValidUrl', () => {
+    it('应允许安全协议(http, https, ftp, mailto, tel)', () => {
+      expect(common.isValidUrl('http://example.com')).to.equal(true)
+      expect(common.isValidUrl('https://example.com')).to.equal(true)
+      expect(common.isValidUrl('ftp://example.com/file.txt')).to.equal(true)
+      expect(common.isValidUrl('mailto:user@example.com')).to.equal(true)
+      expect(common.isValidUrl('tel:123456789')).to.equal(true)
+    })
+
+    it('应拒绝javascript协议', () => {
+      expect(common.isValidUrl('javascript:alert(1)')).to.equal(false)
+      expect(common.isValidUrl('javascript://example.com')).to.equal(false)
+    })
+
+    it('应拒绝data协议', () => {
+      expect(common.isValidUrl('data:text/html,<script>alert(1)</script>')).to.equal(false)
+    })
+
+    it('应拒绝空值和无效URL', () => {
+      expect(common.isValidUrl(null)).to.equal(false)
+      expect(common.isValidUrl(undefined)).to.equal(false)
+      expect(common.isValidUrl('')).to.equal(false)
+      expect(common.isValidUrl('not-a-url')).to.equal(false)
+    })
+  })
+
+  describe('JSON安全解析 - safeJsonParse', () => {
+    it('应正确解析有效JSON', () => {
+      const json = '{"name":"test","value":123}'
+      expect(common.safeJsonParse(json)).to.deep.equal({ name: 'test', value: 123 })
+    })
+
+    it('解析失败时应返回默认值', () => {
+      expect(common.safeJsonParse('invalid json')).to.equal(null)
+      expect(common.safeJsonParse('invalid json', {})).to.deep.equal({})
+      expect(common.safeJsonParse('invalid json', [])).to.deep.equal([])
+    })
+
+    it('应处理空值', () => {
+      expect(common.safeJsonParse(null)).to.equal(null)
+      expect(common.safeJsonParse(undefined)).to.equal(null)
+      expect(common.safeJsonParse('')).to.equal(null)
+    })
+  })
+
+  describe('文件下载安全 - dowloadFile', () => {
+    it('不应打开javascript协议的链接', () => {
+      const previousWindowOpen = global.window.open
+      let openedUrl = null
+      global.window.open = (url) => { openedUrl = url }
+
+      try {
+        common.dowloadFile('javascript:alert(1)', 'test')
+        expect(openedUrl).to.equal(null)
+      } finally {
+        global.window.open = previousWindowOpen
+      }
+    })
+
+    it('应打开安全协议的链接', () => {
+      const previousWindowOpen = global.window.open
+      let openedUrl = null
+      global.window.open = (url) => { openedUrl = url }
+
+      try {
+        common.dowloadFile('https://example.com/file.pdf', 'test')
+        expect(openedUrl).to.equal('https://example.com/file.pdf')
+      } finally {
+        global.window.open = previousWindowOpen
+      }
+    })
+  })
+
   describe('树结构', () => {
     it('将平铺数据转换为多层树，并保留多个根节点', () => {
       const data = clone([

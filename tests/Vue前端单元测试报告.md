@@ -17,7 +17,7 @@ Vue 单测已从仓库根目录 `tests/前端自动化测试用例` 迁移到所
 
 运行期间的 Browserslist 过期提示、Vue 运行时模板提示和 jsdom 导航提示不影响测试发现与断言执行；20 个失败项仍按下文缺陷表跟踪。
 
-## 前端公共工具与用户列缓存测试： 丁伯源
+## 前端公共工具与用户列缓存测试： 丁泊源
 
 ## 本次范围
 
@@ -74,28 +74,28 @@ Vue 单测已从仓库根目录 `tests/前端自动化测试用例` 迁移到所
 
 | 编号 | 复现场景 | 修改 | 复测 |
 | --- | --- | --- | --- |
-| FE-TREE-01 | `convertTree()` 处理一个根节点和一个子节点时，callback 实际收到 `[1, 2, 2]`，子节点被调用两次 |  |  |
-| FE-FMT-01 | `isPhone('1,123456789')` 返回 `true`，手机号第二位字符组错误接受逗号 |  |  |
-| FE-FMT-02 | `isDecimal('12a50')` 返回 `true`，未转义的 `.` 把任意字符当作小数点 |  |  |
-| FE-FMT-03 | `isDecimal('-')` 返回 `true` |  |  |
-| FE-FMT-04 | `isNumber('-')` 返回 `true` |  |  |
-| FE-URL-01 | `checkUrl('http://999.999.999.999/file')` 返回 `true`，IPv4 分段未限制在 0～255 |  |  |
-| FE-URL-02 | `checkUrl('https://example.technology/path')` 返回 `false`，顶级域名被限制为 1～6 位，是否支持现代长顶级域名待确认 |  |  |
-| FE-URL-03 | `matchUrlIp()` 把 `api.example.com.evil.test` 误判为匹配 `api.example.com` |  |  |
-| FE-URL-04 | `getImgSrc('/Upload/a.png', 'http://localhost:9991/')` 返回含 `//Upload` 的地址 |  |  |
-| FE-URL-05 | `downloadImg()` 请求成功后抛出 `ReferenceError: callback is not defined` |  |  |
-| FE-DATE-01 | `formatTimeStamp(0)` 返回 `-`，零时间戳是否应作为有效时间待确认 |  |  |
-| FE-DATE-02 | `formatTimeStamp('not-a-date')` 返回 `NaN-aN-aN aN:aN:aN` |  |  |
-| FE-DATE-03 | 2026-07-22 执行 `getLastWeekStartDate()` 返回 2026-07-13，预期 2026-07-12 |  |  |
-| FE-DATE-04 | 2026-07-22 执行 `getLastWeekEndDate()` 返回 2026-07-19，预期 2026-07-18 |  |  |
-| FE-COLUMN-01 | 同一表格的不同用户得到相同缓存键 `custom:columnTable_A`，是否要求用户隔离待确认 |  |  |
-| FE-COLUMN-02 | 缓存包含重复字段时，恢复结果出现重复列 `['name', 'name', 'code', 'qty']` |  |  |
-| FE-COLUMN-03 | 重复初始化后，被缓存隐藏的 `name` 列从可选列列表消失，无法重新勾选 |  |  |
-| FE-COLUMN-04 | 原字段被删除后调用 `resetViewColumns()`，结果数组包含 `undefined` |  |  |
+| FE-TREE-01 | `convertTree()` 处理一个根节点和一个子节点时，callback 实际收到 `[1, 2, 2]`，子节点被调用两次 | 顶层遍历不再对非根节点提前执行 callback；子节点只在递归生成时回调，异常补入节点单独回调一次。 | 2026-07-27 定向复测通过。 |
+| FE-FMT-01 | `isPhone('1,123456789')` 返回 `true`，手机号第二位字符组错误接受逗号 | 手机号正则改为 `^1[3-9][0-9]{9}$`，只接受 13 到 19 号段数字。 | 2026-07-27 定向复测通过。 |
+| FE-FMT-02 | `isDecimal('12a50')` 返回 `true`，未转义的 `.` 把任意字符当作小数点 | 小数正则改为 `^-?[0-9]+(\.[0-9]+)?$`，小数点必须为真实 `.`。 | 2026-07-27 定向复测通过。 |
+| FE-FMT-03 | `isDecimal('-')` 返回 `true` | 小数正则要求负号后必须至少有一位数字。 | 2026-07-27 定向复测通过。 |
+| FE-FMT-04 | `isNumber('-')` 返回 `true` | 整数正则改为 `^-?[0-9]+$`，单独负号不再通过。 | 2026-07-27 定向复测通过。 |
+| FE-URL-01 | `checkUrl('http://999.999.999.999/file')` 返回 `true`，IPv4 分段未限制在 0～255 | IP 地址正则改为逐段校验 `0-255`。 | 2026-07-27 定向复测通过。 |
+| FE-URL-02 | `checkUrl('https://example.technology/path')` 返回 `false`，顶级域名被限制为 1～6 位，是否支持现代长顶级域名待确认 | 顶级域名长度放宽到 `1-63` 位，兼容现代长顶级域名。 | 2026-07-27 定向复测通过。 |
+| FE-URL-03 | `matchUrlIp()` 把 `api.example.com.evil.test` 误判为匹配 `api.example.com` | 使用 `URL` 解析后比较 host，避免字符串包含误判相似域名。 | 2026-07-27 定向复测通过。 |
+| FE-URL-04 | `getImgSrc('/Upload/a.png', 'http://localhost:9991/')` 返回含 `//Upload` 的地址 | 拼接前仅在 `src` 为字符串且两端都有 `/` 时去掉一个斜杠，保留原有相对路径拼接行为。 | 2026-07-27 定向复测通过。 |
+| FE-URL-05 | `downloadImg()` 请求成功后抛出 `ReferenceError: callback is not defined` | 请求成功后改为调用传入的 `data.callback(...)`。 | 2026-07-27 定向复测通过。 |
+| FE-DATE-01 | `formatTimeStamp(0)` 返回 `-`，零时间戳是否应作为有效时间待确认 | 空值判断只拦截 `null`、`undefined` 和空字符串，数字 `0` 按合法时间戳格式化。 | 2026-07-27 定向复测通过。 |
+| FE-DATE-02 | `formatTimeStamp('not-a-date')` 返回 `NaN-aN-aN aN:aN:aN` | `new Date()` 后增加 `isNaN(date.getTime())` 判断，非法日期返回 `-`。 | 2026-07-27 定向复测通过。 |
+| FE-DATE-03 | 2026-07-22 执行 `getLastWeekStartDate()` 返回 2026-07-13，预期 2026-07-12 | 上周开始日期改为本周开始日期前 7 天。 | 2026-07-27 定向复测通过。 |
+| FE-DATE-04 | 2026-07-22 执行 `getLastWeekEndDate()` 返回 2026-07-19，预期 2026-07-18 | 上周结束日期改为本周开始日期前 1 天。 | 2026-07-27 定向复测通过。 |
+| FE-COLUMN-01 | 同一表格的不同用户得到相同缓存键 `custom:columnTable_A`，是否要求用户隔离待确认 | 缓存键在存在 `userId` 时追加 `:userId`；未提供 `userId` 时保留原缓存键。 | 2026-07-27 定向复测通过。 |
+| FE-COLUMN-02 | 缓存包含重复字段时，恢复结果出现重复列 `['name', 'name', 'code', 'qty']` | 读取缓存时按 `field` 去重，只恢复第一次出现的字段。 | 2026-07-27 定向复测通过。 |
+| FE-COLUMN-03 | 重复初始化后，被缓存隐藏的 `name` 列从可选列列表消失，无法重新勾选 | 重复初始化时保留已在自定义列列表出现过的隐藏列，仍允许重新勾选。 | 2026-07-27 定向复测通过。 |
+| FE-COLUMN-04 | 原字段被删除后调用 `resetViewColumns()`，结果数组包含 `undefined` | 重置列顺序时只加入当前仍存在的列，过滤已删除字段。 | 2026-07-27 定向复测通过。 |
 
 ## 交接结论
 
-前端三个目标模块的前期单元测试已经完成，共 63 个用例，45 个通过、18 个失败、0 个跳过。树的基础转换、常规日期范围、正常格式校验和常规用户列缓存恢复已建立测试基线；18 个失败项已记录在“本次发现的问题”中。本轮未修改业务源码，“修改”和“复测”两列留空，供后续修复阶段继续填写。
+前端三个目标模块的修复复测已完成。2026-07-27 在 `源码/iMES.Vue3` 执行 `npm run test:unit -- tests/unit/common.spec.js tests/unit/dateFormatUtil.spec.js tests/unit/ViewGridCustomColumn.spec.js tests/unit/environment.spec.js`，结果为 63 个用例全部通过、0 失败、0 跳过。本次仅按上表修复公共工具、日期工具和用户列缓存恢复相关问题。
 
 ## ViewGrid方法、明细、动态表格与动态表单测试：楼博涵
 

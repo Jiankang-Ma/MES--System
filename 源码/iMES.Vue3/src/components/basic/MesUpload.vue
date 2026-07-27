@@ -260,17 +260,18 @@ export default {
     },
     getImgSrc(file, index) {
       if (file.hasOwnProperty("path")) {
-        if (this.base.isUrl(file.path)) {
-          return file.path;
+        let path = file.path;
+        if (this.base.isUrl(path)) {
+          return path;
         }
         //2020.12.27增加base64图片操作
-        if (file.path.indexOf("/9j/") != -1) {
-          return "data:image/jpeg;base64," + file.path;
+        if (path.indexOf("/9j/") != -1) {
+          return "data:image/jpeg;base64," + path;
         }
-        if (file.path.substr(0, 1) == "/") {
-          file.path = file.path.substr(1);
+        if (path.substr(0, 1) == "/") {
+          path = path.substr(1);
         }
-        return this.http.ipAddress + file.path;
+        return this.http.ipAddress + path;
       }
       return window.URL.createObjectURL(file);
     },
@@ -336,14 +337,14 @@ export default {
       //如果传入了FileInfo需要自行处理移除FileInfo
       //t移除文件
       let removeFile = this.files[index];
+      if (!this.removeBefore(index, removeFile, this.fileInfo)) {
+        return;
+      }
       //删除的还没上传的文件
       if (removeFile.input) {
         this.files.splice(index, 1);
       } else {
         this.fileInfo.splice(index, 1);
-      }
-      if (!this.removeBefore(index, removeFile, this.fileInfo)) {
-        return;
       }
     },
     clearFiles() {

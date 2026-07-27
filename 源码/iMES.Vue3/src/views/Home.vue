@@ -275,7 +275,9 @@ export default {
   },
   setup() {
     let open = (item) => {
-      window.open(item.url, '_blank')
+      if (item.url && item.url.indexOf('http') != -1 && this.$base.isValidUrl(item.url)) {
+        window.open(item.url, '_blank')
+      }
     }
     let interval
     onMounted(() => {})

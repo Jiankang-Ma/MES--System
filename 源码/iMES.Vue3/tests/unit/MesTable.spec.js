@@ -611,3 +611,66 @@ describe('MesTable.vue — 属性', () => {
     expect(wrapper.vm.rowData).to.have.length(0)
   })
 })
+
+// ----------------------------------------------------------------
+// 10. hasOwnProperty 安全
+// ----------------------------------------------------------------
+describe('MesTable.vue — hasOwnProperty 安全', () => {
+  beforeEach(() => {
+    installLocalStorageMock()
+  })
+
+  it('rowBeginEdit() row覆写hasOwnProperty时不应抛异常', () => {
+    const columns = createColumns()
+    columns[0].edit = { type: 'text' }
+    const wrapper = shallowMount(MesTable, {
+      props: {
+        columns,
+        pagination: createPagination(),
+        defaultLoadPage: false,
+        url: '/api/test'
+      },
+      ...createMountOptions()
+    })
+    const row = { Name: '测试', elementIndex: 0, hasOwnProperty: 'hijacked' }
+    expect(() => {
+      wrapper.vm.rowBeginEdit(row, { field: 'Name', edit: { type: 'text' }, property: 'Name' })
+    }).to.not.throw()
+  })
+
+  it('addRow() row覆写hasOwnProperty时不应抛异常', () => {
+    const wrapper = shallowMount(MesTable, {
+      props: {
+        columns: createColumns(),
+        pagination: createPagination(),
+        defaultLoadPage: false,
+        url: '/api/test'
+      },
+      ...createMountOptions()
+    })
+    const row = { hasOwnProperty: 'hijacked' }
+    expect(() => {
+      wrapper.vm.addRow(row)
+    }).to.not.throw()
+  })
+
+  it('getInputSummaries() rowData元素覆写hasOwnProperty时不应抛异常', () => {
+    const wrapper = shallowMount(MesTable, {
+      props: {
+        columns: createColumns(),
+        pagination: createPagination(),
+        defaultLoadPage: false,
+        url: '/api/test'
+      },
+      ...createMountOptions()
+    })
+    wrapper.vm.rowData = [
+      { Qty: 10, hasOwnProperty: 'x' },
+      { Qty: 20, hasOwnProperty: 'y' }
+    ]
+    wrapper.vm.summaryIndex = { Qty: 2 }
+    expect(() => {
+      wrapper.vm.getInputSummaries(null, null, null, { field: 'Qty', summary: true })
+    }).to.not.throw()
+  })
+})

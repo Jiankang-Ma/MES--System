@@ -801,3 +801,181 @@ describe('methods.js — 辅助方法', () => {
     expect(bound('Add', true)).to.equal('api/Ware_HouseBillAdd')
   })
 })
+
+// ----------------------------------------------------------------
+// 8. WH-BUG-14 download this 绑定
+// ----------------------------------------------------------------
+describe('methods.js — download() 错误处理', () => {
+  it('WH-BUG-14 download() 下载失败时箭头函数正确绑定this,调用Vue组件$error', () => {
+    const originalXHR = global.XMLHttpRequest
+
+    // 模拟 XHR，捕获 onload 回调
+    let capturedOnload = null
+    function MockXHR() {
+      this.open = () => {}
+      this.setRequestHeader = () => {}
+      this.send = () => {}
+      this.responseType = ''
+      this.response = new Blob()
+      this.status = 500  // 模拟下载失败状态码
+      this.abort = () => {}
+    }
+    Object.defineProperty(MockXHR.prototype, 'onload', {
+      set(fn) { capturedOnload = fn },
+      get() { return capturedOnload },
+      configurable: true
+    })
+    global.XMLHttpRequest = MockXHR
+
+    let errorCalled = ''
+    const ctx = createMockContext({
+      $refs: { export: { click: () => { errorCalled = 'click' }, href: '' } },
+      $error: (msg) => { errorCalled = msg }
+    })
+    const bound = methods.download.bind(ctx)
+    bound('http://test.com/download', 'test.xlsx')
+
+    // 修复后 onload 为箭头函数，this 绑定 Vue 组件上下文
+    // 当 status != 200 时，应调用 ctx.$error 而非抛出 TypeError
+    capturedOnload()
+
+    expect(errorCalled).to.equal('下载文件出错了..')
+
+    global.XMLHttpRequest = originalXHR
+  })
+
+  it('download() 下载成功时应触发导出', () => {
+    const originalXHR = global.XMLHttpRequest
+
+    let capturedOnload = null
+    function MockXHR() {
+      this.open = () => {}
+      this.setRequestHeader = () => {}
+      this.send = () => {}
+      this.responseType = ''
+      this.response = new Blob()
+      this.status = 200  // 成功
+      this.abort = () => {}
+    }
+    Object.defineProperty(MockXHR.prototype, 'onload', {
+      set(fn) { capturedOnload = fn },
+      get() { return capturedOnload },
+      configurable: true
+    })
+    global.XMLHttpRequest = MockXHR
+
+    let clickCalled = false
+    const ctx = createMockContext({
+      $refs: { export: { click: () => { clickCalled = true }, href: '' } }
+    })
+    const bound = methods.download.bind(ctx)
+    bound('http://test.com/download', 'test.xlsx')
+
+    capturedOnload()
+
+    expect(clickCalled).to.be.true
+
+    global.XMLHttpRequest = originalXHR
+  })
+})
+
+// ----------------------------------------------------------------
+// 9. hasOwnProperty 安全
+// ----------------------------------------------------------------
+describe('methods.js — hasOwnProperty 安全', () => {
+  it('initFormOptions() cascader字段覆写hasOwnProperty时不应抛异常', () => {
+    const ctx = createMockContext({
+      editFormFields: {},
+      searchFormFields: {},
+      numberFields: [],
+      uploadfiled: [],
+      remoteKeys: [],
+      dicKeys: [],
+      hasKeyField: [],
+      table: { url: '/Base_Product', key: 'Id', cnName: '产品' }
+    })
+
+    // 创建一个覆写了 hasOwnProperty 的字段对象
+    const formOptions = [
+      [{ field: 'Status', type: 'cascader', dataKey: 'StatusDic', hasOwnProperty: 'hijacked' }]
+    ]
+    const keys = []
+
+    // 不应抛出异常
+    expect(() => {
+      methods.initFormOptions.call(ctx, formOptions, keys, ctx.editFormFields, true)
+    }).to.not.throw()
+  })
+
+  it('initFormOptions() cascader数据源元素覆写hasOwnProperty时不应抛异常', () => {
+    const ctx = createMockContext({
+      editFormFields: {},
+      searchFormFields: {},
+      numberFields: [],
+      uploadfiled: [],
+      remoteKeys: [],
+      dicKeys: [],
+      hasKeyField: [],
+      table: { url: '/Base_Product', key: 'Id', cnName: '产品' }
+    })
+
+    // 模拟后台返回的字典数据，其中 data 数组元素覆写了 hasOwnProperty
+    const keys = ['StatusDic']
+    ctx.dicKeys = [
+      { dicNo: 'StatusDic', data: [], type: 'cascader', fileds: ['Status'] }
+    ]
+
+    // 构造包含覆写 hasOwnProperty 的数据源的 formOptions
+    const formOptions = [
+      [{ field: 'Status', type: 'cascader', dataKey: 'StatusDic', data: [
+        { key: '1', value: '启用', hasOwnProperty: 'x' },
+        { key: '0', value: '禁用', hasOwnProperty: 'y' }
+      ]}]
+    ]
+
+    // initFormOptions 中可能会对 data 数组元素调用 hasOwnProperty
+    // 使用 Object.prototype.hasOwnProperty.call 则不会抛异常
+    expect(() => {
+      methods.initFormOptions.call(ctx, formOptions, keys, ctx.editFormFields, true)
+    }).to.not.throw()
+  })
+
+  it('resetForm() sourceObj覆写hasOwnProperty时不应抛异常', () => {
+    const ctx = createMockContext({
+      numberFields: [],
+      keyValueType: { _dinit: true },
+      editFormFields: { Name: 'old' }
+    })
+
+    // sourceObj.hasOwnProperty(key) 在 hasOwnProperty 被覆写时抛异常
+    const sourceObj = { Name: 'new', hasOwnProperty: 'hijacked' }
+
+    expect(() => {
+      methods.resetForm.call(ctx, 'form', sourceObj)
+    }).to.not.throw()
+  })
+
+  it('bindOptions() 字典数据元素覆写hasOwnProperty时不应抛异常', () => {
+    const ctx = createMockContext({
+      dicKeys: [
+        { dicNo: 'Status', data: [], type: 'string' }
+      ],
+      singleSearch: null,
+      columns: []
+    })
+
+    // 字典返回数据中 data 元素覆写 hasOwnProperty
+    const dic = [{
+      dicNo: 'Status',
+      data: [
+        { key: '1', value: '启用', hasOwnProperty: 'x' },
+        { key: '0', value: '禁用', hasOwnProperty: 'y' }
+      ]
+    }]
+
+    // bindOptions 中 d.data[0].hasOwnProperty('key') 在覆写时抛异常
+    expect(() => {
+      methods.bindOptions.call(ctx, dic)
+    }).to.not.throw()
+  })
+})

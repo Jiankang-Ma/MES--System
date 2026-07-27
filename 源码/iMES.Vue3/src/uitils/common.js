@@ -1,4 +1,37 @@
 let base = {
+  // HTML转义函数，防止XSS攻击
+  escapeHtml(str) {
+    if (!str) return str;
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return str.replace(/[&<>"']/g, (m) => map[m]);
+  },
+  // URL协议白名单校验，防止javascript:协议攻击
+  isValidUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    const safeProtocols = ['http:', 'https:', 'ftp:', 'mailto:', 'tel:'];
+    try {
+      const parsed = new URL(url);
+      return safeProtocols.includes(parsed.protocol);
+    } catch {
+      return false;
+    }
+  },
+  // 安全的JSON解析，避免解析失败导致程序崩溃
+  safeJsonParse(str, defaultValue = null) {
+    if (!str) return defaultValue;
+    try {
+      return JSON.parse(str);
+    } catch {
+      console.warn('JSON解析失败:', str);
+      return defaultValue;
+    }
+  },
   addDays(date, days) {
     //给指定日期增加天数
     if (!days) {
@@ -181,7 +214,9 @@ let base = {
     if (!this.isUrl(url)) {
       url = backGroundUrl + url;
     }
-    window.open(url);
+    if (this.isValidUrl(url)) {
+      window.open(url);
+    }
   },
   downloadImg(data) {
     if (!data.url || !data.callback || typeof data.callback !== 'function') {

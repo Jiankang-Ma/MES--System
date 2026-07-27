@@ -117,7 +117,7 @@ export default defineComponent({
       var root_data = [];
       data.forEach((x) => {
         if (x.parentId === rootTreeId) {
-          if (!x.hasOwnProperty('enable')) x.enable = 1;
+          if (!Object.prototype.hasOwnProperty.call(x, 'enable')) x.enable = 1;
           root_data.push(x);
           getTree(x.id, x, data);
         }

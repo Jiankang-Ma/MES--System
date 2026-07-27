@@ -181,7 +181,7 @@
           <router-view
             v-if="
               !$route.meta ||
-              ($route.meta && !$route.meta.hasOwnProperty('keepAlive'))
+              ($route.meta && !Object.prototype.hasOwnProperty.call($route.meta, 'keepAlive'))
             "
             v-slot="{ Component }"
           >
@@ -190,7 +190,7 @@
             </keep-alive>
           </router-view>
           <router-view
-            v-if="$route.meta && $route.meta.hasOwnProperty('keepAlive')"
+            v-if="$route.meta && Object.prototype.hasOwnProperty.call($route.meta, 'keepAlive')"
           ></router-view>
         </el-scrollbar>
       </div>
@@ -358,7 +358,9 @@ export default defineComponent({
         return
       }
       if (item.path.indexOf('http') != -1) {
-        window.open(item.path)
+        if (_config.base.isValidUrl(item.path)) {
+          window.open(item.path)
+        }
         return
       }
       if (typeof item == 'string' || item.path == '/login') {

@@ -101,7 +101,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.length == 0) return next({ path: '/404' });
   //2020.06.03增加路由切换时加载提示
   store.dispatch("onLoading", true);
-  if ((to.hasOwnProperty('meta') && to.meta.anonymous) || store.getters.isLogin() || to.path == '/login') {
+  if ((Object.prototype.hasOwnProperty.call(to, 'meta') && to.meta.anonymous) || store.getters.isLogin() || to.path == '/login') {
     return next();
   }
 

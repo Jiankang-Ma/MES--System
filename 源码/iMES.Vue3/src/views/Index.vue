@@ -181,7 +181,7 @@
           <router-view
             v-if="
               !$route.meta ||
-              ($route.meta && !$route.meta.hasOwnProperty('keepAlive'))
+              ($route.meta && !Object.prototype.hasOwnProperty.call($route.meta, 'keepAlive'))
             "
             v-slot="{ Component }"
           >
@@ -190,7 +190,7 @@
             </keep-alive>
           </router-view>
           <router-view
-            v-if="$route.meta && $route.meta.hasOwnProperty('keepAlive')"
+            v-if="$route.meta && Object.prototype.hasOwnProperty.call($route.meta, 'keepAlive')"
           ></router-view>
         </el-scrollbar>
       </div>

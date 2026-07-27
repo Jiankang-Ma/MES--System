@@ -387,7 +387,7 @@
                 size="small"
                 :plain="btn.plain"
                 v-show="!(typeof btn.hidden == 'boolean' && btn.hidden)"
-                :disabled="btn.hasOwnProperty('disabled') && !!btn.disabled"
+                :disabled="Object.prototype.hasOwnProperty.call(btn, 'disabled') && !!btn.disabled"
                 @click="onClick(btn.onClick)"
               >
                 <i :class="btn.icon"> {{ btn.name }}</i>

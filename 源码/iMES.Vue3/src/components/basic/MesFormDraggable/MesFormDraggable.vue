@@ -292,7 +292,7 @@
         <div
           class="attr-item"
           v-show="
-            currentItem.type != 'table' && currentItem.hasOwnProperty('url')
+            currentItem.type != 'table' && Object.prototype.hasOwnProperty.call(currentItem, 'url')
           "
         >
           <div class="text">上传接口地址(后台接口)</div>
@@ -672,7 +672,7 @@ export default {
       let _formOptions = [];
       let endIndex = -1;
       this.filterCurrentComponents().forEach((item, index) => {
-        if (item.hasOwnProperty("values")) {
+        if (Object.prototype.hasOwnProperty.call(item, "values")) {
           _fields[item.field] = [];
         } else {
           _fields[item.field] = null;

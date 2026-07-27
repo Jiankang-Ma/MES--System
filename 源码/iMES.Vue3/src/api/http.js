@@ -208,7 +208,7 @@ function createXHR() {
 function redirect(responseText, message) {
     try {
         let responseData = typeof responseText == 'string' ? JSON.parse(responseText) : responseText;
-        if ((responseData.hasOwnProperty('code') && responseData.code == 401) ||
+        if ((Object.prototype.hasOwnProperty.call(responseData, 'code') && responseData.code == 401) ||
             (responseData.data && responseData.data.code == 401)) {
             closeLoading();
             toLogin();

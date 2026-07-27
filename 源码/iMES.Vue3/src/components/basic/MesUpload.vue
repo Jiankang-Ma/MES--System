@@ -259,7 +259,7 @@ export default {
       return "submit-selector";
     },
     getImgSrc(file, index) {
-      if (file.hasOwnProperty("path")) {
+      if (Object.prototype.hasOwnProperty.call(file, "path")) {
         if (this.base.isUrl(file.path)) {
           return file.path;
         }

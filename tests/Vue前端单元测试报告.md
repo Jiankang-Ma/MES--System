@@ -1,88 +1,3 @@
-# Vue前端单元测试报告
-
-## 前端公共工具与用户列缓存测试： 丁伯源
-
-## 本次范围
-
-测试范围限定为 `源码/iMES.Vue3` 下的三个文件，重点覆盖树、日期、格式校验、URL 和用户列缓存恢复：
-
-| 模块 | 源码路径 | 测试重点 |
-| --- | --- | --- |
-| 公共工具 | `src/uitils/common.js` | 树转换、父子节点查询、日期辅助、手机号/数字/邮箱校验、URL 判断和拼接、下载回调 |
-| 日期工具 | `src/uitils/dateFormatUtil.js` | 日期格式化、时间戳、周/月/季度边界、日期减法 |
-| 用户列配置 | `src/components/basic/ViewGrid/ViewGridCustomColumn.js` | 缓存键、列顺序和显示状态恢复、异常缓存、新旧字段兼容、重置和保存 |
-
-单元测试不连接 SQL Server、Redis 或真实 HTTP API，不使用真实浏览器缓存。本轮只完成前期测试，不修改业务源码，不进行修改后复测。
-
-## 执行信息
-
-| 项目 | 结果 |
-| --- | --- |
-| 执行日期 | 2026-07-22 |
-| 当前分支 | `test/system-permission` |
-| 当前 commit SHA | `dfab3d1` |
-| 测试工程 | `源码/iMES.Vue3` |
-| 测试目录 | `tests/前端自动化测试用例` |
-| 执行方式 | `tests/前端自动化测试用例/run-tests.ps1` |
-| 测试框架 | Vue CLI Unit Mocha 4.5.18 + Mocha 6.2.3 + Chai 4.3.6 |
-| 结果 | **63 个用例：45 通过，18 失败，0 跳过** |
-| 运行时 | Node.js 24.14.0；使用 `NODE_OPTIONS=--openssl-legacy-provider` 兼容旧版 Webpack |
-
-测试编译成功。Browserslist 数据过期和旧版 Vue CLI 弃用提示不影响本轮执行结果。
-
-## 已通过的测试点
-
-| 模块 | 测试点 | 结果 |
-| --- | --- | --- |
-| 测试基建 | 三个目标模块加载；`localStorage` Mock 写入、读取和清理 | 2/2 通过 |
-| 树结构 | 多层树、多个根节点、隐藏节点、孤立节点、两节点循环、父链、子链、异常输入 | 9/10 通过 |
-| `common.js` 日期辅助 | 跨月、闰日、跨年、时间部分保留、当前日期/时间格式 | 4/4 通过 |
-| 格式校验 | 常见合法手机号、整数、小数、邮箱，以及大部分非法边界 | 4/8 通过 |
-| URL | HTTP/HTTPS/FTP/localhost、相对路径、普通图片地址拼接 | 3/8 通过 |
-| 日期格式化 | 默认格式、自定义格式、空值、当前日期时间 | 4/6 通过 |
-| 日期范围 | 当前年份各月天数、季度月份、本周、本月、上月、本季度、日期减法 | 7/9 通过 |
-| 用户列缓存键 | 不同表格缓存隔离 | 1/2 通过 |
-| 用户列缓存恢复 | 默认初始化、正常恢复、新增字段、删除字段、非法缓存 | 6/8 通过 |
-| 用户列重置与保存 | 正常重置、关闭撤销、至少显示一列、保存后恢复、写入异常降级 | 5/6 通过 |
-
-正式测试文件：
-
-- `tests/前端自动化测试用例/common.spec.js`
-- `tests/前端自动化测试用例/dateFormatUtil.spec.js`
-- `tests/前端自动化测试用例/ViewGridCustomColumn.spec.js`
-- `tests/前端自动化测试用例/environment.spec.js`
-- `tests/前端自动化测试用例/helpers/localStorageMock.js`
-- `tests/前端自动化测试用例/run-tests.ps1`
-
-## 本次发现的问题
-
-| 编号 | 复现场景 | 修改 | 复测 |
-| --- | --- | --- | --- |
-| FE-TREE-01 | `convertTree()` 处理一个根节点和一个子节点时，callback 实际收到 `[1, 2, 2]`，子节点被调用两次 |  |  |
-| FE-FMT-01 | `isPhone('1,123456789')` 返回 `true`，手机号第二位字符组错误接受逗号 |  |  |
-| FE-FMT-02 | `isDecimal('12a50')` 返回 `true`，未转义的 `.` 把任意字符当作小数点 |  |  |
-| FE-FMT-03 | `isDecimal('-')` 返回 `true` |  |  |
-| FE-FMT-04 | `isNumber('-')` 返回 `true` |  |  |
-| FE-URL-01 | `checkUrl('http://999.999.999.999/file')` 返回 `true`，IPv4 分段未限制在 0～255 |  |  |
-| FE-URL-02 | `checkUrl('https://example.technology/path')` 返回 `false`，顶级域名被限制为 1～6 位，是否支持现代长顶级域名待确认 |  |  |
-| FE-URL-03 | `matchUrlIp()` 把 `api.example.com.evil.test` 误判为匹配 `api.example.com` |  |  |
-| FE-URL-04 | `getImgSrc('/Upload/a.png', 'http://localhost:9991/')` 返回含 `//Upload` 的地址 |  |  |
-| FE-URL-05 | `downloadImg()` 请求成功后抛出 `ReferenceError: callback is not defined` |  |  |
-| FE-DATE-01 | `formatTimeStamp(0)` 返回 `-`，零时间戳是否应作为有效时间待确认 |  |  |
-| FE-DATE-02 | `formatTimeStamp('not-a-date')` 返回 `NaN-aN-aN aN:aN:aN` |  |  |
-| FE-DATE-03 | 2026-07-22 执行 `getLastWeekStartDate()` 返回 2026-07-13，预期 2026-07-12 |  |  |
-| FE-DATE-04 | 2026-07-22 执行 `getLastWeekEndDate()` 返回 2026-07-19，预期 2026-07-18 |  |  |
-| FE-COLUMN-01 | 同一表格的不同用户得到相同缓存键 `custom:columnTable_A`，是否要求用户隔离待确认 |  |  |
-| FE-COLUMN-02 | 缓存包含重复字段时，恢复结果出现重复列 `['name', 'name', 'code', 'qty']` |  |  |
-| FE-COLUMN-03 | 重复初始化后，被缓存隐藏的 `name` 列从可选列列表消失，无法重新勾选 |  |  |
-| FE-COLUMN-04 | 原字段被删除后调用 `resetViewColumns()`，结果数组包含 `undefined` |  |  |
-
-## 交接结论
-
-前端三个目标模块的前期单元测试已经完成，共 63 个用例，45 个通过、18 个失败、0 个跳过。树的基础转换、常规日期范围、正常格式校验和常规用户列缓存恢复已建立测试基线；18 个失败项已记录在“本次发现的问题”中。本轮未修改业务源码，“修改”和“复测”两列留空，供后续修复阶段继续填写。
-
-
-
 ## ViewGrid方法、明细、动态表格与动态表单测试：楼博涵
 
 ## 本次范围
@@ -103,11 +18,11 @@
 | 项目 | 结果 |
 | --- | --- |
 | 执行日期 | 2026-07-24 |
-| 当前分支 | `dev` |
-| 当前 commit SHA | `29389e3` |
+| 当前分支 | `modify-retest/Vue-lbh` |
+| 当前 commit SHA | `f9c852f` |
 | 测试工程 | `源码/iMES.Vue3` |
-| 测试目录 | `tests/前端自动化测试用例` |
-| 执行方式 | `tests/前端自动化测试用例/run-tests.ps1` |
+| 测试目录 | `源码/iMES.Vue3/tests/unit` |
+| 执行方式 | `cd 源码/iMES.Vue3 && npm run test:unit` |
 | 测试框架 | Vue CLI Unit Mocha + Chai 4.3.6 |
 | 结果 | **103 个用例：103 通过，0 失败，0 跳过** |
 | 运行时 | Node.js 24.14.0；使用 `NODE_OPTIONS=--openssl-legacy-provider` 兼容旧版 Webpack |
@@ -154,14 +69,13 @@
 
 正式测试文件：
 
-- `tests/前端自动化测试用例/methods.spec.js`
-- `tests/前端自动化测试用例/detailMethods.spec.js`
-- `tests/前端自动化测试用例/MesTable.spec.js`
-- `tests/前端自动化测试用例/MesForm.spec.js`
-- `tests/前端自动化测试用例/MesElementMenu.spec.js`
-- `tests/前端自动化测试用例/environment.spec.js`
-- `tests/前端自动化测试用例/helpers/localStorageMock.js`
-- `tests/前端自动化测试用例/run-tests.ps1`
+- `源码/iMES.Vue3/tests/unit/methods.spec.js`
+- `源码/iMES.Vue3/tests/unit/detailMethods.spec.js`
+- `源码/iMES.Vue3/tests/unit/MesTable.spec.js`
+- `源码/iMES.Vue3/tests/unit/MesForm.spec.js`
+- `源码/iMES.Vue3/tests/unit/MesElementMenu.spec.js`
+- `源码/iMES.Vue3/tests/unit/environment.spec.js`
+- `源码/iMES.Vue3/tests/unit/helpers/localStorageMock.js`
 
 ## 本次发现的问题
 
@@ -172,7 +86,7 @@
 | WH-BUG-13 | MesTable.vue | `hasOwnProperty('edit')` 使用实例方法而非 `Object.prototype.hasOwnProperty.call()`，传入 `{ hasOwnProperty: 'hijacked' }` 的列对象时抛异常 | 改为 `Object.prototype.hasOwnProperty.call(x, 'edit')` | 通过 |
 | WH-BUG-14 | methods.js | `download()` 中 XHR `onload` 使用普通函数而非箭头函数，`this` 指向 XHR 实例而非 Vue 组件，调用 `this.$error()` 时抛出 `TypeError` | 改为箭头函数 `(oEvent) => { ... }` 绑定外部 this | 通过 |
 | WH-BUG-15 | MesForm.vue | `initUpload()` 中 `['img','excel','file'].indexOf(item.type != -1)` 括号位置错误，`!= -1` 被传入 `indexOf()` 而非作为外部条件，导致 `indexOf(true)` 永远返回 `-1`，img/file/excel 类型无法正确初始化 `autoUpload`、`fileList`、`downLoad` 属性 | 改为 `indexOf(item.type) != -1` | 通过 |
-| WH-BUG-16 | methods.js detailMethods.js MesForm.vue MesElementMenu.vue | 多处使用 `obj.hasOwnProperty(key)` 实例方法（涉及 `initFormOptions`、`resetForm`、`bindOptions`、`loadInternalDetailTableBefore`、`initUpload`、`convertTree` 等），当对象覆写 `hasOwnProperty` 属性时抛 `TypeError` | 全部改为 `Object.prototype.hasOwnProperty.call()`（共 13 处） | 通过 |
+| WH-BUG-16 | methods.js detailMethods.js MesForm.vue MesElementMenu.vue http.js MesUpload.vue MesFormDraggable.vue coder.vue ViewGrid.vue router/index.js Index.vue | 多处使用 `obj.hasOwnProperty(key)` 实例方法，当对象覆写 `hasOwnProperty` 属性时抛 `TypeError` | 全部改为 `Object.prototype.hasOwnProperty.call()`（共 22 处） | 通过 |
 
 ## 交接结论
 
@@ -181,7 +95,7 @@
 **修复的漏洞（WH-BUG-14 ~ WH-BUG-16）**：
 - **WH-BUG-14**：`download()` 中 XHR `onload` 回调改为箭头函数，修复 `this` 指向问题 ✓
 - **WH-BUG-15**：`initUpload()` 中括号位置错误修复，img/file/excel 类型正确初始化 ✓
-- **WH-BUG-16**：13 处 `obj.hasOwnProperty(key)` 全部改为 `Object.prototype.hasOwnProperty.call()` ✓（新增 MesElementMenu.vue 第 13 处）
+- **WH-BUG-16**：22 处 `obj.hasOwnProperty(key)` 全部改为 `Object.prototype.hasOwnProperty.call()` ✓（新增 http.js、MesUpload.vue、MesFormDraggable.vue、coder.vue、ViewGrid.vue、router/index.js、Index.vue 共 9 处）
 
 **测试覆盖**：
 | 模块 | 测试项 | 通过率 |
@@ -194,4 +108,4 @@
 | 测试基建 | 模块加载、localStorage Mock | 2/2 通过 |
 | **合计** | | **103/103 通过** |
 
-所有 6 个缺陷（WH-BUG-11 ~ WH-BUG-16）均已修复并复测通过，代码改动涉及 4 个源文件（methods.js、detailMethods.js、MesForm.vue、MesElementMenu.vue）。
+所有 6 个缺陷（WH-BUG-11 ~ WH-BUG-16）均已修复并复测通过，代码改动涉及 11 个源文件（methods.js、detailMethods.js、MesForm.vue、MesElementMenu.vue、http.js、MesUpload.vue、MesFormDraggable.vue、coder.vue、ViewGrid.vue、router/index.js、Index.vue）。

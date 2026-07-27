@@ -247,6 +247,20 @@ Vue 单测已从仓库根目录 `tests/前端自动化测试用例` 迁移到所
 | 结果 | **99 个用例：94 通过，5 失败，0 跳过** |
 
 Webpack 编译成功。Browserslist 数据过期提示不影响本次测试结果。仓库原有 `tests/unit/example.spec.js` 引用了不存在的 `@/components/HelloWorld.vue`，会阻断所有正式用例编译，已删除该无效 Vue CLI 示例文件。
+
+## Pizzicato（cjy）修复与复测执行信息
+
+| 项目 | 结果 |
+| --- | --- |
+| 修复日期 | 2026-07-27 |
+| 修复分支 | `retests-modify/cjy` |
+| 修复基线 | 最新 `dev`，commit `c86aea931e71f64e4f2d32dc322901ced0062a93` |
+| 修改文件 | `src/components/basic/MesFormDraggable/MesFormDraggable.vue`、`src/components/basic/MesUpload.vue`、`src/components/basic/UploadExcel.vue` |
+| 构建命令 | `docker build --progress=plain -t imes-vue-cjy-tests:local -f "源码/iMES.Vue3/tests/unit/Dockerfile" "源码/iMES.Vue3"` |
+| 复测命令 | `docker run --rm imes-vue-cjy-tests:local npm run test:unit -- tests/unit/MesUpload.spec.js tests/unit/UploadExcel.spec.js tests/unit/MesFormDraggable.spec.js tests/unit/WarehouseExtensions.spec.js tests/unit/CustomExtensions.spec.js tests/unit/SystemExtensions.spec.js tests/unit/ReportExtensions.spec.js` |
+| 复测结果 | **99 个用例：99 通过，0 失败，0 跳过** |
+
+修复仅针对五条已确认失败项，没有改变测试断言，也没有扩展业务规则。Webpack 编译成功；Browserslist 数据过期提示不影响测试结果。
 ## Fitzgerald 已通过的测试点
 
 | 模块 | 测试点 | 结果 |
@@ -277,11 +291,11 @@ Fitzgerald 已完成流程图与生产领域前期单元测试，共 32 个用�
 ## Pizzicato（cjy）已通过的测试点
 
 | 基础资料扩展 | 五类扩展表路由映射、表名只读、编辑标识锁定、编号片段重置与预览 | 9/9 通过 |
-| 表单设计器 | 全宽栅格、上传/编辑器/字典配置转换、普通组件过滤、常规同行分组、深拷贝、删除/清空、排序、表格配置和保存事件 | 12/14 通过 |
-| 通用上传 | 文件名、描述、格式/数量/大小校验、重名处理、单选替换、变更/上传钩子、自动上传、下载、成功/业务失败/异常状态 | 24/26 通过 |
+| 表单设计器 | 全宽/半宽栅格、上传/编辑器/字典配置转换、普通组件过滤、表格穿插时的同行分组、深拷贝、删除/清空、排序、表格配置和保存事件 | 14/14 通过 |
+| 通用上传 | 文件名、描述、格式/数量/大小校验、重名处理、单选替换、变更/上传/移除钩子、自动上传、下载、图片地址无副作用、成功/业务失败/异常状态 | 26/26 通过 |
 | 报表扩展 | 不良品、产量、工资、员工绩效和生产报表布局、日期及合计配置、查询/保存透传契约 | 11/11 通过 |
 | 系统扩展 | 字典配置及 SQL 校验、角色父级和缓存、表单收集列、导出/查询条件与动态数据展开 | 13/13 通过 |
-| Excel 导入 | 四种扩展名、选择拦截、配置校验、导入前钩子、成功/失败/异常状态、二进制模板下载 | 14/15 通过 |
+| Excel 导入 | 四种扩展名、选择拦截、配置校验、导入前钩子、成功/失败/异常状态、二进制模板下载及 JSON 错误响应提示 | 15/15 通过 |
 | 仓储扩展 | 入库/出库打印规则、产品选择、查询/点击联动、编号提示、库存和收发明细固定列 | 11/11 通过 |
 
 正式测试文件：
@@ -300,12 +314,12 @@ Fitzgerald 已完成流程图与生产领域前期单元测试，共 32 个用�
 
 | 编号 | 复现场景 | 修改 | 复测 |
 | --- | --- | --- | --- |
-| FE-FORM-01 | `MesFormDraggable.getFormOptions()` 处理 `width: 50` 的组件时，使用未赋值的 `_option.width` 计算 `colSize`，实际得到 `NaN`，预期为 6 列 |  |  |
-| FE-FORM-02 | `currentComponents` 为“50% 文本框 → table → 50% 日期”时，`filterCurrentComponents()` 的长度与 `getLineFormOptions()` 读取的原数组下标不一致，日期字段未进入生成的表单行 |  |  |
-| FE-UPLOAD-01 | `MesUpload.removeBefore()` 返回 `false` 时，本地文件已在调用钩子前执行 `splice`，钩子无法阻止删除 |  |  |
-| FE-UPLOAD-02 | `MesUpload.getImgSrc()` 处理以 `/` 开头的服务端路径时，直接把传入对象的 `file.path` 从 `/Upload/a.png` 改为 `Upload/a.png`；渲染图片地址产生了额外数据副作用 |  |  |
-| FE-EXCEL-01 | `UploadExcel.dowloadTemplate()` 收到 `application/json` 错误响应时调用 `$_vue.message.error()`；`message` 实际为字符串，抛出 `TypeError`，无法向用户展示“未找到下载文件” |  |  |
+| FE-FORM-01 | `MesFormDraggable.getFormOptions()` 处理 `width: 50` 的组件时，使用未赋值的 `_option.width` 计算 `colSize`，实际得到 `NaN`，预期为 6 列 | 改用当前组件的 `item.width` 计算 `colSize`，不改变原有栅格换算规则 | 对应失败用例通过；表单设计器 14/14 通过 |
+| FE-FORM-02 | `currentComponents` 为“50% 文本框 → table → 50% 日期”时，`filterCurrentComponents()` 的长度与 `getLineFormOptions()` 读取的原数组下标不一致，日期字段未进入生成的表单行 | 先保存过滤后的普通组件数组，循环长度和取值统一使用该数组 | 对应失败用例通过；表单设计器 14/14 通过 |
+| FE-UPLOAD-01 | `MesUpload.removeBefore()` 返回 `false` 时，本地文件已在调用钩子前执行 `splice`，钩子无法阻止删除 | 将 `removeBefore` 判断移到 `splice` 之前，钩子否决时不修改文件列表 | 对应失败用例通过；通用上传 26/26 通过 |
+| FE-UPLOAD-02 | `MesUpload.getImgSrc()` 处理以 `/` 开头的服务端路径时，直接把传入对象的 `file.path` 从 `/Upload/a.png` 改为 `Upload/a.png`；渲染图片地址产生了额外数据副作用 | 使用局部 `path` 变量规范化地址，不再修改传入的文件对象 | 对应失败用例通过；通用上传 26/26 通过 |
+| FE-EXCEL-01 | `UploadExcel.dowloadTemplate()` 收到 `application/json` 错误响应时调用 `$_vue.message.error()`；`message` 实际为字符串，抛出 `TypeError`，无法向用户展示“未找到下载文件” | 调用项目已有的 `$_vue.$Message.error()` 消息组件展示错误 | 对应失败用例通过；Excel 导入 15/15 通过 |
 
 ## 交接结论
 
-组长指定的上传导入、表单设计器、仓储、基础资料、系统和报表业务规则单元测试已经完成，共 99 个用例，94 个通过、5 个失败、0 个跳过。五条失败均可由现有源码稳定复现，已保留失败测试并记录最小复现场景。本轮只新增测试基建和报告、删除无效的默认示例测试，未修改任何业务源码；“修改”和“复测”两列留空，等待组长确认后再进入修复阶段。
+组长指定的上传导入、表单设计器、仓储、基础资料、系统和报表业务规则单元测试及修复后复测已经完成。初测共 99 个用例，94 个通过、5 个失败；在最新 `dev` 基线 `c86aea931e71f64e4f2d32dc322901ced0062a93` 上对五条已确认问题进行最小范围修复后，定向复测为 **99 个通过、0 个失败、0 个跳过**。本次只修改三个对应业务组件，未修改测试断言或无关业务逻辑，可交由组长继续执行整体前端回归。

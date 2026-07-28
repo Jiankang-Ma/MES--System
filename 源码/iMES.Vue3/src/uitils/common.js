@@ -1,7 +1,7 @@
 let base = {
   // HTML转义函数，防止XSS攻击
   escapeHtml(str) {
-    if (!str) return str;
+    if (str === null || str === undefined) return str;
     const map = {
       '&': '&amp;',
       '<': '&lt;',
@@ -9,7 +9,7 @@ let base = {
       '"': '&quot;',
       "'": '&#039;'
     };
-    return str.replace(/[&<>"']/g, (m) => map[m]);
+    return String(str).replace(/[&<>"']/g, (m) => map[m]);
   },
   // URL协议白名单校验，防止javascript:协议攻击
   isValidUrl(url) {

@@ -17,7 +17,7 @@
 
 | 项目 | 结果 |
 | --- | --- |
-| 执行日期 | 2026-07-27 |
+| 执行日期 | 2026-07-29 |
 | 当前分支 | `modify-retest/Vue-lbh` |
 | 当前 commit SHA | `f9c852f` |
 | 测试工程 | `源码/iMES.Vue3` |
@@ -94,18 +94,20 @@
 | WH-BUG-17 | MesTable.vue | `v-html` 直接渲染 `column.formatter()` 返回值，未做 HTML 转义，攻击者可注入恶意脚本 | 在 `v-html` 渲染前调用 `$base.escapeHtml()` 转义 HTML 特殊字符 | 通过 |
 | WH-BUG-18 | Index.vue Home.vue common.js | `window.open()` 打开用户可控 URL，未验证协议，攻击者可构造 `javascript:` 协议链接执行恶意代码 | 添加 `isValidUrl()` 协议白名单校验，只允许 http/https/ftp/mailto/tel 协议 | 通过 |
 | WH-BUG-19 | store/index.js http.js methods.js | `JSON.parse()` 未包裹在 try-catch 中，恶意或损坏的 JSON 会导致程序崩溃 | 添加 try-catch 错误处理，解析失败时返回默认值 | 通过 |
+| PRD-BUG-01 | DB函数 Func_GetProcessLineAndProgressByID | 工单计划数 PlanQty 设为 0 时，函数计算完成百分比直接执行 `ReportQty/PlanQty` 导致 SQL Server 除零异常（Error 8134），工单/装配工单列表页加载崩溃，前端弹出"服务器没有正确处理请求" | 添加 `CASE WHEN PlanQty = 0 THEN '0%' ELSE ... END` 保护；同步更新 SQL 初始化脚本 | 通过 |
 
 ## 交接结论
 
 前端四个目标模块及安全工具函数的单元测试已全部完成，共 **122 个用例：122 通过、0 失败、0 跳过**。本轮完成了以下工作：
 
-**修复的漏洞（WH-BUG-14 ~ WH-BUG-19）**：
+**修复的漏洞（WH-BUG-14 ~ WH-BUG-19 + PRD-BUG-01）**：
 - **WH-BUG-14**：`download()` 中 XHR `onload` 回调改为箭头函数，修复 `this` 指向问题 ✓
 - **WH-BUG-15**：`initUpload()` 中括号位置错误修复，img/file/excel 类型正确初始化 ✓
 - **WH-BUG-16**：22 处 `obj.hasOwnProperty(key)` 全部改为 `Object.prototype.hasOwnProperty.call()` ✓（新增 http.js、MesUpload.vue、MesFormDraggable.vue、coder.vue、ViewGrid.vue、router/index.js、Index.vue 共 9 处）
 - **WH-BUG-17**：MesTable.vue `v-html` 渲染前调用 `$base.escapeHtml()` 转义，防止 XSS 攻击 ✓
 - **WH-BUG-18**：Index.vue、Home.vue、common.js 添加 `isValidUrl()` 协议白名单校验，防止 `javascript:` 协议攻击 ✓
 - **WH-BUG-19**：store/index.js、http.js、methods.js 的 `JSON.parse()` 添加 try-catch 错误处理，防止程序崩溃 ✓
+- **PRD-BUG-01**：DB 函数 `Func_GetProcessLineAndProgressByID` 除零修复，PlanQty=0 时返回 `0%` 而非崩溃 ✓
 
 **新增安全工具函数（common.js）**：
 - `escapeHtml()`：HTML 特殊字符转义
@@ -124,7 +126,7 @@
 | 测试基建 | 模块加载、localStorage Mock | 2/2 通过 |
 | **合计** | | **122/122 通过** |
 
-所有 9 个缺陷（WH-BUG-11 ~ WH-BUG-19）均已修复并复测通过，代码改动涉及 15 个源文件（methods.js、detailMethods.js、MesForm.vue、MesElementMenu.vue、http.js、MesUpload.vue、MesFormDraggable.vue、coder.vue、ViewGrid.vue、router/index.js、Index.vue、Home.vue、store/index.js、MesTable.vue、common.js）。
+所有 10 个缺陷（WH-BUG-11 ~ WH-BUG-19 + PRD-BUG-01）均已修复并复测通过。代码改动涉及 15 个源文件及 2 个数据库初始化脚本（methods.js、detailMethods.js、MesForm.vue、MesElementMenu.vue、http.js、MesUpload.vue、MesFormDraggable.vue、coder.vue、ViewGrid.vue、router/index.js、Index.vue、Home.vue、store/index.js、MesTable.vue、common.js、iMES20221014.docker.sql、iMES20221014.sql）。
 
 ## 预存错误说明
 

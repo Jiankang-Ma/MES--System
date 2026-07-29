@@ -117,6 +117,30 @@ SELECT name FROM sys.databases WHERE name = 'iMES';
 
 返回 `iMES` 即导入成功。
 
+### 4.1 部署当前 `dev` 的数据库增量
+
+上面的 `iMES20221014.docker.sql` 是原始 iMES 的 Docker 基础建库脚本。若部署的是当前 `dev` 的代码，基础建库后还必须执行本轮新增功能所需的增量脚本；否则 BOM 自动扣料和质量检验相关代码会因数据库结构缺失而不能正常使用。
+
+**新建空数据库的执行顺序：**
+
+1. 执行一次 `iMES20221014.docker.sql`，创建基础 `iMES` 数据库。
+2. 执行一次 `20260720-wf07-bom.sql`。
+3. 执行一次 `20260720-quality-inspection.sql`。
+
+增量脚本均位于：
+
+```text
+数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/
+```
+
+| 脚本 | 作用 | 执行规则 |
+| --- | --- | --- |
+| `20260720-wf07-bom.sql` | 为 `Base_MaterialDetail` 增加 `Process_Id`，调整 BOM/库存数量的小数精度，并更新 `View_Base_MaterialDetail`；对应按工序 BOM 自动扣料等当前 `dev` 能力。 | 对已有库先备份；作为数据库迁移登记并执行一次。脚本本身对缺失字段具备重复保护，但不应以反复执行替代迁移记录。 |
+| `20260720-quality-inspection.sql` | 新建检测项、模板/明细、检验单/结果明细共 5 张 `Quality_` 表；对应质量检验实体和 API。 | **仅执行一次**。脚本使用 `CREATE TABLE`，已存在质量表时再次执行会报错。 |
+| `fix-home-statistics-unicode.sql` | Docker/Linux SQL Server 的首页中文字符串和 JSON 兼容修复。 | 当前内容已合入 `iMES20221014.docker.sql`；新建库**不要**单独执行。仅供早期已建库且未包含该修复的环境按需使用。 |
+
+**已有数据库升级：** 不要重新执行基础建库脚本。先完成数据库备份，再确认每项迁移是否已经执行，只补执行缺失的增量脚本。`docker compose down` 会保留 SQL Server volume，因此本机以前执行过迁移后，即使按旧启动命令重启，数据库结构仍会保留；只有删除 volume 或新建空数据库时才需要按上述完整顺序建库。
+
 
 不要执行原始脚本：
 

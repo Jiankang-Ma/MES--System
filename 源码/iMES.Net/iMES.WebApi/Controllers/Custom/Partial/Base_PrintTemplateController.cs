@@ -209,6 +209,13 @@ namespace iMES.Custom.Controllers
                                    .FirstOrDefault();
             }
             PrintOutput print = new PrintOutput();
+            if (string.IsNullOrWhiteSpace(templateContent))
+            {
+                print.message = "未找到可用的打印模板，请在打印模板管理中配置并启用默认模板。";
+                print.status = 0;
+                print.success = false;
+                return JsonNormal(print);
+            }
             JObject jo = (JObject)JsonConvert.DeserializeObject(templateContent);
             print.message = "成功";
             print.data = jo;
@@ -229,8 +236,15 @@ namespace iMES.Custom.Controllers
                          .OrderByDescending(x => x.CreateDate)
                          .Select(s => s.TemplateContent)
                          .FirstOrDefault();
-            
+
             PrintOutput print = new PrintOutput();
+            if (string.IsNullOrWhiteSpace(templateContent))
+            {
+                print.message = $"未找到分类“{cat}”的可用打印模板，请在打印模板管理中配置并启用默认模板。";
+                print.status = 0;
+                print.success = false;
+                return JsonNormal(print);
+            }
             JObject jo = (JObject)JsonConvert.DeserializeObject(templateContent);
             print.message = "成功";
             print.data = jo;

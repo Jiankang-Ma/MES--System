@@ -120,6 +120,27 @@
 
 `Production_ProductPlanRepository.cs` 保持原有 `SysDbContext` 依赖不变。本次仅修复测试夹具，31 条生产领域单元测试全部通过，无需修改生产业务代码。
 
+### 补充：装配工单统计查询口径修复（AWO-FIX-01）
+
+本项为连接真实 API 和 SQL Server 的接口复测，不计入上表 31 条隔离单元测试。
+
+| 项目 | 结果 |
+| --- | --- |
+| 复测日期 | 2026-07-29 |
+| 涉及接口 | `POST /api/Production_AssembleWorkOrder/GetPageData` |
+| 初测证据 | `Production_AssembleWorkOrder` 主表的 `WorkOrderQty`、`FinishedQty` 均为 `NULL`；`GetAssembleProcess` 视图对同一装配工单实时统计为 `2/0`、`4/1` 等值 |
+| 根因 | 原服务先由通用 `GetPageData` 按主表字段筛选/分页，完成后才读取视图并仅覆盖响应对象；因此页面显示视图统计值，数字搜索却筛选主表 `NULL` 字段 |
+| 后端修复 | `GetPageData` 的查询源改为主表 `LEFT JOIN GetAssembleProcess`；在通用 `WHERE`、排序、分页前即提供实时 `WorkOrderQty`、`FinishedQty`、`FormProcess`，移除查询后 Dapper 覆盖 |
+| 前端修复 | 搜索结果为空时清空下方产品明细；明细组件对空行防御，避免读取 `undefined.AssembleWorkOrder_Id` |
+| 编译与单测 | `docker compose build api` 通过；Vue 全量 `npm run test:unit`：**318 通过，0 失败** |
+
+| 复测条件 | 实际返回 | 结果 |
+| --- | --- | --- |
+| 单据编号 `ZPGD202208231600100002` | 1 条；实时工单数 `2`、已结束工单 `0` | 通过 |
+| 工单数 `2` | 2 条：`ZPGD202208231600100002`、`ZPGD202208142200180001` | 通过 |
+| 已结束工单 `1` | 2 条：`ZPGD202208231535220001`、`ZPGD202208142200180001` | 通过 |
+| 工单数 `999` | 0 条；下方明细清空，不再产生浏览器异常 | 通过 |
+
 ## iMES.Warehouse 单元测试：成员 4（楼博涵）
 
 ### 本次范围

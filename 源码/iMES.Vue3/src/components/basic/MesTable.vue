@@ -113,7 +113,7 @@
                       scope1.$index
                     )
                 "
-                v-text="formatColumnValue(scope1.row, columnChildren, scope1.$index)"
+v-text="formatColumnValue(scope1.row, columnChildren, scope1.$index)"
               ></div>
               <div v-else-if="column.bind">
                 {{ formatter(scope1.row, columnChildren, true) }}
@@ -289,7 +289,7 @@
             <div
               v-else-if="column.formatter"
               @click="formatterClick(scope.row, column, $event)"
-              v-text="formatColumnValue(scope.row, column, scope.$index)"
+v-text="formatColumnValue(scope.row, column, scope.$index)"
             ></div>
             <!-- 2021.11.18修复table数据源设置为normal后点击行$event缺失的问题 -->
             <div
@@ -642,7 +642,7 @@ export default defineComponent({
       this.paginations.rows = this.pagination.size;
     }
     this.enableEdit = this.columns.some((x) => {
-      return Object.prototype.hasOwnProperty.call(x, 'edit');
+      return x.hasOwnProperty('edit');
     });
     let keyColumn = this.columns.find((x) => {
       return x.isKey;
@@ -671,7 +671,6 @@ export default defineComponent({
   methods: {
     rowDrop() {
       const tbody = document.querySelector(".el-table__body-wrapper tbody");
-      if (!tbody) return;
       Sortable.create(tbody,{
                 disabled: this.paginations.sort != "Sequence", // 是否开启拖拽
                 ghostClass: 'sortable-ghost', //拖拽样式
@@ -930,7 +929,7 @@ export default defineComponent({
           }
         });
       if (!this.beginEdit(row, column, row.elementIndex)) return;
-      if (Object.prototype.hasOwnProperty.call(row, 'elementIndex')) {
+      if (row.hasOwnProperty('elementIndex')) {
         if (this.edit.rowIndex == row.elementIndex) {
           return;
         }
@@ -1101,7 +1100,7 @@ export default defineComponent({
       this.columns.forEach((x) => {
         // 2022.05.06 添加行时，如果列有编辑属性，设置开启编辑(避免关闭编辑后，无法再次启用编辑)??
         //x.readonly = false;
-        if (!Object.prototype.hasOwnProperty.call(row, x.field)) {
+        if (!row.hasOwnProperty(x.field)) {
           if (x.edit && x.edit.type == 'switch') {
             row[x.field] = x.type == 'bool' ? false : 0;
           } else if (!row.hidden) {
@@ -1254,12 +1253,10 @@ export default defineComponent({
 
       this.columns.forEach((col) => {
         if (!col.hidden) {
-          if (Object.prototype.hasOwnProperty.call(data.summary, col.field)) {
+          if (data.summary.hasOwnProperty(col.field)) {
             let sum = data.summary[col.field];
-            if (sum && !isNaN(sum * 1.0)) {
+            if (sum) {
               sum = (sum * 1.0).toFixed(2).replace('.00', '') * 1.0;
-            } else {
-              sum = '';
             }
             this.summaryData.push(sum);
           } else {
@@ -1416,7 +1413,7 @@ export default defineComponent({
       let sum = 0;
       let _index = 0;
       (this.url ? this.rowData : this.tableData).forEach((x, index) => {
-        if (Object.prototype.hasOwnProperty.call(x, column.field) && !isNaN(x[column.field])) {
+        if (x.hasOwnProperty(column.field) && !isNaN(x[column.field])) {
           _index = index;
           sum += x[column.field] * 1;
         }

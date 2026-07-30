@@ -2,20 +2,27 @@ FROM mcr.microsoft.com/dotnet/aspnet:3.1 AS base
 ARG DEBIAN_FRONTEND=noninteractive
 
 # .NET Core 3.1 images are based on Debian buster, whose normal apt repositories
-# have moved to archive.debian.org. Keep this here for repeatable local/cloud builds.
-RUN sed -i \
-        -e 's#http://deb.debian.org/debian#http://archive.debian.org/debian#g' \
-        -e 's#http://security.debian.org/debian-security#http://archive.debian.org/debian-security#g' \
-        -e 's#http://deb.debian.org/debian-security#http://archive.debian.org/debian-security#g' \
-        /etc/apt/sources.list \
+# have moved to snapshot.debian.org. The security repo is no longer maintained.
+RUN rm -f /etc/apt/sources.list.d/*.list \
+    && printf 'deb http://snapshot.debian.org/archive/debian/20220601T000000Z buster main contrib non-free\n\
+deb http://snapshot.debian.org/archive/debian/20220601T000000Z buster-updates main contrib non-free\n' > /etc/apt/sources.list \
     && apt-get -o Acquire::Check-Valid-Until=false update \
-    && apt-get install -y --no-install-recommends libfontconfig1 libgdiplus libc6-dev \
+    && apt-get install -y --no-install-recommends libfontconfig1 libgdiplus \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 EXPOSE 9991
 
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+# SDK 3.1 is also Debian buster; fix apt sources for NuGet SSL CA certs
+ARG DEBIAN_FRONTEND=noninteractive
+RUN rm -f /etc/apt/sources.list.d/*.list \
+    && printf 'deb http://snapshot.debian.org/archive/debian/20220601T000000Z buster main contrib non-free\n\
+deb http://snapshot.debian.org/archive/debian/20220601T000000Z buster-updates main contrib non-free\n' > /etc/apt/sources.list \
+    && apt-get -o Acquire::Check-Valid-Until=false update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && update-ca-certificates --fresh
 WORKDIR /src
 COPY ["iMES.WebApi/iMES.WebApi.csproj", "iMES.WebApi/"]
 COPY ["iMES.System/iMES.System.csproj", "iMES.System/"]

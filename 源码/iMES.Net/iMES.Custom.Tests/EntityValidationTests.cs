@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using iMES.Core.EFDbContext;
 using iMES.Entity.DomainModels;
+using iMES.Entity.SystemModels;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace iMES.Custom.Tests
@@ -81,6 +84,48 @@ namespace iMES.Custom.Tests
             var members = Validate(processLine).SelectMany(x => x.MemberNames).ToList();
 
             Assert.Contains(nameof(Base_ProcessLine.ProcessLineName), members);
+        }
+
+        [Fact]
+        public void MaterialDetailView_HistoricalMissingProcess_IsAllowedToLoad()
+        {
+            var bom = new View_Base_MaterialDetail
+            {
+                MaterialDetail_Id = 1,
+                ParentProduct_Id = 1,
+                ChildProduct_Id = 2,
+                QuantityPer = 1m,
+                Process_Id = null,
+            };
+
+            var members = Validate(bom).SelectMany(x => x.MemberNames).ToList();
+
+            Assert.DoesNotContain(nameof(View_Base_MaterialDetail.Process_Id), members);
+        }
+
+        [Fact]
+        public void MaterialDetailView_ProcessId_IsNullableInEfModel()
+        {
+            var options = new DbContextOptionsBuilder<BaseDbContext>()
+                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=iMES_Test;Trusted_Connection=True;")
+                .Options;
+
+            using var context = new TestSysDbContext(options);
+            var property = context.Model.FindEntityType(typeof(View_Base_MaterialDetail))
+                .FindProperty(nameof(View_Base_MaterialDetail.Process_Id));
+
+            Assert.True(property.IsNullable);
+        }
+
+        private sealed class TestSysDbContext : SysDbContext
+        {
+            public TestSysDbContext(DbContextOptions<BaseDbContext> options) : base(options)
+            {
+            }
+
+            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            {
+            }
         }
 
         private static Base_Product ValidProduct()

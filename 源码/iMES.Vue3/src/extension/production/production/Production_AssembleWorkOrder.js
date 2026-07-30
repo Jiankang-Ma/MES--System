@@ -6,6 +6,9 @@ import { h, resolveComponent } from 'vue';
 import modelHeader from "./production_extend/AssembleWorkOrderModelBody.vue"
 import gridFooter from './production_extend/AssembleWorkOrderGridFooter.vue';
 import modelFooter from "./production_extend/AssembleWorkOrderModelFooter.vue"
+
+const hasInvalidQuantity = rows => Array.isArray(rows) && rows.some(row => !Number.isInteger(Number(row.Qty)) || Number(row.Qty) <= 0)
+
 let extension = {
   components: {
     //查询界面扩展组件
@@ -177,6 +180,10 @@ let extension = {
     },
     searchAfter(result) {
       //查询后，result返回的查询数据,可以在显示到表格前处理表格的值
+      if (!result || result.length === 0) {
+        this.$refs.gridFooter.clear();
+        return true;
+      }
       this.$nextTick(() => {
         this.$refs.gridFooter.rowClick(result[0], "生产计划");
       });
@@ -184,10 +191,18 @@ let extension = {
     },
     addBefore(formData) {
       //新建保存前formData为对象，包括明细表，可以给给表单设置值，自己输出看formData的值
+      if (hasInvalidQuantity(formData.detailData)) {
+        this.$error('装配工单明细数量必须为大于 0 的整数');
+        return false;
+      }
       return true;
     },
     updateBefore(formData) {
       //编辑保存前formData为对象，包括明细表、删除行的Id
+      if (hasInvalidQuantity(formData.detailData)) {
+        this.$error('装配工单明细数量必须为大于 0 的整数');
+        return false;
+      }
       return true;
     },
     rowClick({ row, column, event }) {

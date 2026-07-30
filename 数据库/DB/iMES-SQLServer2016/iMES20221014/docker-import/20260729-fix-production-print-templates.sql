@@ -6,8 +6,6 @@
   原始初始化数据中，销售订单的内置模板被设为 StatusFlag=0，
   装配工单只有打印分类、没有模板；因此前端虽已传递 id，仍取不到模板内容。
 */
-USE iMES;
-GO
 SET XACT_ABORT ON;
 BEGIN TRANSACTION;
 

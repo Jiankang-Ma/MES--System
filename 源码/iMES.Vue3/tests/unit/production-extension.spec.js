@@ -257,6 +257,18 @@ describe('extension/production — 工单和装配工单', () => {
     expect(updateCalled).to.equal(false)
   })
 
+  it('PROD-WO-06 新建或编辑时计划数为零应阻止保存', () => {
+    const ctx = createProductionContext()
+    const formData = { mainData: { PlanQty: 0 }, detailData: [] }
+
+    expect(invoke(WorkOrder, 'addBefore', ctx, formData)).to.equal(false)
+    expect(invoke(WorkOrder, 'updateBefore', ctx, formData)).to.equal(false)
+    expect(ctx.messages).to.deep.equal([
+      { type: 'error', message: '计划数必须大于 0' },
+      { type: 'error', message: '计划数必须大于 0' }
+    ])
+  })
+
   it('PROD-AWO-01 装配工单编码进入页面时使用专属查询接口', async () => {
     let request
     const ctx = createProductionContext({
@@ -293,6 +305,18 @@ describe('extension/production — 工单和装配工单', () => {
     const steps = progressColumn.render((component, props) => ({ component, props }), { row })
 
     expect(steps[0].props.active).to.equal(2)
+  })
+
+  it('PROD-AWO-03 新建或编辑时明细数量为零应阻止保存', () => {
+    const ctx = createProductionContext()
+    const formData = { mainData: {}, detailData: [{ Qty: 0 }] }
+
+    expect(invoke(AssembleWorkOrder, 'addBefore', ctx, formData)).to.equal(false)
+    expect(invoke(AssembleWorkOrder, 'updateBefore', ctx, formData)).to.equal(false)
+    expect(ctx.messages).to.deep.equal([
+      { type: 'error', message: '装配工单明细数量必须为大于 0 的整数' },
+      { type: 'error', message: '装配工单明细数量必须为大于 0 的整数' }
+    ])
   })
 })
 

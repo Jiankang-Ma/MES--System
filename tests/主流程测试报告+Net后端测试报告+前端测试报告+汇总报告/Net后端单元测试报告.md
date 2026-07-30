@@ -276,6 +276,17 @@
 
 UT-CUSTOM-01、UT-CUSTOM-02 已按最小范围修复。原有两条失败单元测试转为通过，成员 5 全部 30 条单元测试通过，真实 API 返回与预期一致且测试数据已清理。按照最新 `dev` 提供的数据库升级脚本更新本地测试库后，通用 MES 回归 4/4 全部通过，读压测 200/200 次成功。本次业务代码仍仅修改两条提示文案，没有扩大修改范围。
 
+### 第三阶段：历史 BOM 的空消耗工序加载修复（2026-07-30）
+
+| 项目 | 内容 |
+| --- | --- |
+| 现象 | `POST /api/View_Base_MaterialDetail/getPageData` 返回 HTTP 500，前端显示“服务器没有正确处理请求”。 |
+| 根因 | BOM 升级脚本为兼容历史数据，将 `Base_MaterialDetail.Process_Id` 新增为 `int NULL`；本地 7 条历史 BOM 均为 `NULL`。视图模型属性本身是 `int?`，但同时标记了 `[Required]`，EF 将其按必填整数物化，读到 `NULL` 时抛出 `SqlNullValueException` / `SqlBuffer.get_Int32()`。 |
+| 最小修复 | 仅移除 `View_Base_MaterialDetail.Process_Id` 上与 `int?` 矛盾的 `[Required]`。不回填或伪造历史 BOM 的工序，不修改 BOM 用量、库存或自动扣料逻辑。新增、编辑仍由 `ValidateBom()` 强制要求有效工序，空值或 `<=0` 仍返回“请选择消耗工序”。 |
+| 数据库证据 | 当前视图共 7 条记录，`MaterialDetail_Id`、父项、子项、用量均非空；`Process_Id` 为 `NULL` 的记录为 7 条。数据库视图也明确将该列描述为可空。 |
+| 自动复测 | 新增 `MaterialDetailView_HistoricalMissingProcess_IsAllowedToLoad` 与 `MaterialDetailView_ProcessId_IsNullableInEfModel`，分别覆盖数据注解与 EF 模型可空映射。`iMES.Custom.Tests` Docker 复测 **32 通过，0 失败**。 |
+| 运行验证 | API Docker 镜像重新发布并强制重建容器，容器镜像 ID 与最新本地镜像一致。匿名只读请求按预期返回 401（接口受 JWT 保护，未进入业务查询），不再将认证拦截误判为页面错误。登录网页后刷新“物料清单”即可完成界面验收；历史记录会显示空消耗工序，选择正确工序后才能保存。 |
+
 ## iMES.WebApi 单元测试：成员 1（沈远卓）
 
 ## 本次范围

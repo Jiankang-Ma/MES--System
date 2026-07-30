@@ -120,7 +120,6 @@ namespace iMES.Entity.DomainModels
        [Display(Name ="消耗工序")]
        [Column(TypeName="int")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public int? Process_Id { get; set; }
 
        /// <summary>

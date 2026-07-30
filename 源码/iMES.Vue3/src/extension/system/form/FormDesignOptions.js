@@ -38,6 +38,7 @@ let extension = {
                 field: "表单设计",
                 with: 80,
                 sort: false,
+                trustedHtml: true,
                 formatter: () => {
                     return '<a style="color: #3a8ee6;">表单设计</a>'
                 },
@@ -50,6 +51,7 @@ let extension = {
                 field: "预览",
                 with: 85,
                 sort: false,
+                trustedHtml: true,
                 formatter: () => {
                     return '<a style="color: #3a8ee6;">预览</a>'
                 },

@@ -1585,6 +1585,8 @@ let methods = {
       width: 70,
       fixed: 'right',
       align: 'center',
+      // 仅由当前源码拼出固定的图标和文案。
+      trustedHtml: true,
       formatter: (row) => {
         return '<i style="cursor: pointer;color: #2d8cf0;"' + (row[auditField]
           ? 'class="el-icon-view">查看</i>'

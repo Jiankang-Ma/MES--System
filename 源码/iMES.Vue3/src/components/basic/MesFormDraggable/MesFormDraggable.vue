@@ -626,7 +626,7 @@ export default {
       if (item.width == 100) {
         _option.colSize = 12;
       } else {
-        _option.colSize = (_option.width * 12) / 100;
+        _option.colSize = (item.width * 12) / 100;
       }
       if (["img", "excel", "file"].indexOf(item.type) != -1) {
         _option.maxSize = item.maxSize;
@@ -651,8 +651,9 @@ export default {
       let endIndex = index;
       let width = 0;
       let _options = [];
-      for (index; index < this.filterCurrentComponents().length; index++) {
-        const item = this.currentComponents[index];
+      const formComponents = this.filterCurrentComponents();
+      for (index; index < formComponents.length; index++) {
+        const item = formComponents[index];
         if (item.width + width <= 100) {
           width = item.width + width;
           endIndex = index;

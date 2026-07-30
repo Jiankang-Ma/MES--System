@@ -92,6 +92,18 @@
                 v-text="scope1.row[columnChildren.field]"
               ></a>
               <div
+                v-else-if="columnChildren.formatter && columnChildren.trustedHtml"
+                @click="
+                  columnChildren.click &&
+                    columnChildren.click(
+                      scope1.row,
+                      columnChildren,
+                      scope1.$index
+                    )
+                "
+                v-html="formatColumnValue(scope1.row, columnChildren, scope1.$index)"
+              ></div>
+              <div
                 v-else-if="columnChildren.formatter"
                 @click="
                   columnChildren.click &&
@@ -101,13 +113,7 @@
                       scope1.$index
                     )
                 "
-                v-html="
-                  $base.escapeHtml(columnChildren.formatter(
-                    scope1.row,
-                    columnChildren,
-                    scope1.$index
-                  ))
-                "
+                v-text="formatColumnValue(scope1.row, columnChildren, scope1.$index)"
               ></div>
               <div v-else-if="column.bind">
                 {{ formatter(scope1.row, columnChildren, true) }}
@@ -276,9 +282,14 @@
               formatterDate(scope.row, column)
             }}</span>
             <div
+              v-else-if="column.formatter && column.trustedHtml"
+              @click="formatterClick(scope.row, column, $event)"
+              v-html="formatColumnValue(scope.row, column, scope.$index)"
+            ></div>
+            <div
               v-else-if="column.formatter"
               @click="formatterClick(scope.row, column, $event)"
-              v-html="$base.escapeHtml(column.formatter(scope.row, column))"
+              v-text="formatColumnValue(scope.row, column, scope.$index)"
             ></div>
             <!-- 2021.11.18修复table数据源设置为normal后点击行$event缺失的问题 -->
             <div
@@ -1326,6 +1337,17 @@ export default defineComponent({
     },
     formatterDate(row, column) {
       return (row[column.field] || '').substr(0, 10);
+    },
+    // formatter 默认只作为文本显示；只有代码中显式标为 trustedHtml 的列才允许输出 HTML。
+    // 单个 formatter 写错时返回空文本，不能再中断整张表的渲染。
+    formatColumnValue(row, column, index) {
+      try {
+        const value = column.formatter(row, column, index);
+        return value === null || value === undefined ? '' : String(value);
+      } catch (error) {
+        console.error(`[MesTable] 列“${column.title || column.field || ''}”的 formatter 执行失败`, error);
+        return '';
+      }
     },
     formatter(row, column, template) {
       if (!template) return row[column.property];

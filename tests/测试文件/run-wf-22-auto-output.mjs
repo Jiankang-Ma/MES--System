@@ -76,6 +76,8 @@ SET XACT_ABORT ON;
 BEGIN TRANSACTION;
 DELETE d FROM Ware_WareHouseBillList d INNER JOIN Ware_WareHouseBill h ON h.WareHouseBill_Id=d.WareHouseBill_Id INNER JOIN Production_ReportWorkOrder r ON h.WareHouseBillCode=CONCAT('OUTPUT-RWO-', r.ReportWorkOrder_Id) WHERE r.ProductCode=${sqlText(fixture.product)};
 DELETE h FROM Ware_WareHouseBill h INNER JOIN Production_ReportWorkOrder r ON h.WareHouseBillCode=CONCAT('OUTPUT-RWO-', r.ReportWorkOrder_Id) WHERE r.ProductCode=${sqlText(fixture.product)};
+DELETE FROM Production_ReportWorkOrderList WHERE ReportWorkOrder_Id IN (SELECT ReportWorkOrder_Id FROM Production_ReportWorkOrder WHERE ProductCode=${sqlText(fixture.product)});
+IF EXISTS (SELECT 1 FROM Production_ReportWorkOrderList d INNER JOIN Production_ReportWorkOrder r ON r.ReportWorkOrder_Id=d.ReportWorkOrder_Id WHERE r.ProductCode=${sqlText(fixture.product)}) THROW 50001, 'WF-22 报工明细清理失败。', 1;
 DELETE FROM Production_ReportWorkOrder WHERE ProductCode=${sqlText(fixture.product)};
 DELETE wol FROM Production_WorkOrderList wol INNER JOIN Production_WorkOrder wo ON wo.WorkOrder_Id=wol.WorkOrder_Id WHERE wo.AssociatedForm=${sqlText(fixture.salesOrder)};
 DELETE FROM Production_WorkOrder WHERE AssociatedForm=${sqlText(fixture.salesOrder)};
@@ -96,7 +98,7 @@ COMMIT TRANSACTION;`;
     (SELECT COUNT(1) FROM Production_SalesOrder WHERE SalesOrderCode=${sqlText(fixture.salesOrder)}) +
     (SELECT COUNT(1) FROM Production_WorkOrder WHERE AssociatedForm=${sqlText(fixture.salesOrder)}) +
     (SELECT COUNT(1) FROM Production_ReportWorkOrder WHERE ProductCode=${sqlText(fixture.product)})`));
-  assert(residue === 0, `WF-22 清理后仍有 ${residue} 条主数据残留。`);
+  assert(residue === 0, `WF-22 清理后仍有 ${residue} 条测试数据残留。`);
 }
 
 async function execute() {

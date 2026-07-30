@@ -160,6 +160,40 @@ describe('MesTable.vue — 动态表格', () => {
     })
     expect(wrapper.vm.enableEdit).to.be.true
   })
+
+  it('WH-BUG-18 formatter 返回日期和数字时应转换为可显示文本', () => {
+    const wrapper = shallowMount(MesTable, {
+      props: { columns: createColumns(), pagination: createPagination(), defaultLoadPage: false },
+      ...createMountOptions()
+    })
+
+    expect(wrapper.vm.formatColumnValue(
+      { CreateDate: '2022-09-05 00:00:00' },
+      { field: 'CreateDate', formatter: (row) => row.CreateDate.substr(0, 10) }
+    )).to.equal('2022-09-05')
+    expect(wrapper.vm.formatColumnValue(
+      { Qty: 0 },
+      { field: 'Qty', formatter: (row) => row.Qty }
+    )).to.equal('0')
+  })
+
+  it('WH-BUG-19 formatter 抛错时不应中断整张表渲染', () => {
+    const wrapper = shallowMount(MesTable, {
+      props: { columns: createColumns(), pagination: createPagination(), defaultLoadPage: false },
+      ...createMountOptions()
+    })
+    const previousConsoleError = console.error
+    console.error = () => {}
+
+    try {
+      expect(wrapper.vm.formatColumnValue({}, {
+        field: 'Broken',
+        formatter: () => { throw new Error('formatter failed') }
+      })).to.equal('')
+    } finally {
+      console.error = previousConsoleError
+    }
+  })
 })
 
 // ----------------------------------------------------------------

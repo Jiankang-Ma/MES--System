@@ -16,10 +16,13 @@
  let lastMonth = lastMonthDate.getMonth();
  // 日期格式化,时间戳 时分秒 hh:mm:ss
  export function formatTimeStamp(date, fmt = 'yyyy-MM-dd hh:mm:ss') {
-   if(!date) {
+   if(date === null || date === undefined || date === '') {
      return '-';
    }
    date = new Date(date);
+   if (isNaN(date.getTime())) {
+     return '-';
+   }
    if (/(y+)/.test(fmt)) {
      fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
    }
@@ -81,12 +84,12 @@
  }
  // 获得上周的开始日期
  export function getLastWeekStartDate() {
-   let weekStartDate = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek - 6);
+   let weekStartDate = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek - 7);
    return formatTimeStamp(weekStartDate);
  }
  // 获得上周的结束日期
  export function getLastWeekEndDate() {
-   let weekEndDate = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek);
+   let weekEndDate = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek - 1);
    return formatTimeStamp(weekEndDate);
  }
  // 获得本月的开始日期

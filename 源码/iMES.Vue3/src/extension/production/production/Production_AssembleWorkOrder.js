@@ -177,6 +177,10 @@ let extension = {
     },
     searchAfter(result) {
       //查询后，result返回的查询数据,可以在显示到表格前处理表格的值
+      if (!result || result.length === 0) {
+        this.$refs.gridFooter.clear();
+        return true;
+      }
       this.$nextTick(() => {
         this.$refs.gridFooter.rowClick(result[0], "生产计划");
       });

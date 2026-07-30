@@ -26,6 +26,11 @@ describe('uitils/common.js', () => {
     it('应保留普通文本不变', () => {
       expect(common.escapeHtml('Hello World')).to.equal('Hello World')
     })
+
+    it('应安全处理数字等非字符串值', () => {
+      expect(common.escapeHtml(0)).to.equal('0')
+      expect(common.escapeHtml(12.5)).to.equal('12.5')
+    })
   })
 
   describe('URL安全 - isValidUrl', () => {

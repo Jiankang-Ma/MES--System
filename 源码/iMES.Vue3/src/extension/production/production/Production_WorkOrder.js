@@ -7,6 +7,7 @@ import ProductModelBody from '../../custom/custom/custom_extend/Base_MaterialDet
 import modelFooter from "./production_extend/ProcessModelFooter.vue"
 import QRCode from 'qrcodejs2'
 import { h, resolveComponent } from 'vue';
+import base from '../../../uitils/common'
 let extension = {
   components: {
     //查询界面扩展组件
@@ -195,8 +196,11 @@ let extension = {
       });
       this.columns.forEach(x => {
         if (x.field == "AssociatedForm") {
+          x.trustedHtml = true;
           x.formatter = (row, column, event) => {
-            return row.AssociatedForm ? '<span style="color: #2d8cf0;">' + row.AssociatedForm + '(点击跳转)</span>' : "";
+            return row.AssociatedForm
+              ? '<span style="color: #2d8cf0;">' + base.escapeHtml(row.AssociatedForm) + '(点击跳转)</span>'
+              : "";
           };
           //绑定点击事件
           x.click = (row, column, event) => {

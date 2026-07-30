@@ -86,6 +86,8 @@ let extension = {
       this.columns.forEach((col) => {
         if (col.field == 'Status') {
           col.align = 'center';
+          // 返回的是本地固定状态标记，不包含接口返回的字符串。
+          col.trustedHtml = true;
           col.formatter = (row) => {
             //  return row.Status;
             if (row.Status == 1) {

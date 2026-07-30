@@ -104,6 +104,7 @@ import 'echarts/lib/component/grid'
 let echarts = require('echarts/lib/echarts')
 import { chart2, chart3 } from './home/home-chart-options'
 import { ref, onMounted, onUnmounted } from 'vue'
+import base from '@/uitils/common'
 var $chart2
 export default {
   components: {},
@@ -275,7 +276,7 @@ export default {
   },
   setup() {
     let open = (item) => {
-      if (item.url && item.url.indexOf('http') != -1 && this.$base.isValidUrl(item.url)) {
+      if (item.url && item.url.indexOf('http') != -1 && base.isValidUrl(item.url)) {
         window.open(item.url, '_blank')
       }
     }

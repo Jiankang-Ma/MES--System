@@ -19,7 +19,7 @@
 - `源码/iMES.Net/iMES.WebApi/Dockerfile`
 - `源码/iMES.Vue3/Dockerfile`
 - `源码/iMES.Vue3/nginx.conf`
-- `数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/iMES20221014.docker.sql`
+- `数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/iMES-current.docker.sql`
 
 ## 1. Docker Desktop 设置
 
@@ -79,13 +79,23 @@ docker compose logs -f sqlserver-x64
 
 ## 4. 导入数据库
 
-已生成 Docker/Linux SQL Server 专用脚本：
+已生成当前 `dev` 的 Docker/Linux SQL Server 完整建库脚本：
+
+```text
+数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/iMES-current.docker.sql
+```
+
+这个脚本包含 Docker/Linux 所需的 MDF/LDF 路径，并已合入当前 `dev` 的 BOM/库存精度、质量检验结构，以及生产单据打印模板修复。**新建空数据库时只执行这一份脚本即可。**
+
+历史基础脚本仍保留在：
 
 ```text
 数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/iMES20221014.docker.sql
 ```
 
-这个脚本相对原始脚本只改了 MDF/LDF 路径：
+它只代表原始 iMES 的 Docker 基线；若用它新建数据库，仍需手动再执行 BOM、质量和生产单据打印模板三个增量脚本。日常新部署不再推荐直接使用它。
+
+Docker/Linux 的数据文件路径为：
 
 ```text
 /var/opt/mssql/data/iMES.mdf
@@ -106,7 +116,7 @@ Trust Server Certificate: true
 打开并执行：
 
 ```text
-数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/iMES20221014.docker.sql
+数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/iMES-current.docker.sql
 ```
 
 执行完成后验证：
@@ -116,6 +126,31 @@ SELECT name FROM sys.databases WHERE name = 'iMES';
 ```
 
 返回 `iMES` 即导入成功。
+
+### 4.1 部署当前 `dev` 的数据库增量
+
+`iMES-current.docker.sql` 已包含原始 Docker 基线和当前 `dev` 的 BOM、质量、生产单据打印模板增量；**新建空数据库只执行它一次，不要再单独执行下面的增量脚本。**
+
+下面的增量脚本仅用于把已有旧数据库升级到当前 `dev`：
+
+1. 备份已有 `iMES` 数据库。
+2. 确认尚未执行过的迁移。
+3. 按版本顺序执行缺失脚本；当前已有 `Quality_` 表时不得重复执行质量脚本。
+
+增量脚本均位于：
+
+```text
+数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/
+```
+
+| 脚本 | 作用 | 执行规则 |
+| --- | --- | --- |
+| `20260720-wf07-bom.sql` | 为 `Base_MaterialDetail` 增加 `Process_Id`，调整 BOM/库存数量的小数精度，并更新 `View_Base_MaterialDetail`；对应按工序 BOM 自动扣料等当前 `dev` 能力。 | 对已有库先备份；作为数据库迁移登记并执行一次。脚本本身对缺失字段具备重复保护，但不应以反复执行替代迁移记录。 |
+| `20260720-quality-inspection.sql` | 新建检测项、模板/明细、检验单/结果明细共 5 张 `Quality_` 表；对应质量检验实体和 API。 | **仅执行一次**。脚本使用 `CREATE TABLE`，已存在质量表时再次执行会报错。 |
+| `fix-home-statistics-unicode.sql` | Docker/Linux SQL Server 的首页中文字符串和 JSON 兼容修复。 | 当前内容已合入基础脚本和 `iMES-current.docker.sql`；新建库**不要**单独执行。仅供早期已建库且未包含该修复的环境按需使用。 |
+| `20260729-fix-production-print-templates.sql` | 启用销售订单的内置打印模板，并为装配工单创建默认模板；打印页面传入 `id` 后才能按分类取得模板内容。 | 可重复执行。用于已建库升级；它只改 `Base_PrintTemplate` 的模板配置，不改销售订单或装配工单业务数据。 |
+
+**已有数据库升级：** 不要执行 `iMES-current.docker.sql` 或任何基础建库脚本。先完成数据库备份，再确认每项迁移是否已经执行，只补执行缺失的增量脚本。`docker compose down` 会保留 SQL Server volume，因此本机以前执行过迁移后，即使按旧启动命令重启，数据库结构仍会保留；只有删除 volume 或新建空数据库时才执行 `iMES-current.docker.sql`。
 
 
 不要执行原始脚本：

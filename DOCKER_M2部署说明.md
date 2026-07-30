@@ -85,7 +85,7 @@ docker compose logs -f sqlserver-x64
 数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/iMES-current.docker.sql
 ```
 
-这个脚本包含 Docker/Linux 所需的 MDF/LDF 路径，并已合入当前 `dev` 的 BOM/库存精度、质量检验结构，以及生产单据打印模板修复。**新建空数据库时只执行这一份脚本即可。**
+这个脚本包含 Docker/Linux 所需的 MDF/LDF 路径，并已合入当前 `dev` 的 BOM/库存精度、质量检验结构、生产单据打印模板，以及生产工单零计划数量进度查询防护。**新建空数据库时只执行这一份脚本即可。**
 
 历史基础脚本仍保留在：
 
@@ -93,7 +93,7 @@ docker compose logs -f sqlserver-x64
 数据库/DB/iMES-SQLServer2016/iMES20221014/docker-import/iMES20221014.docker.sql
 ```
 
-它只代表原始 iMES 的 Docker 基线；若用它新建数据库，仍需手动再执行 BOM、质量和生产单据打印模板三个增量脚本。日常新部署不再推荐直接使用它。
+它只代表原始 iMES 的 Docker 基线；若用它新建数据库，仍需手动再执行 BOM、质量、生产单据打印模板和生产工单零计划数量防护四个增量脚本。日常新部署不再推荐直接使用它。
 
 Docker/Linux 的数据文件路径为：
 
@@ -129,7 +129,7 @@ SELECT name FROM sys.databases WHERE name = 'iMES';
 
 ### 4.1 部署当前 `dev` 的数据库增量
 
-`iMES-current.docker.sql` 已包含原始 Docker 基线和当前 `dev` 的 BOM、质量、生产单据打印模板增量；**新建空数据库只执行它一次，不要再单独执行下面的增量脚本。**
+`iMES-current.docker.sql` 已包含原始 Docker 基线和当前 `dev` 的 BOM、质量、生产单据打印模板、生产工单零计划数量防护增量；**新建空数据库只执行它一次，不要再单独执行下面的增量脚本。**
 
 下面的增量脚本仅用于把已有旧数据库升级到当前 `dev`：
 
@@ -149,6 +149,7 @@ SELECT name FROM sys.databases WHERE name = 'iMES';
 | `20260720-quality-inspection.sql` | 新建检测项、模板/明细、检验单/结果明细共 5 张 `Quality_` 表；对应质量检验实体和 API。 | **仅执行一次**。脚本使用 `CREATE TABLE`，已存在质量表时再次执行会报错。 |
 | `fix-home-statistics-unicode.sql` | Docker/Linux SQL Server 的首页中文字符串和 JSON 兼容修复。 | 当前内容已合入基础脚本和 `iMES-current.docker.sql`；新建库**不要**单独执行。仅供早期已建库且未包含该修复的环境按需使用。 |
 | `20260729-fix-production-print-templates.sql` | 启用销售订单的内置打印模板，并为装配工单创建默认模板；打印页面传入 `id` 后才能按分类取得模板内容。 | 可重复执行。用于已建库升级；它只改 `Base_PrintTemplate` 的模板配置，不改销售订单或装配工单业务数据。 |
+| `20260730-fix-production-zero-quantity.sql` | 为装配工单进度查询函数增加零/负计划数量保护：历史异常工单返回 `0%`，不再发生 SQL Server 除以零异常。新增和编辑接口的零数量拦截随应用代码发布。 | 可重复执行。用于已有库升级；只更新函数定义，不修改任何业务数据。 |
 
 **已有数据库升级：** 不要执行 `iMES-current.docker.sql` 或任何基础建库脚本。先完成数据库备份，再确认每项迁移是否已经执行，只补执行缺失的增量脚本。`docker compose down` 会保留 SQL Server volume，因此本机以前执行过迁移后，即使按旧启动命令重启，数据库结构仍会保留；只有删除 volume 或新建空数据库时才执行 `iMES-current.docker.sql`。
 

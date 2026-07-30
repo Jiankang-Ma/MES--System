@@ -78,6 +78,10 @@ namespace iMES.Production.Services
             //此处saveModel是从前台提交的原生数据，可对数据进修改过滤
             AddOnExecuting = (Production_WorkOrder workOrder, object list) =>
             {
+                if (workOrder.PlanQty <= 0)
+                {
+                    return webResponse.Error("计划数必须大于 0");
+                }
                 if (string.IsNullOrWhiteSpace(workOrder.WorkOrderCode))
                     workOrder.WorkOrderCode = GetWorkOrderCode();
                 //如果返回false,后面代码不会再执行
@@ -88,6 +92,18 @@ namespace iMES.Production.Services
                 return webResponse.OK();
             };
             return base.Add(saveDataModel);
+        }
+        public override WebResponseContent Update(SaveModel saveModel)
+        {
+            UpdateOnExecuting = (Production_WorkOrder workOrder, object addList, object updateList, List<object> delKeys) =>
+            {
+                if (workOrder.PlanQty <= 0)
+                {
+                    return webResponse.Error("计划数必须大于 0");
+                }
+                return webResponse.OK();
+            };
+            return base.Update(saveModel);
         }
         /// <summary>
         /// 自动生成工单编号

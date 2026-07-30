@@ -111,6 +111,10 @@ LEFT JOIN GetAssembleProcess AS p
                     return webResponse.Error("装配工单编号已存在");
                 }
                 List<Production_AssembleWorkOrderList> orderLists = list as List<Production_AssembleWorkOrderList>;
+                if (orderLists != null && orderLists.Any(x => x.Qty <= 0))
+                {
+                    return webResponse.Error("装配工单明细数量必须大于 0");
+                }
                 int sequence = 1;
                 string maxWorkOrderCode = _workOrderRepository.FindAsIQueryable(x => x.WorkOrderCode.Contains(assembleWorkOrder.AssembleWorkOrderCode))
                   .OrderByDescending(x => x.CreateDate)
@@ -211,6 +215,10 @@ LEFT JOIN GetAssembleProcess AS p
             {
                 //新增的明细表
                 List<Production_AssembleWorkOrderList> orderLists = addList as List<Production_AssembleWorkOrderList>;
+                if (orderLists != null && orderLists.Any(x => x.Qty <= 0))
+                {
+                    return webResponse.Error("装配工单明细数量必须大于 0");
+                }
                 if (orderLists.Count > 0)
                 {
                     int sequence = 1;
@@ -296,6 +304,10 @@ LEFT JOIN GetAssembleProcess AS p
                 };
                 //修改的明细表
                 List<Production_AssembleWorkOrderList> updateOrderLists = updateList as List<Production_AssembleWorkOrderList>;
+                if (updateOrderLists != null && updateOrderLists.Any(x => x.Qty <= 0))
+                {
+                    return webResponse.Error("装配工单明细数量必须大于 0");
+                }
                 if (updateOrderLists.Count > 0)
                 {
                     for (int i = 0; i < updateOrderLists.Count; i++)

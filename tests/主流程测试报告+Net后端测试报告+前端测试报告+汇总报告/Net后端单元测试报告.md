@@ -141,6 +141,26 @@
 | 已结束工单 `1` | 2 条：`ZPGD202208231535220001`、`ZPGD202208142200180001` | 通过 |
 | 工单数 `999` | 0 条；下方明细清空，不再产生浏览器异常 | 通过 |
 
+### 补充：装配工单打印实时数据修复（AWO-PRINT-01）
+
+本项为连接真实 API 和 SQL Server 的接口复测，不计入既有 WebApi 单元测试条数；既有 WebApi 全量单元测试作为修复后的回归执行。
+
+| 项目 | 结果 |
+| --- | --- |
+| 复测日期 | 2026-07-29 |
+| 涉及接口 | `GET /api/Base_PrintTemplate/getDetailData?id=6&cat=Production_AssembleWorkOrder` |
+| 初测证据 | 装配明细表原始 `FinishQty`、`BadQty`、`Status`、`ProductionSchedule` 是创建时快照。例如明细中的状态/完成数为 `1/0`，实际工单已为状态 `3`、良品 `12`；另一条实际状态为 `2`。旧打印接口直接序列化明细表，因而会输出旧值。 |
+| 根因 | `Base_PrintTemplateController.getDetailData` 的装配工单分支只查询并序列化 `Production_AssembleWorkOrderList`，未合并 `Production_WorkOrder` 的实际执行状态，亦未计算实时工序进度。 |
+| 后端修复 | 打印接口在返回前仅在内存响应对象上补充实际工单的 `GoodQty`、`NoGoodQty`、`Status`，并通过 `Func_GetProcessLineAndProgressByID` 生成 `ProductionSchedule`；不写回历史明细，打印没有数据库副作用。 |
+| 历史数据边界 | 发现的一条 `Qty` 与工单 `PlanQty` 不一致记录，经基线操作日志确认是 2022 年直接修改工单产生的历史数据；按本轮范围不修复、不新增数据迁移，也不改变该记录。 |
+| 编译与单测 | `docker compose build api` 通过；`iMES.WebApi.Tests`：**298 通过，0 失败**。 |
+
+| 复测条件 | 实际返回 | 结果 |
+| --- | --- | --- |
+| 装配工单 `6` 的明细 `ZPGD202208142200180001-1` | `Status=3`、`FinishQty=12`、`BadQty=0`；两道实时工序进度均为 `100.00%` | 通过 |
+| 装配工单 `6` 的明细 `ZPGD202208142200180001-2` | `Status=2`、`FinishQty=0`、`BadQty=0`；实时工序进度为 `50.00%/0.00%` | 通过 |
+| 通用 MES 回归 | `tests/测试文件/run-mes-regression.mjs`：实体/结构、通知 CRUD、字典主从 CRUD、50 并发 × 4 读压测均通过；**4/4 通过，200/200 成功**，结果 `tests/results/mes-regression-2026-07-29T13-16-08-097Z.json` | 通过 |
+
 ## iMES.Warehouse 单元测试：成员 4（楼博涵）
 
 ### 本次范围

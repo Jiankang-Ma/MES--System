@@ -8,6 +8,9 @@ import modelFooter from "./production_extend/ProcessModelFooter.vue"
 import QRCode from 'qrcodejs2'
 import { h, resolveComponent } from 'vue';
 import base from '../../../uitils/common'
+
+const isPositiveInteger = value => Number.isInteger(Number(value)) && Number(value) > 0
+
 let extension = {
   components: {
     //查询界面扩展组件
@@ -442,10 +445,18 @@ let extension = {
     },
     addBefore(formData) {
       //新建保存前formData为对象，包括明细表，可以给给表单设置值，自己输出看formData的值
+      if (!isPositiveInteger(formData.mainData.PlanQty)) {
+        this.$error('计划数必须大于 0');
+        return false;
+      }
       return true;
     },
     updateBefore(formData) {
       //编辑保存前formData为对象，包括明细表、删除行的Id
+      if (!isPositiveInteger(formData.mainData.PlanQty)) {
+        this.$error('计划数必须大于 0');
+        return false;
+      }
       return true;
     },
     rowClick({ row, column, event }) {

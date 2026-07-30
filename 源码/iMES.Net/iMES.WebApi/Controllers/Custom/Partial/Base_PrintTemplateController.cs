@@ -338,7 +338,7 @@ namespace iMES.Custom.Controllers
                 case "Production_AssembleWorkOrder":
                     tableNameDetail = "Production_AssembleWorkOrderList";
                     string assembleWorkOrder_Id = id;
-                    sql = "select * from " + tableNameDetail + " where AssembleWorkOrder_Id=@assembleWorkOrder_Id  ";
+                    sql = "select AssembleWorkOrderList_Id, AssembleWorkOrder_Id, LevelPath, ProductCode, ProductName, ProductStandard, ProductAttribute, Unit_Id, UnitQty, Qty, WorkOrderCode, Status, ProductionSchedule, FinishQty, BadQty, Product_Id, ProcessLine_Id from " + tableNameDetail + " where AssembleWorkOrder_Id=@assembleWorkOrder_Id  ";
                     List<Production_AssembleWorkOrderList> entityListAssembleWorkOrder = DBServerProvider.SqlDapper.QueryList<Production_AssembleWorkOrderList>(sql, new { assembleWorkOrder_Id });
                     // 装配明细表中的完成数、不良数、状态和进度是创建时的快照；
                     // 打印必须与装配工单详情页一致，读取实际工单的实时执行结果。
@@ -410,34 +410,58 @@ namespace iMES.Custom.Controllers
                     orderMap[wo.WorkOrderCode] = wo;
             }
 
+            // 进度缓存：避免相同 (WorkOrderCode, ProcessLine_Id) 重复查询
+            var progressCache = new Dictionary<string, string>();
+
             foreach (Production_AssembleWorkOrderList row in rows)
             {
-                if (string.IsNullOrEmpty(row.WorkOrderCode) || !orderMap.TryGetValue(row.WorkOrderCode, out var workOrder))
+                try
                 {
+                    if (string.IsNullOrEmpty(row.WorkOrderCode) || !orderMap.TryGetValue(row.WorkOrderCode, out var workOrder))
+                    {
+                        row.FinishQty = 0;
+                        row.BadQty = 0;
+                        row.Status = "1";
+                        row.ProductionSchedule = "-";
+                        continue;
+                    }
+
+                    row.FinishQty = workOrder.GoodQty;
+                    row.BadQty = workOrder.NoGoodQty;
+                    row.Status = workOrder.Status;
+
+                    if (row.ProcessLine_Id == null)
+                    {
+                        row.ProductionSchedule = "-";
+                        continue;
+                    }
+
+                    // 进度查询：相同工单+工艺路线只查一次
+                    string cacheKey = $"{row.WorkOrderCode}|{row.ProcessLine_Id.Value}";
+                    if (progressCache.TryGetValue(cacheKey, out var cachedProgress))
+                    {
+                        row.ProductionSchedule = cachedProgress;
+                        continue;
+                    }
+
+                    string safeCode = row.WorkOrderCode.Replace("'", "''");
+                    string parameterSql = $"SELECT * FROM Func_GetProcessLineAndProgressByID('{safeCode}',{row.ProcessLine_Id.Value})";
+                    object progress = DBServerProvider.SqlDapper.ExecuteScalar(
+                        "SerializeJSON",
+                        new { ParameterSQL = parameterSql },
+                        global::System.Data.CommandType.StoredProcedure);
+                    string progressStr = progress?.ToString() ?? "-";
+                    progressCache[cacheKey] = progressStr;
+                    row.ProductionSchedule = progressStr;
+                }
+                catch
+                {
+                    // 单行异常不影响整体打印，使用兜底值
                     row.FinishQty = 0;
                     row.BadQty = 0;
                     row.Status = "1";
                     row.ProductionSchedule = "-";
-                    continue;
                 }
-
-                row.FinishQty = workOrder.GoodQty;
-                row.BadQty = workOrder.NoGoodQty;
-                row.Status = workOrder.Status;
-
-                if (row.ProcessLine_Id == null)
-                {
-                    row.ProductionSchedule = "-";
-                    continue;
-                }
-
-                // 参数化查询调用表值函数
-                string parameterSql = "SELECT * FROM Func_GetProcessLineAndProgressByID(@WorkOrderCode, @ProcessLine_Id)";
-                object progress = DBServerProvider.SqlDapper.ExecuteScalar(
-                    "SerializeJSON",
-                    new { ParameterSQL = parameterSql, WorkOrderCode = row.WorkOrderCode, ProcessLine_Id = row.ProcessLine_Id.Value },
-                    global::System.Data.CommandType.StoredProcedure);
-                row.ProductionSchedule = progress?.ToString() ?? "-";
             }
         }
     }

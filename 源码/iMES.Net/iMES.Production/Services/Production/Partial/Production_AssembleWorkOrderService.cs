@@ -71,26 +71,26 @@ namespace iMES.Production.Services
         //查询
         public override PageGridData<Production_AssembleWorkOrder> GetPageData(PageDataOptions options)
         {
-            //options.Value可以从前台查询的方法提交一些其他参数放到value里面
-            object extraValue = options.Value;
-            //查询完成后，在返回页面前可对查询的数据进行操作
-            GetPageDataOnExecuted = (PageGridData<Production_AssembleWorkOrder> grid) =>
-            {
-                //可对查询的结果的数据操作
-                List<Production_AssembleWorkOrder> workOrder = grid.rows;
-                string sql = @"  SELECT * FROM GetAssembleProcess ";
-                List<Production_AssembleWorkOrder>  list = DBServerProvider.SqlDapper.QueryList<Production_AssembleWorkOrder>(sql, null);
-                for (int i = 0; i < workOrder.Count; i++)
-                {
-                    if (list.Exists(x => x.AssembleWorkOrder_Id == workOrder[i].AssembleWorkOrder_Id))
-                    {
-                        workOrder[i].WorkOrderQty = list.Find(x => x.AssembleWorkOrder_Id == workOrder[i].AssembleWorkOrder_Id).WorkOrderQty;
-                        workOrder[i].FinishedQty = list.Find(x => x.AssembleWorkOrder_Id == workOrder[i].AssembleWorkOrder_Id).FinishedQty;
-                        workOrder[i].FormProcess = list.Find(x => x.AssembleWorkOrder_Id == workOrder[i].AssembleWorkOrder_Id).FormProcess;
-
-                    }
-                }
-            };
+            // 工单数量、完成数量和进度均由 GetAssembleProcess 按明细/工单实时统计。
+            // 必须在通用 GetPageData 生成 WHERE、ORDER BY 和分页之前合并视图，
+            // 否则页面显示的是统计值，筛选却会命中主表中长期为 NULL 的同名字段。
+            QuerySql = @"
+SELECT
+    a.AssembleWorkOrder_Id,
+    a.AssembleWorkOrderCode,
+    ISNULL(p.WorkOrderQty, 0) AS WorkOrderQty,
+    ISNULL(p.FinishedQty, 0) AS FinishedQty,
+    ISNULL(p.FormProcess, '0') AS FormProcess,
+    a.Remark,
+    a.CreateDate,
+    a.CreateID,
+    a.Creator,
+    a.Modifier,
+    a.ModifyDate,
+    a.ModifyID
+FROM Production_AssembleWorkOrder AS a
+LEFT JOIN GetAssembleProcess AS p
+    ON p.AssembleWorkOrder_Id = a.AssembleWorkOrder_Id";
             return base.GetPageData(options);
         }
         /// <summary>

@@ -42,7 +42,14 @@ export default {
     };
   },
   methods:{
+      clear(){
+          this.rows=[];
+      },
       rowClick(row){
+          if (!row) {
+              this.clear();
+              return;
+          }
           let  url="api/Production_AssembleWorkOrder/getDetailRows?AssembleWorkOrder_Id=" + row.AssembleWorkOrder_Id;
           this.http.get(url,{},true).then(rows=>{
               this.rows=rows;

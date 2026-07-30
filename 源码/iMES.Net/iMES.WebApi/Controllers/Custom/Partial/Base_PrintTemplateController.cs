@@ -387,15 +387,32 @@ namespace iMES.Custom.Controllers
                 return;
             }
 
+            // 只查询本次打印涉及的工单编码，避免全表加载
+            var codes = rows
+                .Where(r => !string.IsNullOrEmpty(r.WorkOrderCode))
+                .Select(r => r.WorkOrderCode)
+                .Distinct()
+                .ToList();
+
+            if (codes.Count == 0) return;
+
+            string inClause = string.Join(",", codes.Select(c => $"N'{c.Replace("'", "''")}'"));
             List<Production_WorkOrder> workOrders = DBServerProvider.SqlDapper
-                .QueryList<Production_WorkOrder>("select * from Production_WorkOrder", new { });
+                .QueryList<Production_WorkOrder>(
+                    $"SELECT WorkOrderCode, GoodQty, NoGoodQty, Status FROM Production_WorkOrder WHERE WorkOrderCode IN ({inClause})",
+                    new { });
+
+            // 使用字典 O(1) 查找
+            var orderMap = new Dictionary<string, Production_WorkOrder>();
+            foreach (var wo in workOrders)
+            {
+                if (!string.IsNullOrEmpty(wo.WorkOrderCode))
+                    orderMap[wo.WorkOrderCode] = wo;
+            }
 
             foreach (Production_AssembleWorkOrderList row in rows)
             {
-                Production_WorkOrder workOrder = workOrders
-                    .FirstOrDefault(x => x.WorkOrderCode == row.WorkOrderCode);
-
-                if (workOrder == null)
+                if (string.IsNullOrEmpty(row.WorkOrderCode) || !orderMap.TryGetValue(row.WorkOrderCode, out var workOrder))
                 {
                     row.FinishQty = 0;
                     row.BadQty = 0;
@@ -414,11 +431,12 @@ namespace iMES.Custom.Controllers
                     continue;
                 }
 
-                string workOrderCode = (row.WorkOrderCode ?? string.Empty).Replace("'", "''");
-                string parameterSql = "select * from Func_GetProcessLineAndProgressByID('"
-                    + workOrderCode + "'," + row.ProcessLine_Id.Value + ")";
+                // 参数化查询调用表值函数
+                string parameterSql = "SELECT * FROM Func_GetProcessLineAndProgressByID(@WorkOrderCode, @ProcessLine_Id)";
                 object progress = DBServerProvider.SqlDapper.ExecuteScalar(
-                    "SerializeJSON", new { ParameterSQL = parameterSql }, global::System.Data.CommandType.StoredProcedure);
+                    "SerializeJSON",
+                    new { ParameterSQL = parameterSql, WorkOrderCode = row.WorkOrderCode, ProcessLine_Id = row.ProcessLine_Id.Value },
+                    global::System.Data.CommandType.StoredProcedure);
                 row.ProductionSchedule = progress?.ToString() ?? "-";
             }
         }

@@ -12,9 +12,10 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const testsDir = resolve(fileURLToPath(new URL('.', import.meta.url)));
-const root = resolve(testsDir, '..');
+// 脚本已归档到 tests/测试文件；项目根目录需向上两层，结果仍统一落在 tests/results。
+const root = resolve(testsDir, '..', '..');
 const apiSettings = join(root, '源码', 'iMES.Net', 'iMES.WebApi', 'appsettings.json');
-const resultsDir = join(testsDir, 'results');
+const resultsDir = join(root, 'tests', 'results');
 const marker = `AUTOTEST_AUTH_${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}_${process.pid}`;
 const apiBaseUrl = process.env.MES_API_URL || 'http://localhost:9991';
 const report = { startedAt: new Date().toISOString(), marker, tests: [], cleanup: null };

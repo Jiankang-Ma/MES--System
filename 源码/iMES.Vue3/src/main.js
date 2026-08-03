@@ -15,6 +15,8 @@ import permission from './api/permission'
 import viewgird from './components/basic/ViewGrid';  
 const app = createApp(App);
 app.config.globalProperties.base = base;
+// 兼容历史 Options API / 模板中使用的 $base 写法。
+app.config.globalProperties.$base = base;
 app.config.globalProperties.http = http;
 app.config.globalProperties.$tabs = {};
 app.config.globalProperties.permission = permission;

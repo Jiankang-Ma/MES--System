@@ -292,7 +292,7 @@
         <div
           class="attr-item"
           v-show="
-            currentItem.type != 'table' && currentItem.hasOwnProperty('url')
+            currentItem.type != 'table' && Object.prototype.hasOwnProperty.call(currentItem, 'url')
           "
         >
           <div class="text">上传接口地址(后台接口)</div>
@@ -626,7 +626,7 @@ export default {
       if (item.width == 100) {
         _option.colSize = 12;
       } else {
-        _option.colSize = (_option.width * 12) / 100;
+        _option.colSize = (item.width * 12) / 100;
       }
       if (["img", "excel", "file"].indexOf(item.type) != -1) {
         _option.maxSize = item.maxSize;
@@ -651,8 +651,9 @@ export default {
       let endIndex = index;
       let width = 0;
       let _options = [];
-      for (index; index < this.filterCurrentComponents().length; index++) {
-        const item = this.currentComponents[index];
+      const formComponents = this.filterCurrentComponents();
+      for (index; index < formComponents.length; index++) {
+        const item = formComponents[index];
         if (item.width + width <= 100) {
           width = item.width + width;
           endIndex = index;
@@ -672,7 +673,7 @@ export default {
       let _formOptions = [];
       let endIndex = -1;
       this.filterCurrentComponents().forEach((item, index) => {
-        if (item.hasOwnProperty("values")) {
+        if (Object.prototype.hasOwnProperty.call(item, "values")) {
           _fields[item.field] = [];
         } else {
           _fields[item.field] = null;

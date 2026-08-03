@@ -24,6 +24,8 @@ let extension = {
         title: '查看',
         width: 100,
         align: 'center',
+        // 这是源码中固定的操作链接，不接收业务数据拼接。
+        trustedHtml: true,
         formatter: (row) => {
           return '<a style="font-size: 14px;border-bottom: 1px solid #3a8ee6;color: #3a8ee6; padding-bottom: 2px;  cursor: pointer;">查看详情</a>';
         },

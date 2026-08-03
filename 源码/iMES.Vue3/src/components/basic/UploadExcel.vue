@@ -50,7 +50,7 @@
     </div>
     <div v-show="message" class="v-r-message">
       <h3 class="title">上传结果</h3>
-      <div class="text" :class="resultClass" v-html="message"></div>
+      <div class="text" :class="resultClass">{{ message }}</div>
     </div>
     <slot></slot>
   </div>
@@ -168,7 +168,7 @@ export default {
       xmlResquest.onload = function(oEvent) {
         $_vue.loadingStatus = false;
         if (xmlResquest.response.type == 'application/json') {
-          return $_vue.message.error('未找到下载文件');
+          return $_vue.$Message.error('未找到下载文件');
         }
         let content = xmlResquest.response;
         elink.download = fileName;

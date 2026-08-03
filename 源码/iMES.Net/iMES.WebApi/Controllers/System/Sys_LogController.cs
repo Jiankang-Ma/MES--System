@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using iMES.Core.Controllers.Basic;
 using iMES.Core.DBManager;
+using iMES.Core.Filters;
 using iMES.Entity.DomainModels;
 using iMES.System.IServices;
 
@@ -18,7 +19,8 @@ namespace iMES.System.Controllers
         : base("System", "System", "Sys_Log", service)
         {
         }
-        [Route("test"), AllowAnonymous, HttpGet]
+        [Route("test"), HttpGet]
+        [ApiActionPermission(ActionRolePermission.SuperAdmin)]
         public IActionResult Test()
         {
             string mess = "";

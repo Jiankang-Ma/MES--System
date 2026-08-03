@@ -92,6 +92,17 @@ namespace iMES.Production.Services
                     }
                 UserInfo userInfo = UserContext.Current.UserInfo;
                 List<Production_SalesOrderList> orderLists = list as List<Production_SalesOrderList>;
+                if (orderLists == null || orderLists.Count == 0)
+                {
+                    return webResponse.Error("产品明细不能为空");
+                }
+                for (int i = 0; i < orderLists.Count; i++)
+                {
+                    if (orderLists[i].Qty <= 0)
+                    {
+                        return webResponse.Error("产品明细中【" + orderLists[i].ProductName + "】的数量必须大于0");
+                    }
+                }
                 int sequence = 1;
                 string maxWorkOrderCode = _workOrderRepository.FindAsIQueryable(x => x.WorkOrderCode.Contains(salesOrder.SalesOrderCode))
                   .OrderByDescending(x => x.CreateDate)

@@ -290,9 +290,9 @@ namespace iMES.Production.Services
                          .OrderByDescending(x => x.CreateDate)
                          .Select(s => s.WorkOrderCode)
                          .FirstOrDefault();
-                    list[i].ProductUserName = userTrueName.ToString();
-                    list[i].ProcessName = processName.ToString();
-                    list[i].WorkOrderCode = workOrderCode.ToString();
+                    list[i].ProductUserName = userTrueName?.ToString() ?? "";
+                    list[i].ProcessName = processName?.ToString() ?? "";
+                    list[i].WorkOrderCode = workOrderCode?.ToString() ?? "";
                 }
             };
             return base.GetPageData(options);

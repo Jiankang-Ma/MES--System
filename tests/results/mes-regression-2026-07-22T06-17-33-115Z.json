@@ -1,0 +1,43 @@
+{
+  "startedAt": "2026-07-22T06:17:33.115Z",
+  "apiBaseUrl": "http://localhost:9991",
+  "marker": "AUTOTEST_20260722061733_144396",
+  "tests": [
+    {
+      "name": "全量实体表、列、主键与主从孤儿数据校验",
+      "status": "failed",
+      "durationMs": 24282,
+      "error": "实体列与数据库不一致: Base_MaterialDetail: Process_Id; View_Base_MaterialDetail: Process_Id"
+    },
+    {
+      "name": "Base_Notice 单表 CRUD 与边界值",
+      "status": "passed",
+      "durationMs": 829
+    },
+    {
+      "name": "Sys_Dictionary 主从 CRUD、重复值与删除清理",
+      "status": "passed",
+      "durationMs": 1329
+    },
+    {
+      "name": "Base_Notice 分页查询读压测（50 并发 x 4）",
+      "status": "passed",
+      "durationMs": 162
+    }
+  ],
+  "metrics": {
+    "readLoad": {
+      "concurrency": 50,
+      "totalRequests": 200,
+      "successes": 200,
+      "p50Ms": 28,
+      "p95Ms": 71,
+      "maxMs": 79
+    }
+  },
+  "finishedAt": "2026-07-22T06:18:01.138Z",
+  "summary": {
+    "passed": 3,
+    "failed": 1
+  }
+}

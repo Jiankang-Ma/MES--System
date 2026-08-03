@@ -157,7 +157,7 @@ let methods = {
       });
       //没有新增编辑权限的，弹出框都设置为只读
       this.detail.columns.forEach((row) => {
-        if (row.hasOwnProperty('edit')) {
+        if (Object.prototype.hasOwnProperty.call(row, 'edit')) {
           row['edit'] = false;
         }
       });
@@ -167,7 +167,7 @@ let methods = {
       this.boxButtons.push(...boxButtons);
       this.detailOptions.buttons.push(detailGridButtons);
       this.detailOptions.buttons.forEach((button) => {
-        if (!button.hasOwnProperty('hidden')) {
+        if (!Object.prototype.hasOwnProperty.call(button, 'hidden')) {
           button.hidden = false;
         }
       });
@@ -255,7 +255,7 @@ let methods = {
       ]
     );
     this.detailOptions.buttons.forEach((button) => {
-      if (button.hasOwnProperty('hidden')) {
+      if (Object.prototype.hasOwnProperty.call(button, 'hidden')) {
         button.hidden = false;
       }
     });
@@ -446,7 +446,7 @@ let methods = {
       let keyLeft = (isEditForm ? 'e' : 's') + '_b_';
       formData.forEach((item) => {
         item.forEach((x) => {
-          if (this.keyValueType.hasOwnProperty(keyLeft + x.field)) {
+          if (Object.prototype.hasOwnProperty.call(this.keyValueType, keyLeft + x.field)) {
             return true;
           }
           let data;
@@ -464,7 +464,7 @@ let methods = {
           if (
             data &&
             data.length > 0 &&
-            !this.keyValueType.hasOwnProperty(x.field)
+            !Object.prototype.hasOwnProperty.call(this.keyValueType, x.field)
           ) {
             this.keyValueType[x.field] = data[0].key;
             this.keyValueType[keyLeft + x.field] = x.type;
@@ -499,7 +499,7 @@ let methods = {
     }
     var _cascaderParentTree;
     for (const key in form) {
-      if (sourceObj.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(sourceObj, key)) {
         let newVal = sourceObj[key];
         let kv_type = this.keyValueType[keyLeft + key];
 
@@ -542,7 +542,7 @@ let methods = {
             newVal = [];
           }
         } else if (
-          this.keyValueType.hasOwnProperty(key) &&
+          Object.prototype.hasOwnProperty.call(this.keyValueType, key) &&
           typeof this.keyValueType[key] == 'number' &&
           newVal * 1 == newVal
         ) {
@@ -721,7 +721,12 @@ let methods = {
       }
       let resultRow;
       if (typeof x.data == 'string' && x.data != '') {
-        resultRow = JSON.parse(x.data);
+        try {
+          resultRow = JSON.parse(x.data);
+        } catch (e) {
+          console.warn('JSON解析失败:', x.data);
+          resultRow = x.data;
+        }
       } else {
         resultRow = x.data;
       }
@@ -966,7 +971,7 @@ let methods = {
     );
     let elink = this.$refs.export;
     xmlResquest.responseType = 'blob';
-    xmlResquest.onload = function (oEvent) {
+    xmlResquest.onload = (oEvent) => {
       if (xmlResquest.status != 200) {
         this.$error('下载文件出错了..');
         return;
@@ -977,9 +982,9 @@ let methods = {
       // elink.style.display = "none";
       let blob = new Blob([content]);
       elink.href = URL.createObjectURL(blob);
-      //  document.body.appendChild(elink);
       elink.click();
-      //  document.body.removeChild(elink);
+      xmlResquest.abort();
+      URL.revokeObjectURL(elink.href);
     };
     xmlResquest.send();
   },
@@ -1134,7 +1139,7 @@ let methods = {
         }
         if (!d.dataKey) return true;
         //2022.02.20强制开启联级可以选择某个节点
-        if (d.type == 'cascader' && !d.hasOwnProperty('changeOnSelect')) {
+        if (d.type == 'cascader' && !Object.prototype.hasOwnProperty.call(d, 'changeOnSelect')) {
           //强制开启联级可以选择某个节点
           d.changeOnSelect = true;
         }
@@ -1264,7 +1269,7 @@ let methods = {
               }
             });
           });
-        } else if (d.data.length > 0 && !d.data[0].hasOwnProperty('key')) {
+        } else if (d.data.length > 0 && !Object.prototype.hasOwnProperty.call(d.data[0], 'key')) {
           let source = d.data,
             newSource = new Array(source.length);
           for (let index = 0; index < source.length; index++) {
@@ -1580,6 +1585,8 @@ let methods = {
       width: 70,
       fixed: 'right',
       align: 'center',
+      // 仅由当前源码拼出固定的图标和文案。
+      trustedHtml: true,
       formatter: (row) => {
         return '<i style="cursor: pointer;color: #2d8cf0;"' + (row[auditField]
           ? 'class="el-icon-view">查看</i>'

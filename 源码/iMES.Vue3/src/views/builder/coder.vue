@@ -323,7 +323,7 @@ export default {
         }
 
         for (const key in this.tableInfo) {
-          if (this.layOutOptins.fields.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(this.layOutOptins.fields, key)) {
             let newVal = this.layOutOptins.fields[key];
             this.tableInfo[key] = newVal;
           }

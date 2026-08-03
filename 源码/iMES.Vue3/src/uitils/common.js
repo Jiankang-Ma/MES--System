@@ -1,4 +1,37 @@
 let base = {
+  // HTML转义函数，防止XSS攻击
+  escapeHtml(str) {
+    if (str === null || str === undefined) return str;
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return String(str).replace(/[&<>"']/g, (m) => map[m]);
+  },
+  // URL协议白名单校验，防止javascript:协议攻击
+  isValidUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    const safeProtocols = ['http:', 'https:', 'ftp:', 'mailto:', 'tel:'];
+    try {
+      const parsed = new URL(url);
+      return safeProtocols.includes(parsed.protocol);
+    } catch {
+      return false;
+    }
+  },
+  // 安全的JSON解析，避免解析失败导致程序崩溃
+  safeJsonParse(str, defaultValue = null) {
+    if (!str) return defaultValue;
+    try {
+      return JSON.parse(str);
+    } catch {
+      console.warn('JSON解析失败:', str);
+      return defaultValue;
+    }
+  },
   addDays(date, days) {
     //给指定日期增加天数
     if (!days) {
@@ -55,13 +88,13 @@ let base = {
     );
   },
   isPhone(val) {
-    return /^[1][3,4,5,6,7,8,9][0-9]{9}$/.test(val);
+    return /^1[3-9][0-9]{9}$/.test(val);
   },
   isDecimal(val) {
-    return /(^[\-0-9][0-9]*(.[0-9]+)?)$/.test(val);
+    return /^-?[0-9]+(\.[0-9]+)?$/.test(val);
   },
   isNumber(val) {
-    return /(^[\-0-9][0-9]*([0-9]+)?)$/.test(val);
+    return /^-?[0-9]+$/.test(val);
   },
   isMail(val) {
     return /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/.test(val);
@@ -74,12 +107,12 @@ let base = {
     var strRegex =
       '^((https|http|ftp)://)?' + // (https或http或ftp):// 可有可无
       "(([\\w_!~*'()\\.&=+$%-]+: )?[\\w_!~*'()\\.&=+$%-]+@)?" + // ftp的user@  可有可无
-      '(([0-9]{1,3}\\.){3}[0-9]{1,3}' + // IP形式的URL- 3位数字.3位数字.3位数字.3位数字
+      '(((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])' + // IP形式的URL- 每段0-255
       '|' + // 允许IP和DOMAIN（域名）
       '(localhost)|' + // 匹配localhost
       "([\\w_!~*'()-]+\\.)*" + // 域名- 至少一个[英文或数字_!~*\'()-]加上.
       '\\w+\\.' + // 一级域名 -英文或数字  加上.
-      '[a-zA-Z]{1,6})' + // 顶级域名- 1-6位英文
+      '[a-zA-Z]{1,63})' + // 顶级域名- 1-63位英文
       '(:[0-9]{1,5})?' + // 端口- :80 ,1-5位数字
       '((/?)|' + // url无参数结尾 - 斜杆或这没有
       "(/[\\w_!~*'()\\.;?:@&=+$,%#-]+)+/?)$"; // 请求参数结尾- 英文或数字和[]内的各种字符
@@ -95,13 +128,28 @@ let base = {
     if (!url || !ip) {
       return false;
     }
-    return url.indexOf(ip.replace('https://', '').replace('http://', '')) >= 0;
+    let getHost = (value) => {
+      try {
+        return new URL(value.indexOf('://') === -1 ? 'http://' + value : value)
+          .host;
+      } catch (error) {
+        return '';
+      }
+    };
+    return getHost(url) === getHost(ip);
   },
   getImgSrc(src, httpUrl) {
     if (this.isUrl(src)) {
       return src;
     }
     if (httpUrl) {
+      if (
+        typeof src === 'string' &&
+        src.substr(0, 1) == '/' &&
+        httpUrl.substr(httpUrl.length - 1, 1) == '/'
+      ) {
+        return httpUrl + src.substr(1);
+      }
       return httpUrl + src;
     }
     return src;
@@ -166,7 +214,9 @@ let base = {
     if (!this.isUrl(url)) {
       url = backGroundUrl + url;
     }
-    window.open(url);
+    if (this.isValidUrl(url)) {
+      window.open(url);
+    }
   },
   downloadImg(data) {
     if (!data.url || !data.callback || typeof data.callback !== 'function') {
@@ -198,7 +248,7 @@ let base = {
     xmlResquest.onload = function() {
       if (this.status == 200) {
         var blob = this.response;
-        callback(window.URL.createObjectURL(blob));
+        data.callback(window.URL.createObjectURL(blob));
       }
     };
     xmlResquest.send();
@@ -231,14 +281,15 @@ let base = {
         callback && callback(x, data, true, treeIds);
         root_data.push(x);
         getTree(x.id, x, data, callback, treeIds);
-      } else {
-        callback && callback(x, data, true, treeIds);
       }
     });
     var exceptionNodes = data.filter((f) => {
       return treeIds.indexOf(f.id) == -1 && !f.hidden;
     });
 
+    exceptionNodes.forEach((x) => {
+      callback && callback(x, data, true, treeIds);
+    });
     root_data.push(...exceptionNodes);
     return root_data;
   },

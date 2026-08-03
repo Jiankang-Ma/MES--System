@@ -208,7 +208,7 @@ function createXHR() {
 function redirect(responseText, message) {
     try {
         let responseData = typeof responseText == 'string' ? JSON.parse(responseText) : responseText;
-        if ((responseData.hasOwnProperty('code') && responseData.code == 401) ||
+        if ((Object.prototype.hasOwnProperty.call(responseData, 'code') && responseData.code == 401) ||
             (responseData.data && responseData.data.code == 401)) {
             closeLoading();
             toLogin();
@@ -291,7 +291,16 @@ function ajax(param) {
         }
         checkResponse(xhr);
         if (xhr.readyState == 4 && xhr.status == 200) {
-            httpParam.success(httpParam.json ? JSON.parse(xhr.responseText) : xhr.responseText);
+            if (httpParam.json) {
+                try {
+                    httpParam.success(JSON.parse(xhr.responseText));
+                } catch (e) {
+                    console.warn('JSON解析失败:', xhr.responseText);
+                    httpParam.success(xhr.responseText);
+                }
+            } else {
+                httpParam.success(xhr.responseText);
+            }
             return;
         }
         if (xhr.status != 0 && xhr.readyState != 1) {

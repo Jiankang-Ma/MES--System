@@ -37,8 +37,9 @@ function run(command, args) {
   catch (error) { fail(`${command} failed: ${String(error.stderr || error.stdout || error.message).replaceAll(sqlPassword || '', '***')}`); }
 }
 function sql(query) {
+  const normalizedQuery = query.replace(/\s+/g, ' ').trim();
   return run('docker', ['compose', 'exec', '-T', 'sqlserver-x64', '/bin/sh', '-lc',
-    `/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -d iMES -C -h -1 -W -s "|" -Q ${JSON.stringify(query)}`]);
+    `/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -d iMES -C -b -h -1 -W -s "|" -Q ${JSON.stringify(normalizedQuery)}`]);
 }
 function sqlLines(query) {
   return sql(query).split(/\r?\n/).map((line) => line.trim()).filter(Boolean)
@@ -73,8 +74,13 @@ function extensionValues(tableName) {
 function cleanup() {
   const productCodes = [fixture.parent, fixture.child1, fixture.child2].map(sqlText).join(',');
   const cleanupSql = `
+SET XACT_ABORT ON;
+BEGIN TRANSACTION;
 DELETE l FROM Ware_OutWareHouseBillList l INNER JOIN Ware_OutWareHouseBill h ON h.OutWareHouseBill_Id=l.OutWareHouseBill_Id INNER JOIN Production_ReportWorkOrder r ON h.OutWareHouseBillCode=CONCAT('BOM-RWO-',r.ReportWorkOrder_Id) WHERE r.ProductCode=${sqlText(fixture.parent)};
 DELETE h FROM Ware_OutWareHouseBill h INNER JOIN Production_ReportWorkOrder r ON h.OutWareHouseBillCode=CONCAT('BOM-RWO-',r.ReportWorkOrder_Id) WHERE r.ProductCode=${sqlText(fixture.parent)};
+DELETE wbl FROM Ware_WareHouseBillList wbl INNER JOIN Ware_WareHouseBill wb ON wb.WareHouseBill_Id=wbl.WareHouseBill_Id INNER JOIN Production_ReportWorkOrder r ON wb.WareHouseBillCode=CONCAT('OUTPUT-RWO-',r.ReportWorkOrder_Id) WHERE r.ProductCode=${sqlText(fixture.parent)};
+DELETE wb FROM Ware_WareHouseBill wb INNER JOIN Production_ReportWorkOrder r ON wb.WareHouseBillCode=CONCAT('OUTPUT-RWO-',r.ReportWorkOrder_Id) WHERE r.ProductCode=${sqlText(fixture.parent)};
+DELETE FROM Production_ReportWorkOrderList WHERE ReportWorkOrder_Id IN (SELECT ReportWorkOrder_Id FROM Production_ReportWorkOrder WHERE ProductCode=${sqlText(fixture.parent)});
 DELETE FROM Production_ReportWorkOrder WHERE ProductCode=${sqlText(fixture.parent)};
 DELETE wol FROM Production_WorkOrderList wol INNER JOIN Production_WorkOrder wo ON wo.WorkOrder_Id=wol.WorkOrder_Id WHERE wo.AssociatedForm=${sqlText(fixture.salesOrder)};
 DELETE FROM Production_WorkOrder WHERE AssociatedForm=${sqlText(fixture.salesOrder)};
@@ -88,8 +94,18 @@ DELETE FROM Base_Product WHERE ProductCode IN (${productCodes});
 DELETE FROM Base_ProcessLineList WHERE ProcessLine_Id IN (SELECT ProcessLine_Id FROM Base_ProcessLine WHERE ProcessLineCode=${sqlText(fixture.route)});
 DELETE FROM Base_ProcessLine WHERE ProcessLineCode=${sqlText(fixture.route)};
 DELETE FROM Base_Process_ExtendData WHERE Process_Id IN (SELECT Process_Id FROM Base_Process WHERE ProcessCode IN (${sqlText(fixture.process1)},${sqlText(fixture.process2)}));
-DELETE FROM Base_Process WHERE ProcessCode IN (${sqlText(fixture.process1)},${sqlText(fixture.process2)});`;
+DELETE FROM Base_Process WHERE ProcessCode IN (${sqlText(fixture.process1)},${sqlText(fixture.process2)});
+COMMIT TRANSACTION;`;
   sql(cleanupSql);
+  const residue = Number(sqlScalar(`SELECT
+    (SELECT COUNT(1) FROM Base_Product WHERE ProductCode IN (${productCodes})) +
+    (SELECT COUNT(1) FROM Base_Process WHERE ProcessCode IN (${sqlText(fixture.process1)},${sqlText(fixture.process2)})) +
+    (SELECT COUNT(1) FROM Base_ProcessLine WHERE ProcessLineCode=${sqlText(fixture.route)}) +
+    (SELECT COUNT(1) FROM Production_SalesOrder WHERE SalesOrderCode=${sqlText(fixture.salesOrder)}) +
+    (SELECT COUNT(1) FROM Production_WorkOrder WHERE AssociatedForm=${sqlText(fixture.salesOrder)}) +
+    (SELECT COUNT(1) FROM Production_ReportWorkOrder WHERE ProductCode=${sqlText(fixture.parent)}) +
+    (SELECT COUNT(1) FROM Ware_WareHouseBill WHERE WareHouseBillCode=${sqlText(fixture.inbound)})`));
+  assert(residue === 0, `WF-07 清理后仍有 ${residue} 条主数据残留。`);
 }
 
 async function execute() {

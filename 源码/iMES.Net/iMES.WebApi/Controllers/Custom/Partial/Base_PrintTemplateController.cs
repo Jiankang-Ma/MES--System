@@ -209,6 +209,13 @@ namespace iMES.Custom.Controllers
                                    .FirstOrDefault();
             }
             PrintOutput print = new PrintOutput();
+            if (string.IsNullOrWhiteSpace(templateContent))
+            {
+                print.message = "未找到可用的打印模板，请在打印模板管理中配置并启用默认模板。";
+                print.status = 0;
+                print.success = false;
+                return JsonNormal(print);
+            }
             JObject jo = (JObject)JsonConvert.DeserializeObject(templateContent);
             print.message = "成功";
             print.data = jo;
@@ -229,8 +236,15 @@ namespace iMES.Custom.Controllers
                          .OrderByDescending(x => x.CreateDate)
                          .Select(s => s.TemplateContent)
                          .FirstOrDefault();
-            
+
             PrintOutput print = new PrintOutput();
+            if (string.IsNullOrWhiteSpace(templateContent))
+            {
+                print.message = $"未找到分类“{cat}”的可用打印模板，请在打印模板管理中配置并启用默认模板。";
+                print.status = 0;
+                print.success = false;
+                return JsonNormal(print);
+            }
             JObject jo = (JObject)JsonConvert.DeserializeObject(templateContent);
             print.message = "成功";
             print.data = jo;
@@ -324,8 +338,11 @@ namespace iMES.Custom.Controllers
                 case "Production_AssembleWorkOrder":
                     tableNameDetail = "Production_AssembleWorkOrderList";
                     string assembleWorkOrder_Id = id;
-                    sql = "select * from " + tableNameDetail + " where AssembleWorkOrder_Id=@assembleWorkOrder_Id  ";
+                    sql = "select AssembleWorkOrderList_Id, AssembleWorkOrder_Id, LevelPath, ProductCode, ProductName, ProductStandard, ProductAttribute, Unit_Id, UnitQty, Qty, WorkOrderCode, Status, ProductionSchedule, FinishQty, BadQty, Product_Id, ProcessLine_Id from " + tableNameDetail + " where AssembleWorkOrder_Id=@assembleWorkOrder_Id  ";
                     List<Production_AssembleWorkOrderList> entityListAssembleWorkOrder = DBServerProvider.SqlDapper.QueryList<Production_AssembleWorkOrderList>(sql, new { assembleWorkOrder_Id });
+                    // 装配明细表中的完成数、不良数、状态和进度是创建时的快照；
+                    // 打印必须与装配工单详情页一致，读取实际工单的实时执行结果。
+                    FillAssembleWorkOrderPrintValues(entityListAssembleWorkOrder);
                     jsonstr = JsonConvert.SerializeObject(entityListAssembleWorkOrder);
                     break;
                 case "Ware_OutWareHouseBill":
@@ -357,6 +374,95 @@ namespace iMES.Custom.Controllers
             print.status = 1;
             print.success = true;
             return JsonNormal(print);
+        }
+
+        /// <summary>
+        /// 为装配工单打印明细补充实际工单的实时状态与产出数据。
+        /// <para>不写回装配明细，避免打印操作产生副作用。</para>
+        /// </summary>
+        private static void FillAssembleWorkOrderPrintValues(List<Production_AssembleWorkOrderList> rows)
+        {
+            if (rows == null || rows.Count == 0)
+            {
+                return;
+            }
+
+            // 只查询本次打印涉及的工单编码，避免全表加载
+            var codes = rows
+                .Where(r => !string.IsNullOrEmpty(r.WorkOrderCode))
+                .Select(r => r.WorkOrderCode)
+                .Distinct()
+                .ToList();
+
+            if (codes.Count == 0) return;
+
+            string inClause = string.Join(",", codes.Select(c => $"N'{c.Replace("'", "''")}'"));
+            List<Production_WorkOrder> workOrders = DBServerProvider.SqlDapper
+                .QueryList<Production_WorkOrder>(
+                    $"SELECT WorkOrderCode, GoodQty, NoGoodQty, Status FROM Production_WorkOrder WHERE WorkOrderCode IN ({inClause})",
+                    new { });
+
+            // 使用字典 O(1) 查找
+            var orderMap = new Dictionary<string, Production_WorkOrder>();
+            foreach (var wo in workOrders)
+            {
+                if (!string.IsNullOrEmpty(wo.WorkOrderCode))
+                    orderMap[wo.WorkOrderCode] = wo;
+            }
+
+            // 进度缓存：避免相同 (WorkOrderCode, ProcessLine_Id) 重复查询
+            var progressCache = new Dictionary<string, string>();
+
+            foreach (Production_AssembleWorkOrderList row in rows)
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(row.WorkOrderCode) || !orderMap.TryGetValue(row.WorkOrderCode, out var workOrder))
+                    {
+                        row.FinishQty = 0;
+                        row.BadQty = 0;
+                        row.Status = "1";
+                        row.ProductionSchedule = "-";
+                        continue;
+                    }
+
+                    row.FinishQty = workOrder.GoodQty;
+                    row.BadQty = workOrder.NoGoodQty;
+                    row.Status = workOrder.Status;
+
+                    if (row.ProcessLine_Id == null)
+                    {
+                        row.ProductionSchedule = "-";
+                        continue;
+                    }
+
+                    // 进度查询：相同工单+工艺路线只查一次
+                    string cacheKey = $"{row.WorkOrderCode}|{row.ProcessLine_Id.Value}";
+                    if (progressCache.TryGetValue(cacheKey, out var cachedProgress))
+                    {
+                        row.ProductionSchedule = cachedProgress;
+                        continue;
+                    }
+
+                    string safeCode = row.WorkOrderCode.Replace("'", "''");
+                    string parameterSql = $"SELECT * FROM Func_GetProcessLineAndProgressByID('{safeCode}',{row.ProcessLine_Id.Value})";
+                    object progress = DBServerProvider.SqlDapper.ExecuteScalar(
+                        "SerializeJSON",
+                        new { ParameterSQL = parameterSql },
+                        global::System.Data.CommandType.StoredProcedure);
+                    string progressStr = progress?.ToString() ?? "-";
+                    progressCache[cacheKey] = progressStr;
+                    row.ProductionSchedule = progressStr;
+                }
+                catch
+                {
+                    // 单行异常不影响整体打印，使用兜底值
+                    row.FinishQty = 0;
+                    row.BadQty = 0;
+                    row.Status = "1";
+                    row.ProductionSchedule = "-";
+                }
+            }
         }
     }
 }

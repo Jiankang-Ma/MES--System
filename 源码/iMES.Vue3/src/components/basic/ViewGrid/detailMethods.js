@@ -8,7 +8,7 @@ let detailMethods = {
       this.detailOptions.delKeys = [];
     }
     let key = this.table.key;
-    if (this.currentRow && this.currentRow.hasOwnProperty(key)) {
+    if (this.currentRow && Object.prototype.hasOwnProperty.call(this.currentRow, key)) {
       param.value = this.currentRow[key];
     }
     return this.loadDetailTableBefore(param, callBack);
@@ -68,7 +68,7 @@ let detailMethods = {
       let key = this.detailOptions.key;
       //记录删除的行数据
       rows.forEach((x) => {
-        if (x.hasOwnProperty(key) && x[key]) {
+        if (Object.prototype.hasOwnProperty.call(x, key) && x[key]) {
           this.detailOptions.delKeys.push(x[key]);
         }
       });

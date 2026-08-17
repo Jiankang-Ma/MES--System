@@ -65,7 +65,7 @@ namespace iMES.Custom.Controllers
             return Content("修改成功");
         }
 
-        [HttpPost, HttpGet, Route("saveOrUpdateData"), AllowAnonymous]
+        [HttpPost, HttpGet, Route("saveOrUpdateData")]
         [AcceptVerbs("GET", "POST")]
         public IActionResult saveOrUpdateData(string stage,string id,string cat)
         {
@@ -98,7 +98,7 @@ namespace iMES.Custom.Controllers
             }
         }
 
-        [HttpPost, HttpGet, Route("getResourceByCatId"), AllowAnonymous]
+        [HttpPost, HttpGet, Route("getResourceByCatId")]
         public IActionResult getResourceByCatId(string id,string cat)
         {
             string tableNameMain = string.Empty; 
@@ -186,7 +186,7 @@ namespace iMES.Custom.Controllers
             print.success = true;
             return JsonNormal(print);
         }
-        [HttpPost, HttpGet, Route("getDataById"), AllowAnonymous]
+        [HttpPost, HttpGet, Route("getDataById")]
         public IActionResult getDataById(string id, string cat)
         {
             string templateContent = string.Empty;
@@ -224,7 +224,7 @@ namespace iMES.Custom.Controllers
             return JsonNormal(print);
         }
 
-        [HttpPost, HttpGet, Route("getDataByIdPrint"), AllowAnonymous]
+        [HttpPost, HttpGet, Route("getDataByIdPrint")]
         public IActionResult getDataByIdPrint(string dataId, string cat)
         {
             string templateContent = string.Empty;
@@ -252,7 +252,7 @@ namespace iMES.Custom.Controllers
             print.success = true;
             return JsonNormal(print);
         }
-        [HttpPost, HttpGet, Route("getBillData"), AllowAnonymous]
+        [HttpPost, HttpGet, Route("getBillData")]
         public IActionResult getBillData(string id, string cat)
         {
             string tableNameMain = string.Empty;
@@ -313,7 +313,7 @@ namespace iMES.Custom.Controllers
             print.success = true;
             return JsonNormal(print);
         }
-        [HttpPost, HttpGet, Route("getDetailData"), AllowAnonymous]
+        [HttpPost, HttpGet, Route("getDetailData")]
         public IActionResult getDetailData(string id, string cat)
         {
             string tableNameDetail = string.Empty;

@@ -1,6 +1,49 @@
 <!DOCTYPE html>
 <html>
     <head>
+<script>
+/* MES_PRINT_AUTH_FETCH */
+(function () {
+    const originalFetch = window.fetch.bind(window);
+
+    window.fetch = function (input, init) {
+        init = init || {};
+
+        try {
+            const rawUrl = (typeof input === 'string') ? input : input.url;
+            const url = new URL(rawUrl, window.location.href);
+
+            if (
+                url.origin === window.location.origin &&
+                url.pathname.startsWith('/api/')
+            ) {
+                const rawUser = localStorage.getItem('user');
+
+                if (rawUser) {
+                    const user = JSON.parse(rawUser);
+
+                    if (user && user.token) {
+                        const baseHeaders =
+                            init.headers ||
+                            ((typeof Request !== 'undefined' && input instanceof Request)
+                                ? input.headers
+                                : undefined);
+
+                        const headers = new Headers(baseHeaders);
+                        headers.set('Authorization', 'Bearer ' + user.token);
+                        init.headers = headers;
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('MES print auth header setup failed', e);
+        }
+
+        return originalFetch(input, init);
+    };
+})();
+</script>
+
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>

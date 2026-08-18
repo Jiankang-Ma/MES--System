@@ -407,9 +407,15 @@ LEFT JOIN GetAssembleProcess AS p
                         detailGrid.rows[i].BadQty = 0;
                         detailGrid.rows[i].Status = "1";
                     }
-                    string ParameterSQL = "select * from  Func_GetProcessLineAndProgressByID('" + detailGrid.rows[i].WorkOrderCode + "'," + detailGrid.rows[i].ProcessLine_Id + ")";
-                    object obj =  DBServerProvider.SqlDapper.ExecuteScalar("SerializeJSON", new { ParameterSQL }, Sys.Data.CommandType.StoredProcedure);
-                    detailGrid.rows[i].ProductionSchedule = obj.ToString();//storeList.Find(x => x.Product_Id == detailGrid.rows[i].Product_Id).InventoryQty;
+                    string sql = "select * from Func_GetProcessLineAndProgressByID(@WorkOrderCode, @ProcessLine_Id)";
+                    var progressData = DBServerProvider.SqlDapper.QueryList<dynamic>(
+                        sql,
+                        new
+                        {
+                            WorkOrderCode = detailGrid.rows[i].WorkOrderCode,
+                            ProcessLine_Id = detailGrid.rows[i].ProcessLine_Id
+                        });
+                    detailGrid.rows[i].ProductionSchedule = Newtonsoft.Json.JsonConvert.SerializeObject(progressData);//storeList.Find(x => x.Product_Id == detailGrid.rows[i].Product_Id).InventoryQty;
                 }
                 else
                 {

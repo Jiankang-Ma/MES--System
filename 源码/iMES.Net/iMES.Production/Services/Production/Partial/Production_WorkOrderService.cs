@@ -61,9 +61,15 @@ namespace iMES.Production.Services
                             .OrderByDescending(x => x.CreateDate)
                             .Select(s => s.Process_Id.GetInt())
                             .FirstOrDefault();
-                    string ParameterSQL = "select * from  Func_GetProcessLineAndProgressByID('" + list[i].WorkOrderCode + "'," + processLineId + ")";
-                    object obj = DBServerProvider.SqlDapper.ExecuteScalar("SerializeJSON", new { ParameterSQL }, Sys.Data.CommandType.StoredProcedure);
-                    list[i].ProductionSchedule = obj.ToString();
+                    string sql = "select * from Func_GetProcessLineAndProgressByID(@WorkOrderCode, @ProcessLine_Id)";
+                    var progressData = DBServerProvider.SqlDapper.QueryList<dynamic>(
+                        sql,
+                        new
+                        {
+                            WorkOrderCode = list[i].WorkOrderCode,
+                            ProcessLine_Id = processLineId
+                        });
+                    list[i].ProductionSchedule = Newtonsoft.Json.JsonConvert.SerializeObject(progressData);
                 }
             };
             return base.GetPageData(options);

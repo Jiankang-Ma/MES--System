@@ -19,11 +19,11 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       Connection__DBType: MsSql
-      Connection__DbConnectionString: "Data Source=${MSSQL_HOST:-host.docker.internal},${MSSQL_PORT:-1433};Initial Catalog=iMES;Persist Security Info=True;User ID=sa;Password=${MSSQL_SA_PASSWORD:-Your_Strong_Password123!};Connect Timeout=500;TrustServerCertificate=True;"
+      Connection__DbConnectionString: "Data Source=${MSSQL_HOST:-host.docker.internal},${MSSQL_PORT:-1433};Initial Catalog=iMES;Persist Security Info=True;User ID=${MSSQL_APP_USER:-imes_app};Password=${MSSQL_APP_PASSWORD:?MSSQL_APP_PASSWORD is required};Connect Timeout=500;TrustServerCertificate=True;"
       Connection__RedisConnectionString: "redis:6379,password=${REDIS_PASSWORD:-Redis_123456!},SyncTimeout=15000"
       Connection__UseRedis: "true"
-      ServiceConnectingString: "Data Source=${MSSQL_HOST:-host.docker.internal},${MSSQL_PORT:-1433};Initial Catalog=iMES;Persist Security Info=True;User ID=sa;Password=${MSSQL_SA_PASSWORD:-Your_Strong_Password123!};Connect Timeout=500;TrustServerCertificate=True;"
-      ReportConnectingString: "Data Source=${MSSQL_HOST:-host.docker.internal},${MSSQL_PORT:-1433};Initial Catalog=iMES;Persist Security Info=True;User ID=sa;Password=${MSSQL_SA_PASSWORD:-Your_Strong_Password123!};Connect Timeout=500;TrustServerCertificate=True;"
+      ServiceConnectingString: "Data Source=${MSSQL_HOST:-host.docker.internal},${MSSQL_PORT:-1433};Initial Catalog=iMES;Persist Security Info=True;User ID=${MSSQL_APP_USER:-imes_app};Password=${MSSQL_APP_PASSWORD:?MSSQL_APP_PASSWORD is required};Connect Timeout=500;TrustServerCertificate=True;"
+      ReportConnectingString: "Data Source=${MSSQL_HOST:-host.docker.internal},${MSSQL_PORT:-1433};Initial Catalog=iMES;Persist Security Info=True;User ID=${MSSQL_APP_USER:-imes_app};Password=${MSSQL_APP_PASSWORD:?MSSQL_APP_PASSWORD is required};Connect Timeout=500;TrustServerCertificate=True;"
       CorsUrls: "http://localhost:9990,http://127.0.0.1:9990,http://localhost:8080,http://127.0.0.1:8080"
       VirtualPath__StaticFile: /app/wwwroot/Static
       VirtualPath__FolderName: /Static

@@ -20,7 +20,6 @@
           <p>计划管理，工单，订单，生产管理，库存管理</p>
           <p>工序，报工，基础数据，大屏，报表</p>
           <p>手机APP移动端管理，无需电脑</p>
-          <p>演示账号：admin 密码:123456</p>
           <!-- <div style="margin-top: 30px" class="link">
             <a href="http://www.625sc.com/" target="_blank">
               <span>官网</span></a

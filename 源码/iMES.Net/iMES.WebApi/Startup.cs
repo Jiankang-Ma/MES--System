@@ -114,7 +114,7 @@ namespace iMES.WebApi
                 options.AddDefaultPolicy(
                         builder =>
                         {
-                            builder.AllowAnyOrigin()
+                            builder.WithOrigins(corsUrls.Split(','))
                            .SetPreflightMaxAge(TimeSpan.FromSeconds(2520))
                             .AllowAnyHeader().AllowAnyMethod();
                         });
@@ -195,10 +195,7 @@ namespace iMES.WebApi
                 app.UseQuartz(env);
             }
             app.UseMiddleware<ExceptionHandlerMiddleWare>();
-            app.UseStaticFiles().UseStaticFiles(new StaticFileOptions
-            {
-                ServeUnknownFileTypes = true
-            });
+            app.UseStaticFiles();
             app.UseDefaultFiles();
             app.Use(HttpRequestMiddleware.Context);
 
@@ -210,18 +207,27 @@ namespace iMES.WebApi
                 Directory.CreateDirectory(_uploadPath);
             }
 
-            app.UseStaticFiles(new StaticFileOptions()
+            app.Map("/Upload", uploadApp =>
             {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(Directory.GetCurrentDirectory(), @"Upload")),
-                //配置访问虚拟目录时文件夹别名
-                RequestPath = "/Upload",
-                OnPrepareResponse = (Microsoft.AspNetCore.StaticFiles.StaticFileResponseContext staticFile) =>
+                uploadApp.UseCors();
+                uploadApp.UseAuthentication();
+
+                uploadApp.Use(async (context, next) =>
                 {
-                    //可以在此处读取请求的信息进行权限认证
-                    //  staticFile.File
-                    //  staticFile.Context.Response.StatusCode;
-                }
+                    if (context.User?.Identity?.IsAuthenticated != true)
+                    {
+                        context.Response.StatusCode = 401;
+                        return;
+                    }
+
+                    await next();
+                });
+
+                uploadApp.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(
+                        Path.Combine(Directory.GetCurrentDirectory(), @"Upload"))
+                });
             });
             //配置HttpContext
             app.UseStaticHttpContext();

@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using iMES.Core.BaseProvider;
 using iMES.Core.Const;
@@ -51,6 +50,11 @@ namespace iMES.System.Services
                 {
                     return data as object;
                 }
+                if (DBType.Name == DbCurrentType.MsSql.ToString())
+                {
+                    dbSql = DictionarySqlValidator.EnsureReadOnlySelect(dbSql);
+                }
+
                 return repository.DapperContext.QueryList<object>(dbSql, null);
             }
             return dicConfig.Select(item => new
@@ -79,6 +83,11 @@ namespace iMES.System.Services
             {
                 return null;
             }
+            if (DBType.Name == DbCurrentType.MsSql.ToString())
+            {
+                sql = DictionarySqlValidator.EnsureReadOnlySelect(sql);
+            }
+
             sql = $"SELECT * FROM ({sql}) AS t WHERE value LIKE @value";
             return repository.DapperContext.QueryList<object>(sql, new { value = "%" + value + "%" });
         }
@@ -129,6 +138,12 @@ namespace iMES.System.Services
                 {
                     //  2020.05.01增加根据用户信息加载字典数据源sql
                     string sql = DictionaryHandler.GetCustomDBSql(x.DicNo, x.DbSql);
+
+                    if (DBType.Name == DbCurrentType.MsSql.ToString())
+                    {
+                        sql = DictionarySqlValidator.EnsureReadOnlySelect(sql);
+                    }
+
                     sql = $"SELECT * FROM ({sql}) AS t WHERE " +
                    $"{keySql}" +
                    $" in @data";
@@ -191,7 +206,11 @@ namespace iMES.System.Services
                 WebResponseContent _responseData = CheckKeyValue(listObj);
                 if (!_responseData.Status) return _responseData;
 
-                dictionary.DbSql = SqlFilters(dictionary.DbSql);
+                if (DBType.Name == DbCurrentType.MsSql.ToString() &&
+                    !DictionarySqlValidator.TryValidateReadOnlySelect(dictionary.DbSql, out string sqlError))
+                {
+                    return new WebResponseContent().Error(sqlError);
+                }
                 return new WebResponseContent(true);
             };
             return RemoveCache(base.Update(saveDataModel));
@@ -213,35 +232,6 @@ namespace iMES.System.Services
             return webResponse.OK();
         }
 
-        private static string SqlFilters(string source)
-        {
-            if (string.IsNullOrEmpty(source)) return source;
-
-            //   source = source.Replace("'", "''");
-            source = Regex.Replace(source, "-", "", RegexOptions.IgnoreCase);
-            //去除执行SQL语句的命令关键字
-            source = Regex.Replace(source, "insert", "", RegexOptions.IgnoreCase);
-            // source = Regex.Replace(source, "sys.", "", RegexOptions.IgnoreCase);
-            source = Regex.Replace(source, "update", "", RegexOptions.IgnoreCase);
-            source = Regex.Replace(source, "delete", "", RegexOptions.IgnoreCase);
-            source = Regex.Replace(source, "drop", "", RegexOptions.IgnoreCase);
-            source = Regex.Replace(source, "truncate", "", RegexOptions.IgnoreCase);
-            source = Regex.Replace(source, "declare", "", RegexOptions.IgnoreCase);
-            source = Regex.Replace(source, "xp_cmdshell", "", RegexOptions.IgnoreCase);
-            source = Regex.Replace(source, "/add", "", RegexOptions.IgnoreCase);
-            source = Regex.Replace(source, "net user", "", RegexOptions.IgnoreCase);
-            //去除执行存储过程的命令关键字 
-            source = Regex.Replace(source, "exec", "", RegexOptions.IgnoreCase);
-            source = Regex.Replace(source, "execute", "", RegexOptions.IgnoreCase);
-            //去除系统存储过程或扩展存储过程关键字
-            source = Regex.Replace(source, "xp_", "x p_", RegexOptions.IgnoreCase);
-            source = Regex.Replace(source, "sp_", "s p_", RegexOptions.IgnoreCase);
-            //防止16进制注入
-            source = Regex.Replace(source, "0x", "0 x", RegexOptions.IgnoreCase);
-
-            return source;
-        }
-
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
             if (saveDataModel.MainData.DicKeyIsNullOrEmpty("DicNo")) return base.Add(saveDataModel);
@@ -255,7 +245,11 @@ namespace iMES.System.Services
                 WebResponseContent _responseData = CheckKeyValue(obj as List<Sys_DictionaryList>);
                 if (!_responseData.Status) return _responseData;
 
-                dic.DbSql = SqlFilters(dic.DbSql);
+                if (DBType.Name == DbCurrentType.MsSql.ToString() &&
+                    !DictionarySqlValidator.TryValidateReadOnlySelect(dic.DbSql, out string sqlError))
+                {
+                    return new WebResponseContent().Error(sqlError);
+                }
                 return new WebResponseContent(true);
             };
             return RemoveCache(base.Add(saveDataModel));

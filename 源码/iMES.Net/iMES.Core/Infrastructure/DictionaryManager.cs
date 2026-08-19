@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +42,8 @@ namespace iMES.Core.Infrastructure
             {
                 try
                 {
+                    sql = DictionarySqlValidator.EnsureReadOnlySelectForCurrentDatabase(sql);
+
                     return DBServerProvider.SqlDapper.QueryList<SourceKeyVaule>(sql, null).Select(s => new Sys_DictionaryList()
                     {
                         DicName = s.Value,

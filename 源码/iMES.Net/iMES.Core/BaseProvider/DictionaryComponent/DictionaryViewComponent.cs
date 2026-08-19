@@ -1,7 +1,8 @@
-﻿using iMES.Core.Dapper;
+using iMES.Core.Dapper;
 using iMES.Core.DBManager;
 using iMES.Core.EFDbContext;
 using iMES.Core.Extensions;
+using iMES.Core.Infrastructure;
 using iMES.Entity.DomainModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,7 @@ namespace iMES.Core.BaseProvider.DictionaryComponent
 
                 stringBuilder.AppendLine($@" var dataSource{item.Key} = {
                     (!string.IsNullOrEmpty(dbSql)
-                    ? DBServerProvider.GetSqlDapper().QueryList<object>(dbSql, null).Serialize()
+                    ? DBServerProvider.GetSqlDapper().QueryList<object>(DictionarySqlValidator.EnsureReadOnlySelectForCurrentDatabase(dbSql), null).Serialize()
                     : item.OrderByDescending(o => o.OrderNo).
                             Select(s => new { s.DicName, s.DicValue }).ToList()
                             .Serialize())

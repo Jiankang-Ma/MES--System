@@ -114,7 +114,7 @@ namespace iMES.WebApi
                 options.AddDefaultPolicy(
                         builder =>
                         {
-                            builder.AllowAnyOrigin()
+                            builder.WithOrigins(corsUrls.Split(','))
                            .SetPreflightMaxAge(TimeSpan.FromSeconds(2520))
                             .AllowAnyHeader().AllowAnyMethod();
                         });
